@@ -22,26 +22,22 @@ favicon.ico
 No build step. No JavaScript framework. No CDN dependencies — every font,
 stylesheet, and script is served from this same origin.
 
-## Before going live — two placeholders to replace
+## Before going live — one placeholder left to replace
 
-This was built before the GitHub repo and production domain existed, so two
-placeholders are used throughout. Find and replace both:
-
-1. **`REPLACE-ME`** — appears in every download button and footer "Source"
-   link, as `https://github.com/REPLACE-ME/benchpdf`. Replace with your real
-   GitHub owner/repo once it's created (e.g. `github.com/yourname/benchpdf`),
-   and once you've cut a release, point the download buttons at
-   `.../releases/latest`.
-2. **`benchpdf.example`** — the placeholder domain used in every `<link
+1. ~~`REPLACE-ME`~~ — done. Every download button and footer "Source" link
+   now points at the real repo, `https://github.com/zafwaqas-afk/benchpdf`,
+   and download buttons target `.../releases/latest` (currently resolves to
+   the `v1.0.0` release with `BenchPDF-Setup-1.0.0.exe` attached).
+2. **`benchpdf.example`** — still a placeholder domain, used in every `<link
    rel="canonical">`, `og:url`, `og:image`, and in `sitemap.xml` /
    `robots.txt`. `.example` is the IANA-reserved placeholder TLD, chosen so
    it's obviously not a real address. Replace with your actual Cloudflare
-   Pages domain (`*.pages.dev` or a custom domain) before publishing.
+   Pages domain (`*.pages.dev` or a custom domain) once the site is deployed.
 
-A quick way to find every instance of both:
+Find every remaining instance with:
 
 ```
-grep -rn "REPLACE-ME\|benchpdf.example" .
+grep -rn "benchpdf.example" .
 ```
 
 ## Local preview
