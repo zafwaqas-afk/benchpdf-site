@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://benchpdf.example/sitemap.xml
+Sitemap: https://benchpdf-site.pages.dev/sitemap.xml

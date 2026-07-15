@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://benchpdf.example/</loc></url>
-  <url><loc>https://benchpdf.example/privacy.html</loc></url>
-  <url><loc>https://benchpdf.example/changelog.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/pdf-to-ppt.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/pdf-to-word.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/word-to-pdf.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/excel-to-pdf.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/ppt-to-pdf.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/images-to-pdf.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/web-to-pdf.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/edit-pdf.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/pdf-to-images.html</loc></url>
-  <url><loc>https://benchpdf.example/tools/pdf-to-text.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/privacy.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/changelog.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-ppt.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-word.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/word-to-pdf.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/excel-to-pdf.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/ppt-to-pdf.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/images-to-pdf.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/web-to-pdf.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/edit-pdf.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-images.html</loc></url>
+  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-text.html</loc></url>
 </urlset>
