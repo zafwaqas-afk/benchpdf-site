@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" data-theme="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy — BenchPDF</title>
+  <meta name="description" content="What BenchPDF does and doesn't do with your files, in plain English. No uploads, no accounts, no analytics — on the app or on this website.">
+  <link rel="canonical" href="https://benchpdf.example/privacy.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Privacy — BenchPDF">
+  <meta property="og:description" content="What BenchPDF does and doesn't do with your files, in plain English.">
+  <meta property="og:url" content="https://benchpdf.example/privacy.html">
+  <meta property="og:image" content="https://benchpdf.example/assets/img/screenshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSerif-SemiBold.woff2">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("benchpdf-theme"); } catch (e) {}
+      if (t) document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="BenchPDF home">
+      <svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true" width="20" height="20">
+        <rect x="2.5" y="1.5" width="15" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="10" y1="1.5" x2="10" y2="18.5" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+      BenchPDF
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a class="navlink" href="/">Home</a>
+      <a class="navlink is-active" href="/privacy.html">Privacy</a>
+      <a class="navlink" href="/changelog.html">Changelog</a>
+    </nav>
+    <div class="topbar-end">
+      <a class="btn btn-primary btn-sm" href="https://github.com/REPLACE-ME/benchpdf/releases/latest">Download</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch colour theme" title="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none">
+          <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M12 2.5v2.2M12 19.3v2.2M4.2 12H2M22 12h-2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none">
+          <path d="M20 14.2A8 8 0 1 1 9.8 4 6.4 6.4 0 0 0 20 14.2Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="main narrow" id="main">
+    <section class="tool-hero">
+      <h1>Privacy</h1>
+      <p class="lede">In plain English: what BenchPDF does with your files, what it doesn't, and what this website collects.</p>
+    </section>
+
+    <section class="prose">
+      <h2>The short version</h2>
+      <p>BenchPDF converts and edits your documents on your own PC. It doesn't upload your files,
+        doesn't require an account, and doesn't run analytics — in the app, or on this website.</p>
+
+      <h2>What the app does</h2>
+      <p>When you open BenchPDF, it starts a small web server on your own computer, reachable only
+        at the address <strong>127.0.0.1</strong> — a special address that always means &ldquo;this
+        computer.&rdquo; It is not reachable from the internet, from your network, or from any other
+        device. BenchPDF uses that local server to give you the drag-and-drop page you convert files
+        with; the page and the conversion both run on the same machine as your files.</p>
+      <p>Word, Excel, and PowerPoint conversions work by driving your own installed copies of those
+        applications in the background. If Office isn't installed, those specific conversions are
+        disabled with an explanation — BenchPDF never tries to substitute its own re-implementation
+        of Office's rendering.</p>
+      <p>Editing a PDF works the same way: the page is rendered and edited inside the local server's
+        page, and the exported PDF is written straight to your disk.</p>
+
+      <h2>The one network request</h2>
+      <p>BenchPDF makes exactly one kind of network call: converting a web page to PDF has to fetch
+        that page, the same way your own browser would if you opened the address and pressed Print.
+        It fetches only the address you give it, using a local headless browser, and contacts nothing
+        else. Every other conversion &mdash; PDF, Word, Excel, PowerPoint, and images &mdash; makes no
+        network request of any kind.</p>
+
+      <h2>What BenchPDF doesn't do</h2>
+      <ul>
+        <li>It doesn't upload your files anywhere, ever, for any conversion other than the web-page
+          exception above (and even then, only the URL you provide is fetched — not your files).</li>
+        <li>It doesn't require an account, sign-in, or internet connection to convert or edit a file.</li>
+        <li>It doesn't include analytics, crash reporting, or telemetry of any kind.</li>
+        <li>It doesn't store your files anywhere beyond the working folder it uses during a
+          conversion and the output you choose to keep.</li>
+      </ul>
+
+      <h2>This website</h2>
+      <p>This site is a set of static pages with no analytics, no tracking pixels, no cookies, and no
+        third-party scripts — everything, including the fonts, is served from the same place as the
+        page itself. That said, like any website, the server that hosts these pages inherently logs
+        basic request information (such as IP address and timestamp) as part of normal web hosting;
+        that logging is standard infrastructure behaviour, not something BenchPDF adds, and we don't
+        layer any analytics on top of it.</p>
+
+      <h2>Office automation reliability</h2>
+      <p>Occasionally Word, Excel, or PowerPoint can show a dialog during automation — a password
+        prompt, or a recovery notice — that blocks a single conversion. BenchPDF has a built-in
+        timeout: if Office doesn't respond within 30&ndash;90 seconds, it closes that one stuck
+        attempt, reports a clear error for that file, and is immediately ready for your next
+        conversion. This is a reliability detail, not a privacy one, but it's worth knowing if a
+        conversion ever times out.</p>
+
+      <h2>Licensing and source availability</h2>
+      <p>BenchPDF bundles PyMuPDF, which is licensed under the GNU AGPL-3.0. Because of that,
+        BenchPDF's own source is made available under the same license — the exact link is in the
+        app's About dialog and in this site's <a href="/changelog.html">changelog</a> and
+        <a href="https://github.com/REPLACE-ME/benchpdf">GitHub repository</a>.</p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-row">
+      <span>BenchPDF</span><span class="foot-sep">&middot;</span><span>Files never leave your device</span>
+    </div>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/changelog.html">Changelog</a>
+      <a href="https://github.com/REPLACE-ME/benchpdf">Source (GitHub)</a>
+    </nav>
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+</body>
+</html>

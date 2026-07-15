@@ -1,0 +1,187 @@
+/* ============================================================
+   BenchPDF marketing site — "Ink & Paper"
+   Same tokens, fonts, and both themes as the app itself.
+   Zero third-party requests: fonts and styles are all local.
+   ============================================================ */
+
+@font-face{font-family:"Plex Sans";src:url("../fonts/IBMPlexSans-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Plex Sans";src:url("../fonts/IBMPlexSans-Medium.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Plex Sans";src:url("../fonts/IBMPlexSans-SemiBold.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Plex Serif";src:url("../fonts/IBMPlexSerif-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Plex Serif";src:url("../fonts/IBMPlexSerif-SemiBold.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Plex Mono";src:url("../fonts/IBMPlexMono-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Plex Mono";src:url("../fonts/IBMPlexMono-Medium.woff2") format("woff2");font-weight:500;font-display:swap}
+
+/* ---- Design tokens (identical to the app) ---- */
+:root{
+  --bg:#F7F6F2; --panel:#FFFFFF;
+  --ink:#1A2238; --muted:#5A6072;
+  --line:rgba(26,34,56,.11); --line-2:rgba(26,34,56,.17);
+  --accent:#2C4BE0; --accent-hover:#243CC0; --on-accent:#FFFFFF; --link:#2C4BE0;
+  --accent-wash:rgba(44,75,224,.07);
+  --success-dot:#1E7F4F;
+  --focus:#2C4BE0;
+  --sans:"Plex Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --serif:"Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"Plex Mono",Consolas,"SF Mono",monospace;
+  --radius:6px; --wrap:1080px;
+}
+:root[data-theme="dark"]{
+  --bg:#14161C; --panel:#1B1E26;
+  --ink:#E8E9EE; --muted:#9BA0AE;
+  --line:rgba(232,233,238,.12); --line-2:rgba(232,233,238,.20);
+  --accent:#4661E6; --accent-hover:#5A73EE; --on-accent:#FFFFFF; --link:#8CA0F7;
+  --accent-wash:rgba(70,97,230,.16);
+  --success-dot:#4FBF88;
+  --focus:#8CA0F7;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161C; --panel:#1B1E26;
+    --ink:#E8E9EE; --muted:#9BA0AE;
+    --line:rgba(232,233,238,.12); --line-2:rgba(232,233,238,.20);
+    --accent:#4661E6; --accent-hover:#5A73EE; --on-accent:#FFFFFF; --link:#8CA0F7;
+    --accent-wash:rgba(70,97,230,.16);
+    --success-dot:#4FBF88;
+    --focus:#8CA0F7;
+  }
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+a{color:var(--link)}
+:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:3px}
+.rule{height:1px; background:var(--line); border:0; margin:0}
+.visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.skip-link{position:absolute; left:12px; top:-40px; background:var(--ink); color:var(--bg);
+  padding:8px 14px; border-radius:var(--radius); z-index:50; transition:top .12s}
+.skip-link:focus{top:12px}
+
+/* ---- Header ---- */
+.topbar{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  display:flex; align-items:center; gap:20px;
+  height:56px; padding:0 clamp(16px,4vw,32px); border-bottom:1px solid var(--line);
+}
+.brand{display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+  color:var(--ink); font-family:var(--serif); font-weight:600; font-size:20px; letter-spacing:-.01em}
+.brand-mark{color:var(--accent)}
+.topnav{display:flex; gap:4px; margin-left:8px}
+.navlink{color:var(--muted); text-decoration:none;
+  font-size:14px; font-weight:500; padding:7px 11px; border-radius:var(--radius);
+  line-height:1}
+.navlink:hover{color:var(--ink); background:var(--accent-wash)}
+.navlink.is-active{color:var(--ink)}
+.topbar-end{margin-left:auto; display:flex; align-items:center; gap:10px}
+.theme-toggle{background:none; border:1px solid var(--line-2);
+  color:var(--ink); width:36px; height:36px; border-radius:var(--radius);
+  display:grid; place-items:center; cursor:pointer}
+.theme-toggle:hover{border-color:var(--ink); background:var(--accent-wash)}
+.theme-toggle .i-moon{display:none}
+:root[data-theme="dark"] .theme-toggle .i-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .i-moon{display:block}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-toggle .i-sun{display:none}
+  :root:not([data-theme="light"]) .theme-toggle .i-moon{display:block}
+}
+
+/* ---- Buttons ---- */
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  font-size:15px; font-weight:500; line-height:1; cursor:pointer; text-decoration:none;
+  padding:12px 20px; border-radius:var(--radius); border:1px solid transparent;
+  transition:background-color .13s, border-color .13s, color .13s}
+.btn-sm{padding:9px 14px; font-size:13.5px}
+.btn-primary{background:var(--accent); color:var(--on-accent)}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-ghost{background:transparent; color:var(--ink); border-color:var(--line-2)}
+.btn-ghost:hover{border-color:var(--ink); background:var(--accent-wash)}
+
+/* ---- Layout ---- */
+.main{max-width:var(--wrap); margin:0 auto; padding:clamp(24px,4vw,44px) clamp(16px,4vw,32px) 40px}
+.narrow{max-width:720px}
+
+/* ---- Home hero / pitch ---- */
+.pitch{display:flex; flex-direction:column; align-items:flex-start; gap:18px; padding:clamp(24px,5vw,56px) 0 clamp(32px,6vw,64px)}
+.pitch-title{font-family:var(--serif); font-weight:600; font-size:clamp(30px,4.4vw,46px);
+  line-height:1.12; letter-spacing:-.02em; margin:0; max-width:20ch; text-wrap:balance}
+.pitch-sub{margin:0; color:var(--muted); font-size:17px; max-width:56ch; line-height:1.6}
+.pitch-cta{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:4px}
+.pitch-cta-note{font-size:13px; color:var(--muted)}
+.shot-frame{margin-top:8px; width:100%; background:var(--panel); border:1px solid var(--line-2);
+  border-radius:calc(var(--radius) + 4px); padding:10px; box-shadow:0 24px 60px -30px rgba(26,34,56,.35)}
+.shot-frame img{display:block; width:100%; height:auto; border-radius:calc(var(--radius) - 1px); border:1px solid var(--line)}
+:root[data-theme="dark"] .shot-frame{box-shadow:0 24px 60px -30px rgba(0,0,0,.6)}
+
+/* ---- Feature list (home) ---- */
+.features{padding:clamp(24px,5vw,48px) 0; border-top:1px solid var(--line)}
+.features-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:28px; margin-top:24px}
+.feature h3{font-family:var(--serif); font-weight:600; font-size:18px; margin:0 0 8px; letter-spacing:-.01em}
+.feature p{margin:0; color:var(--muted); font-size:14.5px; line-height:1.6}
+
+/* ---- Privacy callout (home) ---- */
+.privacy-band{padding:clamp(24px,5vw,48px) 0; border-top:1px solid var(--line)}
+.privacy-band h2{font-family:var(--serif); font-weight:600; font-size:24px; margin:0 0 12px; letter-spacing:-.01em}
+.privacy-band p{color:var(--muted); font-size:15px; line-height:1.65; max-width:64ch}
+.privacy-band p + p{margin-top:10px}
+
+/* ---- Tools grid (home + "more tools") ---- */
+.toolgrid-section{padding:clamp(24px,5vw,48px) 0; border-top:1px solid var(--line)}
+.toolgrid-section h2{font-family:var(--serif); font-weight:600; font-size:24px; margin:0 0 4px; letter-spacing:-.01em}
+.toolgrid-cols{display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:16px}
+.toolgrid-col-h{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+  font-weight:600; margin:0 0 6px}
+.toollist{display:flex; flex-direction:column}
+.toolitem{display:flex; flex-direction:column; gap:2px; text-decoration:none; text-align:left;
+  border-top:1px solid var(--line); padding:13px 4px}
+.toolitem:hover{background:var(--accent-wash)}
+.toolitem-label{font-size:15px; font-weight:600; color:var(--ink)}
+.toolitem-desc{font-size:12.5px; color:var(--muted); line-height:1.4}
+
+/* ---- Tool page hero ---- */
+.tool-hero{padding:clamp(20px,4vw,40px) 0 clamp(24px,4vw,36px)}
+.tool-hero h1{font-family:var(--serif); font-weight:600; font-size:clamp(26px,3.6vw,36px);
+  line-height:1.16; letter-spacing:-.02em; margin:0; max-width:22ch}
+.tool-hero .lede{margin:12px 0 0; color:var(--muted); font-size:16px; max-width:58ch; line-height:1.6}
+.tool-cta{margin-top:22px; display:flex; gap:12px; flex-wrap:wrap; align-items:center}
+
+/* ---- Prose (privacy / changelog / tool explanation) ---- */
+.prose{padding:clamp(4px,2vw,16px) 0 clamp(24px,4vw,40px); border-top:1px solid var(--line); margin-top:clamp(20px,4vw,32px)}
+.prose h2{font-family:var(--serif); font-weight:600; font-size:20px; margin:28px 0 10px; letter-spacing:-.01em}
+.prose h2:first-child{margin-top:0}
+.prose p{color:var(--ink); font-size:15.5px; line-height:1.7; margin:0 0 14px; max-width:68ch}
+.prose ul{margin:0 0 14px; padding-left:20px; color:var(--ink); font-size:15.5px; line-height:1.7; max-width:68ch}
+.prose li{margin-bottom:6px}
+.prose strong{font-weight:600}
+
+/* ---- Changelog ---- */
+.entry{padding:20px 0; border-top:1px solid var(--line)}
+.entry:first-child{border-top:0}
+.entry-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+.entry-version{font-family:var(--serif); font-weight:600; font-size:19px}
+.entry-date{font-family:var(--mono); font-size:12.5px; color:var(--muted)}
+.entry ul{margin:10px 0 0; padding-left:20px; color:var(--ink); font-size:14.5px; line-height:1.7}
+
+/* ---- Footer ---- */
+.foot{max-width:var(--wrap); margin:0 auto; padding:28px clamp(16px,4vw,32px) 40px;
+  color:var(--muted); font-size:12.5px; border-top:1px solid var(--line)}
+.foot-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.foot-sep{opacity:.5}
+.foot-links{margin-top:10px; display:flex; gap:16px; flex-wrap:wrap}
+.foot-links a{color:var(--muted); text-decoration:none}
+.foot-links a:hover{color:var(--ink)}
+
+/* ---- Responsive ---- */
+@media (max-width:800px){
+  .features-grid{grid-template-columns:1fr; gap:22px}
+  .toolgrid-cols{grid-template-columns:1fr; gap:8px}
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important; animation:none!important}
+}
