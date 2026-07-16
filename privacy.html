@@ -37,6 +37,7 @@
     </a>
     <nav class="topnav" aria-label="Primary">
       <a class="navlink" href="/">Home</a>
+      <a class="navlink" href="/convert.html">Convert online</a>
       <a class="navlink is-active" href="/privacy.html">Privacy</a>
       <a class="navlink" href="/changelog.html">Changelog</a>
     </nav>
@@ -79,6 +80,15 @@
         of Office's rendering.</p>
       <p>Editing a PDF works the same way: the page is rendered and edited inside the local server's
         page, and the exported PDF is written straight to your disk.</p>
+
+      <h2>The online converter</h2>
+      <p><a href="/convert.html">Convert online</a> is a lighter version of BenchPDF that runs
+        entirely as code in your browser &mdash; there's no server behind it. When you drop a file
+        in, it's read and processed on your own device using your browser's own capabilities;
+        nothing is transmitted anywhere, at any point, for any of its conversions. It covers a
+        smaller set of conversions than the desktop app (no Word/Excel/PowerPoint, since those
+        need your own installed copy of Office) and reconstructs layout more simply, but the
+        privacy story is identical: your file never leaves your device.</p>
 
       <h2>The one network request</h2>
       <p>BenchPDF makes exactly one kind of network call: converting a web page to PDF has to fetch
