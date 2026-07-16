@@ -68,6 +68,13 @@ let currentKind = null;
 let imageFormat = "png";
 let imageDpi = 150;
 
+// Optional static format/DPI selects on a single-tool "pdf-to-images" page
+// (the multi-tool hub builds its own selects dynamically instead).
+const imgFormatSel = document.getElementById("img-format");
+const imgDpiSel = document.getElementById("img-dpi");
+if (imgFormatSel) imgFormatSel.addEventListener("change", () => (imageFormat = imgFormatSel.value));
+if (imgDpiSel) imgDpiSel.addEventListener("change", () => (imageDpi = parseInt(imgDpiSel.value, 10)));
+
 function setState(state) {
   main.setAttribute("data-state", state);
 }

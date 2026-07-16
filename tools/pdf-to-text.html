@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF to Text Converter (Local, Free) — BenchPDF</title>
-  <meta name="description" content="Extract plain text from a PDF, one form-feed character between pages, entirely on your PC. No upload, no account, no word limit.">
+  <title>PDF to Text Converter, Free and Private | BenchPDF</title>
+  <meta name="description" content="Extract the plain text from a PDF right in your browser. No upload, no account, no page limit. Works instantly on any device, and is completely free to use.">
   <link rel="canonical" href="https://benchpdf-site.pages.dev/tools/pdf-to-text">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PDF to Text Converter (Local, Free) — BenchPDF">
-  <meta property="og:description" content="Extract plain text from a PDF, one form-feed character between pages, entirely on your PC. No upload, no account, no word limit.">
+  <meta property="og:title" content="PDF to Text Converter, Free and Private | BenchPDF">
+  <meta property="og:description" content="Extract the plain text from a PDF right in your browser. No upload, no account, no page limit. Works instantly on any device, and is completely free to use.">
   <meta property="og:url" content="https://benchpdf-site.pages.dev/tools/pdf-to-text">
   <meta property="og:image" content="https://benchpdf-site.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -24,8 +24,84 @@
       if (t) document.documentElement.setAttribute("data-theme", t);
     })();
   </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://benchpdf-site.pages.dev/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "PDF to Text Converter",
+            "item": "https://benchpdf-site.pages.dev/tools/pdf-to-text"
+        }
+    ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Is it safe to convert my PDF here?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The text is read out of your PDF using your own browser, and the resulting file is generated on your device. Nothing is uploaded to a server at any point. You can check this yourself by watching your browser's network activity while the conversion runs."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Will it keep the layout or paragraph breaks?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Line and paragraph breaks are preserved as closely as the PDF's own internal structure allows, and each page is separated by a form-feed character. Multi-column layouts and tables are flattened into a single reading order, since plain text has no concept of columns or page position."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on scanned PDFs?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. A scanned page is a photograph of a document, with no underlying text for a browser to read, only pixels. This tool extracts existing text, it does not recognise text in an image (OCR). If a PDF is a scan, this tool will return an empty or near-empty result for that page."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is there a file size or page limit?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No artificial limit is applied by this tool. The real constraint is your device's memory and processing power, since the extraction happens locally rather than on a server. A short PDF converts in under a second. A very long document takes a little longer, with no upload cap involved."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What format is the output file?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A plain .txt file, encoded as UTF-8, with pages separated by a form-feed character rather than any visible marker. It opens in any text editor, word processor, or code editor. There is no formatting, no fonts, and no images, only the words that were extracted from the PDF."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on Mac, or is it Windows only?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page."
+            }
+        }
+    ]
+}
+  </script>
 </head>
-<body>
+<body data-tool="pdf-to-text">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <a class="brand" href="/" aria-label="BenchPDF home">
@@ -57,47 +133,115 @@
     </div>
   </header>
 
-  <main class="main" id="main">
+  <nav aria-label="Breadcrumb" class="conv-caveat" style="margin-top:16px; padding-top:0; border-top:0; font-size:12.5px">
+    <a href="/">Home</a> / <span>PDF to Text Converter</span>
+  </nav>
+
+  <main class="main" id="main" data-state="idle">
     <section class="tool-hero">
-      <h1>PDF to text converter</h1>
-      <p class="lede">Pull the plain text out of a PDF, page breaks intact, without uploading it anywhere.</p>
-      <div class="tool-cta">
-        <a class="btn btn-primary" href="/convert">Convert online &mdash; no install</a>
-        <a class="btn btn-ghost" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download desktop app</a>
+      <h1>PDF to Text Converter</h1>
+      <p class="lede">Runs entirely in your browser. No upload, no sign-up, no page limit, completely free.</p>
+    </section>
+
+    <section class="conv-panel">
+      <div class="dropzone" id="dropzone" role="button" tabindex="0">
+        <div class="dz-inner">
+          <svg class="dz-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+            <path d="M12 15.5V4m0 0 4 4m-4-4-4 4" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <p class="dz-title">Drop a PDF to extract its text</p>
+          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button> from your device.</p>
+        </div>
+        <input id="file" type="file" accept=".pdf" hidden>
       </div>
-      <p class="pitch-cta-note">Try it online — same plain-text output, right in your browser.</p>
+
+      <section id="conv-working" aria-live="polite">
+        <div class="work-head">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="work-phase" id="work-phase">Preparing&hellip;</div>
+        </div>
+      </section>
+
+      <section id="conv-done">
+        <div class="done-head">
+          <svg class="i-check" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+            <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Done</h2>
+        </div>
+        <div class="notice notice-warn" id="done-notice" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path d="M12 8.5v4.2m0 3.1h.01M12 3.4 2.7 19.6h18.6L12 3.4Z" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span id="done-notice-text"></span>
+        </div>
+        <div class="result" style="margin-top:16px">
+          <div class="result-main">
+            <div class="result-name" id="result-name"></div>
+            <div class="result-size" id="result-size"></div>
+          </div>
+          <div class="result-actions">
+            <a class="btn btn-primary btn-sm" id="result-download" download>Download</a>
+          </div>
+        </div>
+        <div style="margin-top:18px">
+          <button type="button" class="btn btn-ghost" id="done-more">Convert another PDF</button>
+        </div>
+      </section>
+
+      <section id="conv-error">
+        <div class="err-head">
+          <svg class="i-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Something did not work</h2>
+        </div>
+        <p class="err-body" id="err-body"></p>
+        <button type="button" class="btn btn-ghost" id="err-retry">Try another file</button>
+      </section>
     </section>
 
     <section class="prose">
-      <p>BenchPDF extracts the plain text content of a PDF into a single .txt file, with a form-feed character between each page so the original page breaks stay identifiable. It's a straightforward conversion, useful for feeding a document into another tool, searching its content, or archiving it in a format that will still open in fifty years.</p>
-      <p>There's no per-document word or page cap tied to a hosted service's free tier here — it works the same way for a one-page letter as it does for a five-hundred-page report, because the only thing doing the work is your own PC.</p>
-      <p>And, as with the rest of BenchPDF, the PDF you're extracting text from is never uploaded anywhere to make that happen.</p>
-    </section>
+      <p>Most online text-extraction tools upload your file to a server first. This tool reads the text layer of your PDF directly in your browser and writes it straight to a .txt file on your device. Nothing about the PDF or its contents is sent anywhere.</p>
 
-    <section class="toolgrid-section" aria-labelledby="toolgrid-h">
-      <h2 id="toolgrid-h">Every conversion</h2>
-      <div class="toolgrid-cols">
-        <div>
-          <h3 class="toolgrid-col-h">To PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/word-to-pdf"><span class="toolitem-label">Word &rarr; PDF</span><span class="toolitem-desc">Convert a Word document to PDF via Microsoft Word.</span></a>
-            <a class="toolitem" href="/tools/excel-to-pdf"><span class="toolitem-label">Excel &rarr; PDF</span><span class="toolitem-desc">Convert a spreadsheet to PDF via Microsoft Excel.</span></a>
-            <a class="toolitem" href="/tools/ppt-to-pdf"><span class="toolitem-label">PowerPoint &rarr; PDF</span><span class="toolitem-desc">Convert a presentation to PDF via Microsoft PowerPoint.</span></a>
-            <a class="toolitem" href="/tools/images-to-pdf"><span class="toolitem-label">Images &rarr; PDF</span><span class="toolitem-desc">Merge one or more photos into a single PDF, in order.</span></a>
-            <a class="toolitem" href="/tools/web-to-pdf"><span class="toolitem-label">Web page &rarr; PDF</span><span class="toolitem-desc">Print a web page to PDF using a local headless browser.</span></a>
-          </div>
-        </div>
-        <div>
-          <h3 class="toolgrid-col-h">From PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/edit-pdf"><span class="toolitem-label">PDF &rarr; Edit &amp; export</span><span class="toolitem-desc">Edit the text directly in the browser, then export a finished PDF.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-ppt"><span class="toolitem-label">PDF &rarr; PowerPoint</span><span class="toolitem-desc">Editable slides. Tables, text, and images stay editable.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-word"><span class="toolitem-label">PDF &rarr; Word</span><span class="toolitem-desc">Uses Word's own PDF import to rebuild an editable document.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-images"><span class="toolitem-label">PDF &rarr; Images</span><span class="toolitem-desc">One PNG or JPG per page, at your chosen resolution.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-text"><span class="toolitem-label">PDF &rarr; Text</span><span class="toolitem-desc">Plain text, one form-feed between pages.</span></a>
-          </div>
-        </div>
-      </div>
+      <h2 id="how-to-convert-pdf-to-text">How to convert PDF to text</h2>
+      <ul>
+        <li>Drop your PDF into the box, or click to choose one from your device.</li>
+        <li>Wait a few seconds while your browser reads the text on each page.</li>
+        <li>Click Download to save the .txt file.</li>
+        <li>Open it in any text editor or word processor.</li>
+      </ul>
+      <h2 id="is-it-safe-to-convert-my-pdf-here">Is it safe to convert my PDF here?</h2>
+      <p>Yes. The text is read out of your PDF using your own browser, and the resulting file is generated on your device. Nothing is uploaded to a server at any point. You can check this yourself by watching your browser's network activity while the conversion runs.</p>
+
+      <h2 id="will-it-keep-the-layout-or-paragraph-breaks">Will it keep the layout or paragraph breaks?</h2>
+      <p>Line and paragraph breaks are preserved as closely as the PDF's own internal structure allows, and each page is separated by a form-feed character. Multi-column layouts and tables are flattened into a single reading order, since plain text has no concept of columns or page position.</p>
+
+      <h2 id="does-it-work-on-scanned-pdfs">Does it work on scanned PDFs?</h2>
+      <p>No. A scanned page is a photograph of a document, with no underlying text for a browser to read, only pixels. This tool extracts existing text, it does not recognise text in an image (OCR). If a PDF is a scan, this tool will return an empty or near-empty result for that page.</p>
+
+      <h2 id="is-there-a-file-size-or-page-limit">Is there a file size or page limit?</h2>
+      <p>No artificial limit is applied by this tool. The real constraint is your device's memory and processing power, since the extraction happens locally rather than on a server. A short PDF converts in under a second. A very long document takes a little longer, with no upload cap involved.</p>
+
+      <h2 id="what-format-is-the-output-file">What format is the output file?</h2>
+      <p>A plain .txt file, encoded as UTF-8, with pages separated by a form-feed character rather than any visible marker. It opens in any text editor, word processor, or code editor. There is no formatting, no fonts, and no images, only the words that were extracted from the PDF.</p>
+
+      <h2 id="does-it-work-on-mac-or-is-it-windows-only">Does it work on Mac, or is it Windows only?</h2>
+      <p>This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page.</p>
+
+      <h2 id="related-tools">Related tools</h2>
+      <ul>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, for a full slide deck instead of plain text.</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, for a picture of each page instead of the words.</li>
+        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine photos into one PDF.</li>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, if you need an editable document (desktop app required).</li>
+      </ul>
     </section>
   </main>
 
@@ -111,6 +255,7 @@
       <a href="https://github.com/zafwaqas-afk/benchpdf">Source (GitHub)</a>
     </nav>
   </footer>
+  <script type="module" src="/assets/js/convert.js"></script>
   <script src="/assets/js/theme.js"></script>
 </body>
 </html>

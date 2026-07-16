@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Images to PDF Converter (Local, Free) — BenchPDF</title>
-  <meta name="description" content="Merge JPG, PNG, or HEIC photos into a single PDF, in order, entirely on your PC. No upload, no account, no compression surprises.">
+  <title>Images to PDF Converter, Free and Private | BenchPDF</title>
+  <meta name="description" content="Combine JPG or PNG photos into a single PDF, right in your browser, in the order you drop them. No upload, no account, no watermark, completely free to use.">
   <link rel="canonical" href="https://benchpdf-site.pages.dev/tools/images-to-pdf">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Images to PDF Converter (Local, Free) — BenchPDF">
-  <meta property="og:description" content="Merge JPG, PNG, or HEIC photos into a single PDF, in order, entirely on your PC. No upload, no account, no compression surprises.">
+  <meta property="og:title" content="Images to PDF Converter, Free and Private | BenchPDF">
+  <meta property="og:description" content="Combine JPG or PNG photos into a single PDF, right in your browser, in the order you drop them. No upload, no account, no watermark, completely free to use.">
   <meta property="og:url" content="https://benchpdf-site.pages.dev/tools/images-to-pdf">
   <meta property="og:image" content="https://benchpdf-site.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -24,8 +24,84 @@
       if (t) document.documentElement.setAttribute("data-theme", t);
     })();
   </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://benchpdf-site.pages.dev/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Images to PDF Converter",
+            "item": "https://benchpdf-site.pages.dev/tools/images-to-pdf"
+        }
+    ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Is it safe to combine my photos here?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. The PDF is assembled directly in your browser, using your own device, and your photos are never uploaded anywhere. You can check this yourself by watching your browser's network activity while the merge runs, there is no request carrying your images to a server."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What image formats can I use?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "JPG and PNG. Most photos from a phone or a screenshot are already in one of these formats. HEIC photos, the default format on newer iPhones, are not supported by this online tool; BenchPDF's desktop app handles HEIC as well as JPG and PNG."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I control the order of the pages?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Pages come out in the same order you dropped the files, or the order they appear in your file picker if you selected several at once. To change the order, drop or select the images one at a time in the sequence you want them to appear in the final PDF."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is there a limit on how many images I can add?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No artificial limit is applied by this tool. The practical limit is your device's memory, since everything is processed locally rather than uploaded to a server. A handful of photos merges in a second or two. Dozens of high-resolution images will take longer and use more memory."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Will the PDF keep the original image quality?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Each photo is embedded in the PDF at its original resolution and quality, with no recompression. The page size is set to match each image, so nothing is cropped, stretched, or resampled. The resulting PDF file size is roughly the same as your original photos combined."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on Mac, or is it Windows only?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page."
+            }
+        }
+    ]
+}
+  </script>
 </head>
-<body>
+<body data-tool="images-to-pdf">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
     <a class="brand" href="/" aria-label="BenchPDF home">
@@ -57,47 +133,115 @@
     </div>
   </header>
 
-  <main class="main" id="main">
+  <nav aria-label="Breadcrumb" class="conv-caveat" style="margin-top:16px; padding-top:0; border-top:0; font-size:12.5px">
+    <a href="/">Home</a> / <span>Images to PDF Converter</span>
+  </nav>
+
+  <main class="main" id="main" data-state="idle">
     <section class="tool-hero">
-      <h1>Images to PDF converter</h1>
-      <p class="lede">Combine several photos or scans into one PDF, in the order you drop them.</p>
-      <div class="tool-cta">
-        <a class="btn btn-primary" href="/convert">Convert online &mdash; no install</a>
-        <a class="btn btn-ghost" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download desktop app</a>
+      <h1>Images to PDF Converter</h1>
+      <p class="lede">Runs entirely in your browser. No upload, no sign-up, no watermark, completely free.</p>
+    </section>
+
+    <section class="conv-panel">
+      <div class="dropzone" id="dropzone" role="button" tabindex="0">
+        <div class="dz-inner">
+          <svg class="dz-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+            <path d="M12 15.5V4m0 0 4 4m-4-4-4 4" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <p class="dz-title">Drop photos to merge into a PDF</p>
+          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose files</button> from your device.</p>
+        </div>
+        <input id="file" type="file" accept=".jpg,.jpeg,.png" multiple hidden>
       </div>
-      <p class="pitch-cta-note">Try it online — JPG and PNG work right here; HEIC photos need the desktop app.</p>
+
+      <section id="conv-working" aria-live="polite">
+        <div class="work-head">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="work-phase" id="work-phase">Preparing&hellip;</div>
+        </div>
+      </section>
+
+      <section id="conv-done">
+        <div class="done-head">
+          <svg class="i-check" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+            <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Done</h2>
+        </div>
+        <div class="notice notice-warn" id="done-notice" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path d="M12 8.5v4.2m0 3.1h.01M12 3.4 2.7 19.6h18.6L12 3.4Z" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span id="done-notice-text"></span>
+        </div>
+        <div class="result" style="margin-top:16px">
+          <div class="result-main">
+            <div class="result-name" id="result-name"></div>
+            <div class="result-size" id="result-size"></div>
+          </div>
+          <div class="result-actions">
+            <a class="btn btn-primary btn-sm" id="result-download" download>Download</a>
+          </div>
+        </div>
+        <div style="margin-top:18px">
+          <button type="button" class="btn btn-ghost" id="done-more">Merge more images</button>
+        </div>
+      </section>
+
+      <section id="conv-error">
+        <div class="err-head">
+          <svg class="i-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Something did not work</h2>
+        </div>
+        <p class="err-body" id="err-body"></p>
+        <button type="button" class="btn btn-ghost" id="err-retry">Try another file</button>
+      </section>
     </section>
 
     <section class="prose">
-      <p>Drop several image files — including HEIC photos straight from an iPhone — onto BenchPDF and they merge, in the order you dropped them, into a single multi-page PDF sized to each image. There's no separate “merge” step and no re-upload between files.</p>
-      <p>The common case is scanning something with a phone camera: a receipt, a form, a handwritten note, an ID document, several pages of a contract laid out on a desk — and needing one PDF out the other end to attach to an email or print. That last example is worth naming directly: photographs of ID documents, boarding passes, and insurance cards are some of the most sensitive images people convert, and among the least scrutinised before being handed to a random “image to PDF” website.</p>
-      <p>BenchPDF does the merge locally, so those photos never leave the device they were taken on, and there's no size limit forcing a lower-quality re-compression before the PDF comes back.</p>
-    </section>
+      <p>Most online "images to PDF" tools upload your photos to a server, merge them there, and send back a PDF. This tool builds the PDF directly in your browser, using your own device. Your photos never leave it, at any point in the process.</p>
 
-    <section class="toolgrid-section" aria-labelledby="toolgrid-h">
-      <h2 id="toolgrid-h">Every conversion</h2>
-      <div class="toolgrid-cols">
-        <div>
-          <h3 class="toolgrid-col-h">To PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/word-to-pdf"><span class="toolitem-label">Word &rarr; PDF</span><span class="toolitem-desc">Convert a Word document to PDF via Microsoft Word.</span></a>
-            <a class="toolitem" href="/tools/excel-to-pdf"><span class="toolitem-label">Excel &rarr; PDF</span><span class="toolitem-desc">Convert a spreadsheet to PDF via Microsoft Excel.</span></a>
-            <a class="toolitem" href="/tools/ppt-to-pdf"><span class="toolitem-label">PowerPoint &rarr; PDF</span><span class="toolitem-desc">Convert a presentation to PDF via Microsoft PowerPoint.</span></a>
-            <a class="toolitem" href="/tools/images-to-pdf"><span class="toolitem-label">Images &rarr; PDF</span><span class="toolitem-desc">Merge one or more photos into a single PDF, in order.</span></a>
-            <a class="toolitem" href="/tools/web-to-pdf"><span class="toolitem-label">Web page &rarr; PDF</span><span class="toolitem-desc">Print a web page to PDF using a local headless browser.</span></a>
-          </div>
-        </div>
-        <div>
-          <h3 class="toolgrid-col-h">From PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/edit-pdf"><span class="toolitem-label">PDF &rarr; Edit &amp; export</span><span class="toolitem-desc">Edit the text directly in the browser, then export a finished PDF.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-ppt"><span class="toolitem-label">PDF &rarr; PowerPoint</span><span class="toolitem-desc">Editable slides. Tables, text, and images stay editable.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-word"><span class="toolitem-label">PDF &rarr; Word</span><span class="toolitem-desc">Uses Word's own PDF import to rebuild an editable document.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-images"><span class="toolitem-label">PDF &rarr; Images</span><span class="toolitem-desc">One PNG or JPG per page, at your chosen resolution.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-text"><span class="toolitem-label">PDF &rarr; Text</span><span class="toolitem-desc">Plain text, one form-feed between pages.</span></a>
-          </div>
-        </div>
-      </div>
+      <h2 id="how-to-convert-images-to-pdf">How to convert images to PDF</h2>
+      <ul>
+        <li>Drop one or more JPG or PNG images into the box, or choose them from your device.</li>
+        <li>They are combined in the order you dropped or selected them.</li>
+        <li>Wait a moment while the PDF is built.</li>
+        <li>Click Download to save the merged PDF.</li>
+      </ul>
+      <h2 id="is-it-safe-to-combine-my-photos-here">Is it safe to combine my photos here?</h2>
+      <p>Yes. The PDF is assembled directly in your browser, using your own device, and your photos are never uploaded anywhere. You can check this yourself by watching your browser's network activity while the merge runs, there is no request carrying your images to a server.</p>
+
+      <h2 id="what-image-formats-can-i-use">What image formats can I use?</h2>
+      <p>JPG and PNG. Most photos from a phone or a screenshot are already in one of these formats. HEIC photos, the default format on newer iPhones, are not supported by this online tool; BenchPDF's desktop app handles HEIC as well as JPG and PNG.</p>
+
+      <h2 id="can-i-control-the-order-of-the-pages">Can I control the order of the pages?</h2>
+      <p>Yes. Pages come out in the same order you dropped the files, or the order they appear in your file picker if you selected several at once. To change the order, drop or select the images one at a time in the sequence you want them to appear in the final PDF.</p>
+
+      <h2 id="is-there-a-limit-on-how-many-images-i-can-add">Is there a limit on how many images I can add?</h2>
+      <p>No artificial limit is applied by this tool. The practical limit is your device's memory, since everything is processed locally rather than uploaded to a server. A handful of photos merges in a second or two. Dozens of high-resolution images will take longer and use more memory.</p>
+
+      <h2 id="will-the-pdf-keep-the-original-image-quality">Will the PDF keep the original image quality?</h2>
+      <p>Yes. Each photo is embedded in the PDF at its original resolution and quality, with no recompression. The page size is set to match each image, so nothing is cropped, stretched, or resampled. The resulting PDF file size is roughly the same as your original photos combined.</p>
+
+      <h2 id="does-it-work-on-mac-or-is-it-windows-only">Does it work on Mac, or is it Windows only?</h2>
+      <p>This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page.</p>
+
+      <h2 id="related-tools">Related tools</h2>
+      <ul>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, to go the other way, a PDF back into images.</li>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, to turn an existing PDF into editable slides.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, to pull the words out of a text-based PDF.</li>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, if you need an editable document (desktop app required).</li>
+      </ul>
     </section>
   </main>
 
@@ -111,6 +255,7 @@
       <a href="https://github.com/zafwaqas-afk/benchpdf">Source (GitHub)</a>
     </nav>
   </footer>
+  <script type="module" src="/assets/js/convert.js"></script>
   <script src="/assets/js/theme.js"></script>
 </body>
 </html>
