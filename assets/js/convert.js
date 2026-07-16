@@ -11,6 +11,10 @@ function loadScript(src) {
   return new Promise((resolve, reject) => {
     const s = document.createElement("script");
     s.src = src;
+    // Dynamically created scripts default to async=true and can execute out
+    // of order. PptxGenJS expects JSZip to already be defined, so this must
+    // be false to guarantee jszip runs before pdf-lib/pptxgen.
+    s.async = false;
     s.onload = resolve;
     s.onerror = () => reject(new Error(`Failed to load ${src}`));
     document.head.appendChild(s);
@@ -32,6 +36,12 @@ function ensureVendor() {
   }
   return vendorReady;
 }
+
+// A page can embed a single conversion (e.g. tools/pdf-to-ppt.html) by
+// setting <body data-tool="pdf-to-pptx">. In that mode there's no
+// action-picker step: a valid file is converted immediately, and the wrong
+// file type gets a tool-specific message instead of the generic one.
+const TOOL_MODE = document.body.dataset.tool || "all";
 
 const main = document.getElementById("main");
 const dropzone = document.getElementById("dropzone");
@@ -324,8 +334,26 @@ async function runMerge(files) {
   }
 }
 
+const SINGLE_TOOLS = {
+  "pdf-to-pptx": { needKind: "pdf", run: (files) => runPptx(files[0]), wrongMsg: "Drop a PDF file to convert it to PowerPoint." },
+  "pdf-to-images": { needKind: "pdf", run: (files) => runImages(files[0]), wrongMsg: "Drop a PDF file to convert it to images." },
+  "pdf-to-text": { needKind: "pdf", run: (files) => runText(files[0]), wrongMsg: "Drop a PDF file to extract its text." },
+  "images-to-pdf": { needKind: "images", run: (files) => runMerge(files), wrongMsg: "Drop one or more JPG or PNG images to merge into a PDF." },
+};
+
 function handleFiles(fileList) {
   const { kind, files } = detectKind(fileList);
+
+  if (TOOL_MODE !== "all") {
+    const cfg = SINGLE_TOOLS[TOOL_MODE];
+    if (!cfg || kind !== cfg.needKind) {
+      showError(cfg ? cfg.wrongMsg : "Unsupported file.");
+      return;
+    }
+    cfg.run(files);
+    return;
+  }
+
   if (kind === "pdf" || kind === "images") {
     currentKind = kind;
     currentFiles = files;
@@ -365,12 +393,14 @@ dropzone.addEventListener("drop", (e) => {
   if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
 });
 
-actCancel.addEventListener("click", () => {
-  currentFiles = [];
-  currentKind = null;
-  fileInput.value = "";
-  setState("idle");
-});
+if (actCancel) {
+  actCancel.addEventListener("click", () => {
+    currentFiles = [];
+    currentKind = null;
+    fileInput.value = "";
+    setState("idle");
+  });
+}
 doneMore.addEventListener("click", () => {
   fileInput.value = "";
   setState("idle");
