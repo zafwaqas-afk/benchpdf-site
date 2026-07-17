@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Edit PDF Text (Local, Free) — BenchPDF</title>
-  <meta name="description" content="Click any text in a PDF to edit it in place, then export a real, searchable PDF — processed entirely on your PC, not uploaded to a server.">
+  <title>Edit PDF Text, Free and Private | BenchPDF</title>
+  <meta name="description" content="Click any text in a PDF to edit it in place, then export a real, searchable PDF. Free desktop app, no account, and nothing is ever uploaded to a server.">
   <link rel="canonical" href="https://benchpdf-site.pages.dev/tools/edit-pdf">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Edit PDF Text (Local, Free) — BenchPDF">
-  <meta property="og:description" content="Click any text in a PDF to edit it in place, then export a real, searchable PDF — processed entirely on your PC, not uploaded to a server.">
+  <meta property="og:title" content="Edit PDF Text, Free and Private | BenchPDF">
+  <meta property="og:description" content="Click any text in a PDF to edit it in place, then export a real, searchable PDF. Free desktop app, no account, and nothing is ever uploaded to a server.">
   <meta property="og:url" content="https://benchpdf-site.pages.dev/tools/edit-pdf">
   <meta property="og:image" content="https://benchpdf-site.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -23,6 +23,82 @@
       try { t = localStorage.getItem("benchpdf-theme"); } catch (e) {}
       if (t) document.documentElement.setAttribute("data-theme", t);
     })();
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://benchpdf-site.pages.dev/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Edit PDF Text",
+            "item": "https://benchpdf-site.pages.dev/tools/edit-pdf"
+        }
+    ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Why isn't this available as a web tool?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Editing text in place while keeping every untouched page byte-identical to the original, and producing real, searchable output rather than an image, is a more involved piece of engineering than the simpler conversions BenchPDF offers online. It currently exists only in the desktop app; a browser version may follow later."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is it safe? Does my PDF get uploaded anywhere?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, it is safe, and no, nothing is uploaded. The desktop app runs a small web page on your own PC to give you the editing view, but the PDF and every edit stay on your device throughout. There is no server involved at any point, and no account is required."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Will the edited text be real, searchable text?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Edited text stays genuine, selectable, searchable text in the closest matching installed font, rather than being flattened into an image the way some PDF editors quietly do to fake a harder edit. You can select, copy, and search it afterwards exactly as you could the original."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Will editing change pages I didn't touch?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Exporting rebuilds only the pages you actually edited. Every other page in the PDF is written back out byte-identical to the original file, so nothing about the rest of the document, including its existing text, images, or metadata, changes as a side effect of editing one page."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I add new text, or only edit existing text?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Both. Click any existing text block to change it in place, or use the add text box option to place new text anywhere on the page. New and edited text both export as real text in the finished PDF, not as an image, so it stays selectable and searchable afterwards."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on Mac?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, the BenchPDF desktop app is Windows only at present. There is no Mac version of the editor currently available, so on a Mac you would need a different PDF editing tool for now. The online converter on this site works on Mac, but does not yet include text editing."
+            }
+        }
+    ]
+}
   </script>
 </head>
 <body>
@@ -57,46 +133,55 @@
     </div>
   </header>
 
+  <nav aria-label="Breadcrumb" class="conv-caveat" style="margin-top:16px; padding-top:0; border-top:0; font-size:12.5px">
+    <a href="/">Home</a> / <span>Edit PDF Text</span>
+  </nav>
+
   <main class="main" id="main">
     <section class="tool-hero">
-      <h1>Edit PDF text</h1>
-      <p class="lede">Click into any line of a PDF and change it, right in the browser view — no upload involved.</p>
+      <h1>Edit PDF Text</h1>
+      <p class="lede">Click any text in a PDF to change it directly, then export a finished PDF. Free Windows desktop app, no account needed.</p>
       <div class="tool-cta">
         <a class="btn btn-primary" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF for Windows</a>
-        <span class="pitch-cta-note">Windows 10/11 &middot; v1.0.0 &middot; free, no account</span>
+        <span class="pitch-cta-note">Free, no account. Windows desktop app.</span>
       </div>
     </section>
 
     <section class="prose">
-      <p>BenchPDF's editor shows each page as your original document, with its detected text laid over it as editable blocks. Click any block to edit it in place and it reflows within its own box; drag the grip handle to move a block, or add a new text box where you need one. Tables are editable cell by cell, over their original fills.</p>
-      <p>Exporting rebuilds only the pages you actually changed and leaves every other page byte-identical to the original. Edited text stays real, searchable, selectable text in the closest matching installed font — it's never flattened into an image the way some “PDF editors” quietly do to fake a harder edit.</p>
-      <p>The whole thing runs against a small web server on your own PC (address 127.0.0.1, meaning “this computer”), so the document you're editing — often a contract, a form, or something someone sent you to fix a mistake in — never leaves it either.</p>
-    </section>
+      <p>BenchPDF's editor shows each page as your original document, with its detected text laid over it as editable blocks. Click any block to edit it in place, drag the grip handle to move it, or add a new text box where you need one. Exporting rebuilds only the pages you changed and leaves every other page byte-identical to the original.</p>
 
-    <section class="toolgrid-section" aria-labelledby="toolgrid-h">
-      <h2 id="toolgrid-h">Every conversion</h2>
-      <div class="toolgrid-cols">
-        <div>
-          <h3 class="toolgrid-col-h">To PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/word-to-pdf"><span class="toolitem-label">Word &rarr; PDF</span><span class="toolitem-desc">Convert a Word document to PDF via Microsoft Word.</span></a>
-            <a class="toolitem" href="/tools/excel-to-pdf"><span class="toolitem-label">Excel &rarr; PDF</span><span class="toolitem-desc">Convert a spreadsheet to PDF via Microsoft Excel.</span></a>
-            <a class="toolitem" href="/tools/ppt-to-pdf"><span class="toolitem-label">PowerPoint &rarr; PDF</span><span class="toolitem-desc">Convert a presentation to PDF via Microsoft PowerPoint.</span></a>
-            <a class="toolitem" href="/tools/images-to-pdf"><span class="toolitem-label">Images &rarr; PDF</span><span class="toolitem-desc">Merge one or more photos into a single PDF, in order.</span></a>
-            <a class="toolitem" href="/tools/web-to-pdf"><span class="toolitem-label">Web page &rarr; PDF</span><span class="toolitem-desc">Print a web page to PDF using a local headless browser.</span></a>
-          </div>
-        </div>
-        <div>
-          <h3 class="toolgrid-col-h">From PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/edit-pdf"><span class="toolitem-label">PDF &rarr; Edit &amp; export</span><span class="toolitem-desc">Edit the text directly in the browser, then export a finished PDF.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-ppt"><span class="toolitem-label">PDF &rarr; PowerPoint</span><span class="toolitem-desc">Editable slides. Tables, text, and images stay editable.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-word"><span class="toolitem-label">PDF &rarr; Word</span><span class="toolitem-desc">Uses Word's own PDF import to rebuild an editable document.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-images"><span class="toolitem-label">PDF &rarr; Images</span><span class="toolitem-desc">One PNG or JPG per page, at your chosen resolution.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-text"><span class="toolitem-label">PDF &rarr; Text</span><span class="toolitem-desc">Plain text, one form-feed between pages.</span></a>
-          </div>
-        </div>
-      </div>
+      <h2 id="how-to-edit-pdf-text">How to edit PDF text</h2>
+      <ul>
+        <li>Download and install BenchPDF (free, no account).</li>
+        <li>Open the app, drop your PDF, and choose Edit and export.</li>
+        <li>Click any text to edit it, drag blocks to move them, or add a new text box.</li>
+        <li>Choose Export PDF to save a finished, searchable PDF.</li>
+      </ul>
+      <h2 id="why-isnt-this-available-as-a-web-tool">Why isn&#x27;t this available as a web tool?</h2>
+      <p>Editing text in place while keeping every untouched page byte-identical to the original, and producing real, searchable output rather than an image, is a more involved piece of engineering than the simpler conversions BenchPDF offers online. It currently exists only in the desktop app; a browser version may follow later.</p>
+
+      <h2 id="is-it-safe-does-my-pdf-get-uploaded-anywhere">Is it safe? Does my PDF get uploaded anywhere?</h2>
+      <p>Yes, it is safe, and no, nothing is uploaded. The desktop app runs a small web page on your own PC to give you the editing view, but the PDF and every edit stay on your device throughout. There is no server involved at any point, and no account is required.</p>
+
+      <h2 id="will-the-edited-text-be-real-searchable-text">Will the edited text be real, searchable text?</h2>
+      <p>Yes. Edited text stays genuine, selectable, searchable text in the closest matching installed font, rather than being flattened into an image the way some PDF editors quietly do to fake a harder edit. You can select, copy, and search it afterwards exactly as you could the original.</p>
+
+      <h2 id="will-editing-change-pages-i-didnt-touch">Will editing change pages I didn&#x27;t touch?</h2>
+      <p>No. Exporting rebuilds only the pages you actually edited. Every other page in the PDF is written back out byte-identical to the original file, so nothing about the rest of the document, including its existing text, images, or metadata, changes as a side effect of editing one page.</p>
+
+      <h2 id="can-i-add-new-text-or-only-edit-existing-text">Can I add new text, or only edit existing text?</h2>
+      <p>Both. Click any existing text block to change it in place, or use the add text box option to place new text anywhere on the page. New and edited text both export as real text in the finished PDF, not as an image, so it stays selectable and searchable afterwards.</p>
+
+      <h2 id="does-it-work-on-mac">Does it work on Mac?</h2>
+      <p>No, the BenchPDF desktop app is Windows only at present. There is no Mac version of the editor currently available, so on a Mac you would need a different PDF editing tool for now. The online converter on this site works on Mac, but does not yet include text editing.</p>
+
+      <h2 id="related-tools">Related tools</h2>
+      <ul>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, for a fully editable document instead of in-place edits.</li>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, an online tool that works in any browser, no install.</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, an online tool that works in any browser, no install.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, to pull out just the words, no formatting.</li>
+      </ul>
     </section>
   </main>
 

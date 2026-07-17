@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Excel to PDF Converter (Local, Free) — BenchPDF</title>
-  <meta name="description" content="Convert .xlsx spreadsheets to PDF using your own installed Microsoft Excel — print areas, formulas, and formatting exactly as Excel renders them.">
+  <title>Excel to PDF Converter, Free and Private | BenchPDF</title>
+  <meta name="description" content="Convert Excel spreadsheets to PDF using your own installed Microsoft Excel. Free desktop app, no account, no watermark, nothing is ever uploaded to a server.">
   <link rel="canonical" href="https://benchpdf-site.pages.dev/tools/excel-to-pdf">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Excel to PDF Converter (Local, Free) — BenchPDF">
-  <meta property="og:description" content="Convert .xlsx spreadsheets to PDF using your own installed Microsoft Excel — print areas, formulas, and formatting exactly as Excel renders them.">
+  <meta property="og:title" content="Excel to PDF Converter, Free and Private | BenchPDF">
+  <meta property="og:description" content="Convert Excel spreadsheets to PDF using your own installed Microsoft Excel. Free desktop app, no account, no watermark, nothing is ever uploaded to a server.">
   <meta property="og:url" content="https://benchpdf-site.pages.dev/tools/excel-to-pdf">
   <meta property="og:image" content="https://benchpdf-site.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -23,6 +23,82 @@
       try { t = localStorage.getItem("benchpdf-theme"); } catch (e) {}
       if (t) document.documentElement.setAttribute("data-theme", t);
     })();
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://benchpdf-site.pages.dev/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Excel to PDF Converter",
+            "item": "https://benchpdf-site.pages.dev/tools/excel-to-pdf"
+        }
+    ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "Why isn't this available online, only as a desktop download?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Converting Excel to PDF accurately means using Excel's own print engine, since print areas, page breaks, and calculated formula values are specific to how Excel lays a sheet out. A browser cannot replicate that reliably. BenchPDF's desktop app drives your own installed copy of Excel directly, so the PDF matches what Excel's own export produces."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is it safe? Does my spreadsheet get uploaded anywhere?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, it is safe, and no, nothing is uploaded. The desktop app runs entirely on your own PC: it opens your spreadsheet in your installed copy of Excel, exports it to PDF, and saves the result to your disk. There is no server involved in the conversion at any point, and no account is required."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Do I need Microsoft Excel installed?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. This conversion drives your own installed copy of Microsoft Excel to do the actual rendering, so Excel needs to already be on your PC. If it isn't detected, this specific conversion is greyed out in the app with an explanation, rather than failing partway through or approximating the layout badly."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Will print areas and formulas come out correctly?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Since the PDF is produced by Excel itself, defined print areas, page breaks, and the calculated values of any formulas all come out exactly as they would if you chose File then Export in Excel yourself. Conditional formatting and cell styling are preserved in the same way."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is there a file size limit?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No artificial limit is set by BenchPDF. The practical limit is whatever your own copy of Excel can open, since the conversion is Excel doing the work. A small spreadsheet converts in a couple of seconds. A large workbook with many sheets takes Excel longer, exactly as a manual export would."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on Mac?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The BenchPDF desktop app is Windows only, since it automates the Windows version of Microsoft Excel directly. On a Mac, Excel has its own built-in Save as PDF export you can use instead, which produces a similarly faithful result since it is also Excel doing the rendering."
+            }
+        }
+    ]
+}
   </script>
 </head>
 <body>
@@ -57,46 +133,55 @@
     </div>
   </header>
 
+  <nav aria-label="Breadcrumb" class="conv-caveat" style="margin-top:16px; padding-top:0; border-top:0; font-size:12.5px">
+    <a href="/">Home</a> / <span>Excel to PDF Converter</span>
+  </nav>
+
   <main class="main" id="main">
     <section class="tool-hero">
-      <h1>Excel to PDF converter</h1>
-      <p class="lede">Print a spreadsheet to PDF using your own copy of Excel's print engine.</p>
+      <h1>Excel to PDF Converter</h1>
+      <p class="lede">Uses your own installed Microsoft Excel to convert, so print areas and calculated values match exactly. Free Windows desktop app.</p>
       <div class="tool-cta">
         <a class="btn btn-primary" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF for Windows</a>
-        <span class="pitch-cta-note">Windows 10/11 &middot; v1.0.0 &middot; free, no account</span>
+        <span class="pitch-cta-note">Free, no account. Requires Microsoft Excel installed.</span>
       </div>
     </section>
 
     <section class="prose">
-      <p>BenchPDF opens your spreadsheet in your own installed Microsoft Excel and uses Excel's own print/export path to produce the PDF. Page breaks, defined print areas, calculated formula values, and conditional formatting all come out exactly as they would if you'd chosen File → Export in Excel yourself.</p>
-      <p>Spreadsheets tend to hold some of the most sensitive material anyone converts — budgets, payroll, client lists, pricing — which is exactly why it matters that this one never travels to a server to be turned into a PDF. BenchPDF's conversion happens entirely on your own PC.</p>
-      <p>There's no account to create and no file waiting in an upload queue behind someone else's spreadsheet. If Excel isn't installed on this PC, the option is clearly disabled rather than attempting a rough approximation of Excel's rendering.</p>
-    </section>
+      <p>Converting Excel to PDF accurately means using Excel's own print engine, since print areas, page breaks, and calculated formula values are specific to how Excel itself lays a sheet out. BenchPDF's desktop app drives your own installed copy of Excel directly, so the PDF matches exactly what Excel's own export would produce.</p>
 
-    <section class="toolgrid-section" aria-labelledby="toolgrid-h">
-      <h2 id="toolgrid-h">Every conversion</h2>
-      <div class="toolgrid-cols">
-        <div>
-          <h3 class="toolgrid-col-h">To PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/word-to-pdf"><span class="toolitem-label">Word &rarr; PDF</span><span class="toolitem-desc">Convert a Word document to PDF via Microsoft Word.</span></a>
-            <a class="toolitem" href="/tools/excel-to-pdf"><span class="toolitem-label">Excel &rarr; PDF</span><span class="toolitem-desc">Convert a spreadsheet to PDF via Microsoft Excel.</span></a>
-            <a class="toolitem" href="/tools/ppt-to-pdf"><span class="toolitem-label">PowerPoint &rarr; PDF</span><span class="toolitem-desc">Convert a presentation to PDF via Microsoft PowerPoint.</span></a>
-            <a class="toolitem" href="/tools/images-to-pdf"><span class="toolitem-label">Images &rarr; PDF</span><span class="toolitem-desc">Merge one or more photos into a single PDF, in order.</span></a>
-            <a class="toolitem" href="/tools/web-to-pdf"><span class="toolitem-label">Web page &rarr; PDF</span><span class="toolitem-desc">Print a web page to PDF using a local headless browser.</span></a>
-          </div>
-        </div>
-        <div>
-          <h3 class="toolgrid-col-h">From PDF</h3>
-          <div class="toollist">
-            <a class="toolitem" href="/tools/edit-pdf"><span class="toolitem-label">PDF &rarr; Edit &amp; export</span><span class="toolitem-desc">Edit the text directly in the browser, then export a finished PDF.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-ppt"><span class="toolitem-label">PDF &rarr; PowerPoint</span><span class="toolitem-desc">Editable slides. Tables, text, and images stay editable.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-word"><span class="toolitem-label">PDF &rarr; Word</span><span class="toolitem-desc">Uses Word's own PDF import to rebuild an editable document.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-images"><span class="toolitem-label">PDF &rarr; Images</span><span class="toolitem-desc">One PNG or JPG per page, at your chosen resolution.</span></a>
-            <a class="toolitem" href="/tools/pdf-to-text"><span class="toolitem-label">PDF &rarr; Text</span><span class="toolitem-desc">Plain text, one form-feed between pages.</span></a>
-          </div>
-        </div>
-      </div>
+      <h2 id="how-to-convert-excel-to-pdf">How to convert Excel to PDF</h2>
+      <ul>
+        <li>Download and install BenchPDF (free, no account).</li>
+        <li>Open the app and drop your .xlsx file, or choose Excel to PDF from the grid.</li>
+        <li>BenchPDF opens the spreadsheet in your installed Excel and exports it to PDF.</li>
+        <li>Download the result or open the output folder directly from the app.</li>
+      </ul>
+      <h2 id="why-isnt-this-available-online-only-as-a-desktop-download">Why isn&#x27;t this available online, only as a desktop download?</h2>
+      <p>Converting Excel to PDF accurately means using Excel's own print engine, since print areas, page breaks, and calculated formula values are specific to how Excel lays a sheet out. A browser cannot replicate that reliably. BenchPDF's desktop app drives your own installed copy of Excel directly, so the PDF matches what Excel's own export produces.</p>
+
+      <h2 id="is-it-safe-does-my-spreadsheet-get-uploaded-anywhere">Is it safe? Does my spreadsheet get uploaded anywhere?</h2>
+      <p>Yes, it is safe, and no, nothing is uploaded. The desktop app runs entirely on your own PC: it opens your spreadsheet in your installed copy of Excel, exports it to PDF, and saves the result to your disk. There is no server involved in the conversion at any point, and no account is required.</p>
+
+      <h2 id="do-i-need-microsoft-excel-installed">Do I need Microsoft Excel installed?</h2>
+      <p>Yes. This conversion drives your own installed copy of Microsoft Excel to do the actual rendering, so Excel needs to already be on your PC. If it isn't detected, this specific conversion is greyed out in the app with an explanation, rather than failing partway through or approximating the layout badly.</p>
+
+      <h2 id="will-print-areas-and-formulas-come-out-correctly">Will print areas and formulas come out correctly?</h2>
+      <p>Yes. Since the PDF is produced by Excel itself, defined print areas, page breaks, and the calculated values of any formulas all come out exactly as they would if you chose File then Export in Excel yourself. Conditional formatting and cell styling are preserved in the same way.</p>
+
+      <h2 id="is-there-a-file-size-limit">Is there a file size limit?</h2>
+      <p>No artificial limit is set by BenchPDF. The practical limit is whatever your own copy of Excel can open, since the conversion is Excel doing the work. A small spreadsheet converts in a couple of seconds. A large workbook with many sheets takes Excel longer, exactly as a manual export would.</p>
+
+      <h2 id="does-it-work-on-mac">Does it work on Mac?</h2>
+      <p>The BenchPDF desktop app is Windows only, since it automates the Windows version of Microsoft Excel directly. On a Mac, Excel has its own built-in Save as PDF export you can use instead, which produces a similarly faithful result since it is also Excel doing the rendering.</p>
+
+      <h2 id="related-tools">Related tools</h2>
+      <ul>
+        <li><a href="/tools/word-to-pdf">Word to PDF</a>, for documents rather than spreadsheets.</li>
+        <li><a href="/tools/ppt-to-pdf">PowerPoint to PDF</a>, for presentations rather than spreadsheets.</li>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, to turn a PDF back into an editable document.</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, an online tool that works in any browser, no install.</li>
+      </ul>
     </section>
   </main>
 
