@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en" data-theme="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Convert a Scanned PDF That's Just Images | BenchPDF</title>
+  <meta name="description" content="A scanned PDF is a photo of a page, with no text underneath to extract. Here's how to tell, what your options are, and why OCR is the fix that actually works.">
+  <link rel="canonical" href="https://benchpdf.pages.dev/blog/scanned-pdf-no-text">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Convert a Scanned PDF That's Just Images | BenchPDF">
+  <meta property="og:description" content="A scanned PDF is a photo of a page, with no text underneath to extract. Here's how to tell, what your options are, and why OCR is the fix that actually works.">
+  <meta property="og:url" content="https://benchpdf.pages.dev/blog/scanned-pdf-no-text">
+  <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSerif-SemiBold.woff2">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("benchpdf-theme"); } catch (e) {}
+      if (t) document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://benchpdf.pages.dev/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog",
+            "item": "https://benchpdf.pages.dev/blog"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "How to Convert a Scanned PDF That's Just Images",
+            "item": "https://benchpdf.pages.dev/blog/scanned-pdf-no-text"
+        }
+    ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What does it mean for a PDF to be \u201cjust images\u201d?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It means the PDF is a container for a picture of a page, not for the words on it. Somewhere along the way, whether from a flatbed scanner, a phone camera, or a fax machine, the document was captured as a photograph and placed inside a PDF file. There is no hidden layer of text underneath for a computer to read, only pixels."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How can I tell if my PDF is a scan?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Open it in any PDF viewer and try to click and drag across a line of text, the way you would select a sentence to copy it. If a box or highlight appears around the words, there is a real text layer. If nothing happens, or your cursor just draws a rectangle over the image, you are looking at a scan."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Why can't PDF to Word or PDF to Text tools read a scanned PDF?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Every text-extraction tool, BenchPDF included, works by reading the text layer that is already embedded in the PDF. It does not look at the page and recognise letters the way a person does, it reads structured data that says this word, in this font, at this position. A scanned PDF has none of that data to read."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What does BenchPDF do with a scanned PDF?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is honest about the limitation rather than guessing. PDF to Text returns an empty or near-empty result for a scanned page, since there is genuinely no text to extract. PDF to PowerPoint detects that a page has little or no extractable text and falls back to placing it as a full-slide image instead of an empty slide, so nothing is visually lost."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I still get something useful out of a scanned PDF?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, depending on what you need. If you just need to view, print, share, or embed the pages somewhere, converting to images or leaving it as a PDF works fine, since nothing about the visual content is lost. If you need the actual words as editable or searchable text, that requires a different kind of tool entirely, described below."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What about a PDF that's a mix of scanned and text pages?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This is common: a cover sheet or a signed page scanned in and stapled, in file terms, to the front of an otherwise normal, text-based document. BenchPDF handles each page independently, so this works out better than you might expect. PDF to Text will return real text for the typed pages and nothing for the scanned one. PDF to PowerPoint will build editable text boxes for the typed pages and place the scanned page as a single image, page by page, rather than treating the whole file as one failure."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does BenchPDF do OCR?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, not currently. OCR, optical character recognition, is the specific technology that looks at an image of text and works out what the letters actually are, effectively teaching a computer to read a photograph. BenchPDF's conversions rely on text that is already present in the PDF; recognising text inside an image is a separate, more involved problem that is not part of the app today."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What are my options if I need the text recognised?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You will need dedicated OCR software, which exists as a distinct category of tool built specifically for this. Many document scanning apps, and some PDF viewers, include an OCR step at the point of scanning, which is often the most reliable time to do it, since the software works from the same clean image the scanner produced rather than a recompressed copy."
+            }
+        }
+    ]
+}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="BenchPDF home">
+      <svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true" width="20" height="20">
+        <rect x="2.5" y="1.5" width="15" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="10" y1="1.5" x2="10" y2="18.5" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+      BenchPDF
+    </a>
+    <nav class="topnav" aria-label="Primary">
+      <a class="navlink" href="/">Home</a>
+      <a class="navlink" href="/convert">Convert online</a>
+      <a class="navlink is-active" href="/blog">Blog</a>
+      <a class="navlink" href="/privacy">Privacy</a>
+      <a class="navlink" href="/changelog">Changelog</a>
+    </nav>
+    <div class="topbar-end">
+      <a class="btn btn-primary btn-sm" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download</a>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch colour theme" title="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none">
+          <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M12 2.5v2.2M12 19.3v2.2M4.2 12H2M22 12h-2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"
+                stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none">
+          <path d="M20 14.2A8 8 0 1 1 9.8 4 6.4 6.4 0 0 0 20 14.2Z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <nav aria-label="Breadcrumb" class="conv-caveat" style="margin-top:16px; padding-top:0; border-top:0; font-size:12.5px">
+    <a href="/">Home</a> / <a href="/blog">Blog</a> / <span>How to Convert a Scanned PDF That's Just Images</span>
+  </nav>
+
+  <main class="main narrow" id="main">
+    <article>
+      <header class="tool-hero">
+        <h1>How to Convert a Scanned PDF That's Just Images</h1>
+        <p class="lede">If you can't select or search the text in a PDF, you're not looking at a document, you're looking at a picture of one. Here's what that means and what you can actually do about it.</p>
+      </header>
+
+      <section class="prose">
+        <h2 id="what-does-it-mean-for-a-pdf-to-be-just-images">What does it mean for a PDF to be “just images”?</h2>
+        <p>It means the PDF is a container for a picture of a page, not for the words on it. Somewhere along the way, whether from a flatbed scanner, a phone camera, or a fax machine, the document was captured as a photograph and placed inside a PDF file. There is no hidden layer of text underneath for a computer to read, only pixels.</p>
+        <p>This is different from a PDF exported from Word, a web page, or most other software, which stores actual characters, fonts, and positions as data. Two PDFs can look identical on screen while being fundamentally different files underneath: one has real text, the other is a photograph with a .pdf extension.</p>
+
+        <h2 id="how-can-i-tell-if-my-pdf-is-a-scan">How can I tell if my PDF is a scan?</h2>
+        <p>Open it in any PDF viewer and try to click and drag across a line of text, the way you would select a sentence to copy it. If a box or highlight appears around the words, there is a real text layer. If nothing happens, or your cursor just draws a rectangle over the image, you are looking at a scan.</p>
+        <p>Another quick test: use your viewer's search function, usually Ctrl+F, and search for a word you can see on the page. A text-based PDF will find and highlight it. A scanned PDF will report no matches, because there is nothing to search.</p>
+
+        <h2 id="why-cant-pdf-to-word-or-pdf-to-text-tools-read-a-scanned-pdf">Why can&#x27;t PDF to Word or PDF to Text tools read a scanned PDF?</h2>
+        <p>Every text-extraction tool, BenchPDF included, works by reading the text layer that is already embedded in the PDF. It does not look at the page and recognise letters the way a person does, it reads structured data that says this word, in this font, at this position. A scanned PDF has none of that data to read.</p>
+        <p>This is not a limitation specific to any one converter. Whether you use BenchPDF, Word's own PDF import, or any other tool built the same way, a scanned page will come back empty, because the underlying problem is the file itself, not the software reading it.</p>
+
+        <h2 id="what-does-benchpdf-do-with-a-scanned-pdf">What does BenchPDF do with a scanned PDF?</h2>
+        <p>It is honest about the limitation rather than guessing. PDF to Text returns an empty or near-empty result for a scanned page, since there is genuinely no text to extract. PDF to PowerPoint detects that a page has little or no extractable text and falls back to placing it as a full-slide image instead of an empty slide, so nothing is visually lost.</p>
+        <p>PDF to Images sidesteps the whole issue, since it does not try to read text at all, it renders each page exactly as it looks, pixel for pixel. That makes it the most reliable of BenchPDF's tools for a scanned document, if a picture of the page is what you actually need.</p>
+
+        <h2 id="can-i-still-get-something-useful-out-of-a-scanned-pdf">Can I still get something useful out of a scanned PDF?</h2>
+        <p>Yes, depending on what you need. If you just need to view, print, share, or embed the pages somewhere, converting to images or leaving it as a PDF works fine, since nothing about the visual content is lost. If you need the actual words as editable or searchable text, that requires a different kind of tool entirely, described below.</p>
+
+        <h2 id="what-about-a-pdf-thats-a-mix-of-scanned-and-text-pages">What about a PDF that&#x27;s a mix of scanned and text pages?</h2>
+        <p>This is common: a cover sheet or a signed page scanned in and stapled, in file terms, to the front of an otherwise normal, text-based document. BenchPDF handles each page independently, so this works out better than you might expect. PDF to Text will return real text for the typed pages and nothing for the scanned one. PDF to PowerPoint will build editable text boxes for the typed pages and place the scanned page as a single image, page by page, rather than treating the whole file as one failure.</p>
+        <p>The practical effect is that you do not need to separate a mixed document before converting it, the per-page detection already does that work. If the scanned page specifically needs its text recognised, that one page is the only part you would need to run through OCR software separately.</p>
+
+        <h2 id="does-benchpdf-do-ocr">Does BenchPDF do OCR?</h2>
+        <p>No, not currently. OCR, optical character recognition, is the specific technology that looks at an image of text and works out what the letters actually are, effectively teaching a computer to read a photograph. BenchPDF's conversions rely on text that is already present in the PDF; recognising text inside an image is a separate, more involved problem that is not part of the app today.</p>
+
+        <h2 id="what-are-my-options-if-i-need-the-text-recognised">What are my options if I need the text recognised?</h2>
+        <p>You will need dedicated OCR software, which exists as a distinct category of tool built specifically for this. Many document scanning apps, and some PDF viewers, include an OCR step at the point of scanning, which is often the most reliable time to do it, since the software works from the same clean image the scanner produced rather than a recompressed copy.</p>
+        <p>If you scan documents regularly, it is worth checking whether the software you already use, your scanner's own app, or your PDF reader, has an OCR option built in before looking for a separate tool. Once a PDF has been through OCR and has a real text layer, BenchPDF's own conversions, including PDF to Word and PDF to PowerPoint, work on it normally.</p>
+
+        <h2 id="related-tools">Related tools</h2>
+        <ul>
+          <li><a href="/tools/pdf-to-images">PDF to Images</a>, the most reliable option for a scanned PDF, since it renders pages rather than reading text.</li>
+          <li><a href="/tools/pdf-to-text">PDF to Text</a>, for text-based PDFs, extracts the words directly with no layout.</li>
+          <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, falls back to a full-slide image automatically on scanned pages.</li>
+          <li><a href="/tools/pdf-to-word">PDF to Word</a>, for text-based PDFs, rebuilds an editable document (desktop app required).</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-row">
+      <span>BenchPDF</span><span class="foot-sep">&middot;</span><span>Files never leave your device</span>
+    </div>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="/privacy">Privacy</a>
+      <a href="/changelog">Changelog</a>
+      <a href="https://github.com/zafwaqas-afk/benchpdf">Source (GitHub)</a>
+    </nav>
+  </footer>
+  <script src="/assets/js/theme.js"></script>
+</body>
+</html>

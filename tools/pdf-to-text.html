@@ -114,6 +114,7 @@
     <nav class="topnav" aria-label="Primary">
       <a class="navlink" href="/">Home</a>
       <a class="navlink" href="/convert">Convert online</a>
+      <a class="navlink" href="/blog">Blog</a>
       <a class="navlink" href="/privacy">Privacy</a>
       <a class="navlink" href="/changelog">Changelog</a>
     </nav>
@@ -224,7 +225,9 @@
       <p>Line and paragraph breaks are preserved as closely as the PDF's own internal structure allows, and each page is separated by a form-feed character. Multi-column layouts and tables are flattened into a single reading order, since plain text has no concept of columns or page position.</p>
 
       <h2 id="does-it-work-on-scanned-pdfs">Does it work on scanned PDFs?</h2>
-      <p>No. A scanned page is a photograph of a document, with no underlying text for a browser to read, only pixels. This tool extracts existing text, it does not recognise text in an image (OCR). If a PDF is a scan, this tool will return an empty or near-empty result for that page.</p>
+      <p>No. A scanned page is a photograph of a document, with no underlying text for a browser to read, only pixels. This tool extracts existing text, it does not recognise text in an image (OCR). If a PDF is a scan, this tool will return an empty or near-empty result for that page. See
+        <a href="/blog/scanned-pdf-no-text">how to convert a scanned PDF that's just images</a>
+        for what to do instead.</p>
 
       <h2 id="is-there-a-file-size-or-page-limit">Is there a file size or page limit?</h2>
       <p>No artificial limit is applied by this tool. The real constraint is your device's memory and processing power, since the extraction happens locally rather than on a server. A short PDF converts in under a second. A very long document takes a little longer, with no upload cap involved.</p>

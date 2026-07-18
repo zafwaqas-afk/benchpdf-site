@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Changelog — BenchPDF</title>
-  <meta name="description" content="What's changed in BenchPDF, release by release.">
-  <link rel="canonical" href="https://benchpdf.pages.dev/changelog">
+  <title>BenchPDF Blog: PDF Guides and Explainers</title>
+  <meta name="description" content="Plain-English guides on PDF conversion and editing: scanned PDFs, formatting quirks, and how the different file formats actually work under the hood.">
+  <link rel="canonical" href="https://benchpdf.pages.dev/blog">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Changelog — BenchPDF">
-  <meta property="og:description" content="What's changed in BenchPDF, release by release.">
-  <meta property="og:url" content="https://benchpdf.pages.dev/changelog">
+  <meta property="og:title" content="BenchPDF Blog: PDF Guides and Explainers">
+  <meta property="og:description" content="Plain-English guides on PDF conversion and editing.">
+  <meta property="og:url" content="https://benchpdf.pages.dev/blog">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -23,6 +23,16 @@
       try { t = localStorage.getItem("benchpdf-theme"); } catch (e) {}
       if (t) document.documentElement.setAttribute("data-theme", t);
     })();
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://benchpdf.pages.dev/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://benchpdf.pages.dev/blog" }
+    ]
+  }
   </script>
 </head>
 <body>
@@ -38,9 +48,9 @@
     <nav class="topnav" aria-label="Primary">
       <a class="navlink" href="/">Home</a>
       <a class="navlink" href="/convert">Convert online</a>
-      <a class="navlink" href="/blog">Blog</a>
+      <a class="navlink is-active" href="/blog">Blog</a>
       <a class="navlink" href="/privacy">Privacy</a>
-      <a class="navlink is-active" href="/changelog">Changelog</a>
+      <a class="navlink" href="/changelog">Changelog</a>
     </nav>
     <div class="topbar-end">
       <a class="btn btn-primary btn-sm" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download</a>
@@ -58,26 +68,34 @@
     </div>
   </header>
 
+  <nav aria-label="Breadcrumb" class="conv-caveat" style="margin-top:16px; padding-top:0; border-top:0; font-size:12.5px">
+    <a href="/">Home</a> / <span>Blog</span>
+  </nav>
+
   <main class="main narrow" id="main">
     <section class="tool-hero">
-      <h1>Changelog</h1>
-      <p class="lede">Every released version of BenchPDF, in order.</p>
+      <h1>Blog</h1>
+      <p class="lede">Plain-English guides on PDF conversion and editing, and how the different file formats actually work.</p>
     </section>
 
     <section>
       <article class="entry">
         <div class="entry-head">
-          <span class="entry-version">1.0.0</span>
-          <time class="entry-date" datetime="2026-07-15">2026-07-15</time>
+          <span class="entry-version"><a href="/blog/scanned-pdf-no-text">How to Convert a Scanned PDF That's Just Images</a></span>
         </div>
-        <ul>
-          <li>Initial public release.</li>
-          <li>Local conversion hub: Word, Excel, and PowerPoint to and from PDF; images (including HEIC) to PDF; web page to PDF; PDF to images and to plain text.</li>
-          <li>In-browser PDF editor: click-to-edit text blocks over the original page, native table editing, export to a real, searchable PDF with untouched pages left byte-identical.</li>
-          <li>Office detection: Word/Excel/PowerPoint conversions are automatically disabled with a plain explanation on PCs without Microsoft Office installed, instead of failing.</li>
-          <li>Packaged as a self-contained Windows installer — no separate Python install required, no admin rights needed.</li>
-          <li>In-app About dialog with version, privacy statement, license, and the full list of bundled open-source components.</li>
-        </ul>
+        <p style="margin-top:10px; color:var(--muted); font-size:14.5px; line-height:1.6">
+          A scanned PDF is a photo of a page, with no text underneath to extract. How to tell,
+          what BenchPDF does with one, and why OCR is the only real fix.
+        </p>
+      </article>
+      <article class="entry">
+        <div class="entry-head">
+          <span class="entry-version"><a href="/blog/pdf-to-word-formatting">Why Does My PDF Lose Formatting in Word?</a></span>
+        </div>
+        <p style="margin-top:10px; color:var(--muted); font-size:14.5px; line-height:1.6">
+          It happens with every converter, including Word's own import. The actual reason, and
+          how to get a cleaner result.
+        </p>
       </article>
     </section>
   </main>
