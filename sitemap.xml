@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://benchpdf-site.pages.dev/</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/convert</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/privacy</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/changelog</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-ppt</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-word</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/word-to-pdf</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/excel-to-pdf</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/ppt-to-pdf</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/images-to-pdf</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/web-to-pdf</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/edit-pdf</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-images</loc></url>
-  <url><loc>https://benchpdf-site.pages.dev/tools/pdf-to-text</loc></url>
+  <url><loc>https://benchpdf.pages.dev/</loc></url>
+  <url><loc>https://benchpdf.pages.dev/convert</loc></url>
+  <url><loc>https://benchpdf.pages.dev/privacy</loc></url>
+  <url><loc>https://benchpdf.pages.dev/changelog</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/pdf-to-ppt</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/pdf-to-word</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/word-to-pdf</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/excel-to-pdf</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/ppt-to-pdf</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/images-to-pdf</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/web-to-pdf</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/edit-pdf</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/pdf-to-images</loc></url>
+  <url><loc>https://benchpdf.pages.dev/tools/pdf-to-text</loc></url>
 </urlset>

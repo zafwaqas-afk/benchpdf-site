@@ -24,7 +24,7 @@ stylesheet, and script is served from this same origin.
 
 ## Live
 
-Deployed at **https://benchpdf-site.pages.dev/** via Cloudflare Pages,
+Deployed at **https://benchpdf.pages.dev/** via Cloudflare Pages,
 connected to `github.com/zafwaqas-afk/benchpdf-site`.
 
 Both placeholders used during development are resolved:
@@ -35,8 +35,8 @@ Both placeholders used during development are resolved:
    `BenchPDF-Setup-1.0.0.exe` attached).
 2. ~~`benchpdf.example`~~ — every `<link rel="canonical">`, `og:url`,
    `og:image`, `sitemap.xml`, and `robots.txt` now points at
-   `benchpdf-site.pages.dev`. If you later attach a custom domain, swap that
-   in the same way: `grep -rn "benchpdf-site.pages.dev" .`
+   `benchpdf.pages.dev`. If you later attach a custom domain, swap that
+   in the same way: `grep -rn "benchpdf.pages.dev" .`
 
 ## Local preview
 
@@ -62,6 +62,14 @@ in case of a redeploy elsewhere:
    started"** link and use that instead — it's the simpler, zero-config path
    for a plain static site. (`wrangler.jsonc` in this repo makes the Workers
    path work too, in case that's the only option in your dashboard.)
+   **Pick the project name carefully**: Cloudflare's "Rename project" option
+   only changes the display name in the dashboard, not the live
+   `*.pages.dev` subdomain, which is fixed at creation time. To change the
+   subdomain later you have to create a new project (see below), not rename
+   the existing one. Also going through the Workers path instead of Pages
+   assigns a `*.workers.dev` domain instead of `*.pages.dev`, and can silently
+   redeploy the wrong project if `wrangler.jsonc`'s `name` field doesn't match
+   — keep that field in sync with whatever the project is actually named.
 3. Connect to Git, pick the repo. Build settings: **no build command, no
    framework preset**, output directory `/` (the repo root).
 4. Deploy. Cloudflare Pages serves `index.html` at `/`, and will also serve
