@@ -274,7 +274,7 @@ without agreement.
 | H1 | `Change the format. keep everything else.` |
 | Drop zone heading | `Drop a PDF here to convert it` |
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
-| Under-CTA line | `Free during early access. Your file stays on your computer.` |
+| Under-CTA line | `Free during early access.` |
 | Tools group 1 heading | `In your browser` |
 | Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` |
 | Tools group 2 heading | `In the desktop app` |
