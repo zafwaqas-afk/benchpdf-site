@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy — BenchPDF</title>
-  <meta name="description" content="What BenchPDF does and doesn't do with your files, in plain English. No uploads, no accounts, no analytics — on the app or on this website.">
+  <title>Privacy | BenchPDF</title>
+  <meta name="description" content="What BenchPDF does with your files, in plain English. It does not upload them, does not need an account, and does not run analytics.">
   <link rel="canonical" href="https://benchpdf.pages.dev/privacy">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Privacy — BenchPDF">
+  <meta property="og:title" content="Privacy | BenchPDF">
   <meta property="og:description" content="What BenchPDF does and doesn't do with your files, in plain English.">
   <meta property="og:url" content="https://benchpdf.pages.dev/privacy">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
@@ -27,36 +27,12 @@
       <a class="wordmark" href="/">benchpdf</a>
       <div class="nav-right">
         <a class="nav-link" href="/#tools">Tools</a>
-        <a class="nav-link" href="/privacy">Privacy</a>
         <a class="nav-link" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download</a>
-        <button type="button" class="dot-menu" id="menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
-          <span></span><span></span>
-        </button>
+        <a class="nav-link" href="/privacy">Privacy</a>
       </div>
     </div>
   </header>
 
-  <div class="overlay" id="overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site menu">
-    <div class="overlay-top">
-      <span class="wordmark">benchpdf</span>
-      <button type="button" class="overlay-close" id="menu-close" aria-label="Close menu">&times;</button>
-    </div>
-    <div class="overlay-body">
-      <nav class="overlay-nav" aria-label="Main">
-        <a class="overlay-link" href="/">Home</a>
-        <a class="overlay-link" href="/convert">Convert <em>online</em></a>
-        <a class="overlay-link" href="/#tools">Tools</a>
-        <a class="overlay-link" href="/blog">Blog</a>
-        <a class="overlay-link" href="/privacy">Privacy</a>
-        <a class="overlay-link" href="/changelog">Changelog</a>
-      </nav>
-    </div>
-    <div class="overlay-foot">
-      <a href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download for Windows</a>
-      <a href="https://github.com/zafwaqas-afk/benchpdf">Source on GitHub</a>
-      <span>Files never leave your device</span>
-    </div>
-  </div>
 
   <main class="main narrow" id="main">
     <section class="tool-hero">
@@ -67,23 +43,23 @@
     <section class="prose">
       <h2>The short version</h2>
       <p>BenchPDF converts and edits your documents on your own PC. It doesn't upload your files,
-        doesn't require an account, and doesn't run analytics — in the app, or on this website.</p>
+        does not require an account, and does not run analytics, either in the app or on this website.</p>
 
       <h2>What the app does</h2>
       <p>When you open BenchPDF, it starts a small web server on your own computer, reachable only
-        at the address <strong>127.0.0.1</strong> — a special address that always means &ldquo;this
+        at the address <strong>127.0.0.1</strong>, a special address that always means &ldquo;this
         computer.&rdquo; It is not reachable from the internet, from your network, or from any other
         device. BenchPDF uses that local server to give you the drag-and-drop page you convert files
         with; the page and the conversion both run on the same machine as your files.</p>
       <p>Word, Excel, and PowerPoint conversions work by driving your own installed copies of those
         applications in the background. If Office isn't installed, those specific conversions are
-        disabled with an explanation — BenchPDF never tries to substitute its own re-implementation
+        disabled with an explanation. BenchPDF never tries to substitute its own re-implementation
         of Office's rendering.</p>
       <p>Editing a PDF works the same way: the page is rendered and edited inside the local server's
         page, and the exported PDF is written straight to your disk.</p>
 
       <h2>The online converter</h2>
-      <p><a href="/convert">Convert online</a> is a lighter version of BenchPDF that runs
+      <p>The <a href="/">browser tools on the home page</a> are a lighter version of BenchPDF that runs
         entirely as code in your browser &mdash; there's no server behind it. When you drop a file
         in, it's read and processed on your own device using your browser's own capabilities;
         nothing is transmitted anywhere, at any point, for any of its conversions. It covers a
@@ -101,7 +77,7 @@
       <h2>What BenchPDF doesn't do</h2>
       <ul>
         <li>It doesn't upload your files anywhere, ever, for any conversion other than the web-page
-          exception above (and even then, only the URL you provide is fetched — not your files).</li>
+          exception above. Even then, only the URL you provide is fetched, not your files.</li>
         <li>It doesn't require an account, sign-in, or internet connection to convert or edit a file.</li>
         <li>It doesn't include analytics, crash reporting, or telemetry of any kind.</li>
         <li>It doesn't store your files anywhere beyond the working folder it uses during a
@@ -110,15 +86,15 @@
 
       <h2>This website</h2>
       <p>This site is a set of static pages with no analytics, no tracking pixels, no cookies, and no
-        third-party scripts — everything, including the fonts, is served from the same place as the
+        third-party scripts. Everything, including the fonts, is served from the same place as the
         page itself. That said, like any website, the server that hosts these pages inherently logs
         basic request information (such as IP address and timestamp) as part of normal web hosting;
         that logging is standard infrastructure behaviour, not something BenchPDF adds, and we don't
         layer any analytics on top of it.</p>
 
       <h2>Office automation reliability</h2>
-      <p>Occasionally Word, Excel, or PowerPoint can show a dialog during automation — a password
-        prompt, or a recovery notice — that blocks a single conversion. BenchPDF has a built-in
+      <p>Occasionally Word, Excel, or PowerPoint can show a dialog during automation, such as a password
+        prompt or a recovery notice, and that blocks a single conversion. BenchPDF has a built-in
         timeout: if Office doesn't respond within 30&ndash;90 seconds, it closes that one stuck
         attempt, reports a clear error for that file, and is immediately ready for your next
         conversion. This is a reliability detail, not a privacy one, but it's worth knowing if a
@@ -126,7 +102,7 @@
 
       <h2>Licensing and source availability</h2>
       <p>BenchPDF bundles PyMuPDF, which is licensed under the GNU AGPL-3.0. Because of that,
-        BenchPDF's own source is made available under the same license — the exact link is in the
+        BenchPDF's own source is made available under the same license. The exact link is in the
         app's About dialog and in this site's <a href="/changelog">changelog</a> and
         <a href="https://github.com/zafwaqas-afk/benchpdf">GitHub repository</a>.</p>
     </section>
@@ -136,14 +112,13 @@
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">
+        <a href="/blog">Blog</a>
         <a href="/changelog">Changelog</a>
         <a href="/privacy">Privacy</a>
-        <a href="/blog">Blog</a>
         <a href="https://github.com/zafwaqas-afk/benchpdf">Source</a>
       </nav>
       <span class="foot-year">2026</span>
     </div>
   </footer>
-  <script src="/assets/js/hero.js" defer></script>
 </body>
 </html>

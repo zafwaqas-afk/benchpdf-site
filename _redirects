@@ -1,0 +1,4 @@
+# The in-browser converter moved into the home page hero.
+# 301 so any inbound link or indexed URL lands on the working tool.
+/convert      /   301
+/convert.html /   301

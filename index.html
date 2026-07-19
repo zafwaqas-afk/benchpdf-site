@@ -3,215 +3,225 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BenchPDF — convert and edit PDFs without uploading them anywhere</title>
-  <meta name="description" content="BenchPDF is a Windows app that converts PDF, Word, Excel, PowerPoint, images, and web pages, and edits PDF text in place. Every file stays on your device.">
+  <title>Convert PDFs in your browser, free | BenchPDF</title>
+  <meta name="description" content="Convert PDF to PowerPoint, images or text in your browser. Files stay on your computer. The free Windows app also converts Word, Excel and PowerPoint.">
   <link rel="canonical" href="https://benchpdf.pages.dev/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="BenchPDF — convert and edit PDFs without uploading them anywhere">
-  <meta property="og:description" content="A Windows app for local PDF, Word, Excel, PowerPoint, image, and web-page conversion, plus in-place PDF editing. Nothing is uploaded.">
+  <meta property="og:title" content="Convert PDFs in your browser, free | BenchPDF">
+  <meta property="og:description" content="Convert PDF to PowerPoint, images or text in your browser. Files stay on your computer.">
   <meta property="og:url" content="https://benchpdf.pages.dev/">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/BodoniModa-Italic.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Bold.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Bold.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/BodoniModa-Italic.woff2">
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="grain" aria-hidden="true"></div>
 
-  <!-- ============================ Nav ============================ -->
-  <header class="nav">
+  <header class="nav is-solid">
     <div class="nav-in">
       <a class="wordmark" href="/">benchpdf</a>
       <div class="nav-right">
-        <a class="nav-link" href="#tools">Tools</a>
-        <a class="nav-link" href="/privacy">Privacy</a>
+        <a class="nav-link" href="/#tools">Tools</a>
         <a class="nav-link" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download</a>
-        <button type="button" class="dot-menu" id="menu-open" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
-          <span></span><span></span>
-        </button>
+        <a class="nav-link" href="/privacy">Privacy</a>
       </div>
     </div>
   </header>
 
-  <!-- ======================= Overlay menu ======================= -->
-  <div class="overlay" id="overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Site menu">
-    <div class="overlay-top">
-      <span class="wordmark">benchpdf</span>
-      <button type="button" class="overlay-close" id="menu-close" aria-label="Close menu">&times;</button>
-    </div>
-    <div class="overlay-body">
-      <nav class="overlay-nav" aria-label="Main">
-        <a class="overlay-link" href="/">Home</a>
-        <a class="overlay-link" href="/convert">Convert <em>online</em></a>
-        <a class="overlay-link" href="/#tools">Tools</a>
-        <a class="overlay-link" href="/blog">Blog</a>
-        <a class="overlay-link" href="/privacy">Privacy</a>
-        <a class="overlay-link" href="/changelog">Changelog</a>
-      </nav>
-    </div>
-    <div class="overlay-foot">
-      <a href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download for Windows</a>
-      <a href="https://github.com/zafwaqas-afk/benchpdf">Source on GitHub</a>
-      <span>Files never leave your device</span>
-    </div>
-  </div>
+  <main id="main" data-state="idle">
 
-  <!-- ============================ Hero ============================ -->
-  <section class="hero">
-    <!-- Hero imagery slot.
-         Drop renders into /assets/hero/ and swap the generative scene below
-         for this block. Target: AVIF + WebP, <=300KB at 1x.
-         <div class="hero-media">
-           <picture>
-             <source type="image/avif" srcset="/assets/hero/hero-1280.avif 1280w, /assets/hero/hero-1920.avif 1920w, /assets/hero/hero-2560.avif 2560w" sizes="100vw">
-             <source type="image/webp" srcset="/assets/hero/hero-1280.webp 1280w, /assets/hero/hero-1920.webp 1920w, /assets/hero/hero-2560.webp 2560w" sizes="100vw">
-             <img src="/assets/hero/hero-1920.webp" alt="" width="1920" height="1080" fetchpriority="high" decoding="async">
-           </picture>
-         </div>
-         Also add to <head>:
-         <link rel="preload" as="image" type="image/avif" href="/assets/hero/hero-1920.avif" fetchpriority="high"> -->
-
-    <!-- Generative fallback: paper architecture in CSS 3D -->
-    <div class="scene" aria-hidden="true">
-      <div class="scene-stage">
-        <div class="plane floor"></div>
-        <div class="plane arch arch-a"></div>
-        <div class="plane arch arch-b"></div>
-        <div class="plane arch arch-c"></div>
-        <div class="plane step step-1"></div>
-        <div class="plane step step-2"></div>
-        <div class="plane step step-3"></div>
-        <div class="plane step step-4"></div>
-        <div class="plane leaf leaf-a"></div>
-        <div class="plane leaf leaf-b"></div>
-        <div class="plane leaf leaf-c"></div>
+    <!-- ==================== The tool, straight away ==================== -->
+    <section class="hero">
+      <div class="scene" aria-hidden="true">
+        <div class="scene-stage">
+          <div class="plane floor"></div>
+          <div class="plane arch arch-a"></div>
+          <div class="plane arch arch-b"></div>
+          <div class="plane arch arch-c"></div>
+          <div class="plane step step-1"></div>
+          <div class="plane step step-2"></div>
+          <div class="plane step step-3"></div>
+          <div class="plane step step-4"></div>
+          <div class="plane leaf leaf-a"></div>
+          <div class="plane leaf leaf-b"></div>
+          <div class="plane leaf leaf-c"></div>
+        </div>
+        <div class="floor-sheen"></div>
+        <div class="scene-haze"></div>
+        <div class="scene-light"></div>
       </div>
-      <div class="floor-sheen"></div>
-      <div class="scene-haze"></div>
-      <div class="scene-light"></div>
-    </div>
 
-    <div class="hero-inner">
-      <p class="eyebrow">A private PDF studio for Windows</p>
-      <h1 class="hero-title">
-        <span class="serif">Convert privately.</span>
-        <span class="grot">upload nothing.</span>
-      </h1>
-      <div class="hero-cta">
-        <a class="btn btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">
-          Download for Windows <span class="arrow" aria-hidden="true">&#8600;</span>
-        </a>
-        <p class="hero-note">Free, no account &middot; or <a href="/convert">convert in your browser</a></p>
+      <div class="hero-inner">
+        <h1 class="hero-title">
+          <span class="serif">Convert privately.</span> <span class="grot">upload nothing.</span>
+        </h1>
+
+        <div class="dropzone" id="dropzone" role="button" tabindex="0">
+          <div class="dz-inner">
+            <svg class="dz-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true">
+              <path d="M12 15.5V4m0 0 4 4m-4-4-4 4" stroke="currentColor"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="dz-title">Drop a PDF here to convert it</p>
+            <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.
+              You can also drop JPG or PNG images.</p>
+          </div>
+          <input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
+        </div>
+        <p class="conv-badge">Files stay on your computer.</p>
+
+        <!-- what to do with the file, once one is chosen -->
+        <section id="conv-actions" aria-labelledby="actions-h">
+          <div class="actions-head">
+            <div class="file-id">
+              <span class="file-type" id="act-type">PDF</span>
+              <span class="file-name" id="act-name">document.pdf</span>
+              <span class="file-size" id="act-size"></span>
+            </div>
+            <button type="button" class="linkbtn" id="act-cancel">Choose a different file</button>
+          </div>
+          <h2 class="section-h" id="actions-h" style="font-size:17px;margin:14px 0 0">What would you like to do?</h2>
+          <div class="action-grid" id="action-list"></div>
+          <div class="action-extra" id="action-extra" hidden></div>
+        </section>
+
+        <section id="conv-working" aria-live="polite">
+          <div class="work-head">
+            <div class="spinner" aria-hidden="true"></div>
+            <div class="work-phase" id="work-phase">Getting ready</div>
+          </div>
+        </section>
+
+        <section id="conv-done">
+          <div class="done-head">
+            <svg class="i-check" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+              <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h2>Your file is ready</h2>
+          </div>
+          <div class="notice notice-warn" id="done-notice" hidden>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+              <path d="M12 8.5v4.2m0 3.1h.01M12 3.4 2.7 19.6h18.6L12 3.4Z" stroke="currentColor"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span id="done-notice-text"></span>
+          </div>
+          <div class="result">
+            <div class="result-main">
+              <div class="result-name" id="result-name"></div>
+              <div class="result-size" id="result-size"></div>
+            </div>
+            <div class="result-actions">
+              <a class="btn btn-sm" id="result-download" download>Download</a>
+            </div>
+          </div>
+          <div style="margin-top:18px">
+            <button type="button" class="linkbtn" id="done-more">Convert another file</button>
+          </div>
+        </section>
+
+        <section id="conv-error">
+          <div class="err-head">
+            <svg class="i-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+            <h2>That did not work</h2>
+          </div>
+          <p class="err-body" id="err-body"></p>
+          <button type="button" class="btn btn-sm" id="err-retry">Try another file</button>
+        </section>
       </div>
+    </section>
+
+    <!-- ==================== The desktop app, as the upsell ==================== -->
+    <div class="upsell">
+      <p>Need Word, Excel or edit tools? The free desktop app converts with your own
+        Office, on your own PC.</p>
+      <a class="btn btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">
+        Download for Windows <span class="arrow" aria-hidden="true">&#8600;</span>
+      </a>
     </div>
-  </section>
 
-  <main id="main">
-
-    <!-- ===================== Editorial tool index ===================== -->
+    <!-- ==================== Tools ==================== -->
     <section class="band band-rule" id="tools">
       <div class="wrap">
-        <p class="section-label">Index of tools</p>
-        <div class="index-list">
+        <div class="tool-groups">
 
-          <a class="index-row" href="/convert">
-            <span class="index-num">01</span>
-            <span class="index-title">Convert <em>online</em></span>
-            <span class="index-meta">In browser</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
+          <div class="tool-group">
+            <h2>In your browser</h2>
+            <p class="group-note">These work right now. Nothing to install.</p>
+            <div class="tool-list">
+              <a class="tool-item" href="/tools/pdf-to-ppt">
+                <span class="tool-item-name">PDF to PowerPoint</span>
+                <span class="tool-item-note">Editable slides, one per page.</span>
+              </a>
+              <a class="tool-item" href="/tools/pdf-to-images">
+                <span class="tool-item-name">PDF to Images</span>
+                <span class="tool-item-note">A PNG or JPG of every page.</span>
+              </a>
+              <a class="tool-item" href="/tools/pdf-to-text">
+                <span class="tool-item-name">PDF to Text</span>
+                <span class="tool-item-note">Just the words, as a .txt file.</span>
+              </a>
+              <a class="tool-item" href="/tools/images-to-pdf">
+                <span class="tool-item-name">Images to PDF</span>
+                <span class="tool-item-note">Combine photos into one PDF.</span>
+              </a>
+            </div>
+          </div>
 
-          <a class="index-row" href="/tools/pdf-to-ppt">
-            <span class="index-num">02</span>
-            <span class="index-title">PDF to PowerPoint</span>
-            <span class="index-meta">In browser</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/pdf-to-images">
-            <span class="index-num">03</span>
-            <span class="index-title">PDF to Images</span>
-            <span class="index-meta">In browser</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/pdf-to-text">
-            <span class="index-num">04</span>
-            <span class="index-title">PDF to Text</span>
-            <span class="index-meta">In browser</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/images-to-pdf">
-            <span class="index-num">05</span>
-            <span class="index-title">Images to PDF</span>
-            <span class="index-meta">In browser</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/pdf-to-word">
-            <span class="index-num">06</span>
-            <span class="index-title">PDF to Word</span>
-            <span class="index-meta">Desktop</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/word-to-pdf">
-            <span class="index-num">07</span>
-            <span class="index-title">Word to PDF</span>
-            <span class="index-meta">Desktop</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/excel-to-pdf">
-            <span class="index-num">08</span>
-            <span class="index-title">Excel to PDF</span>
-            <span class="index-meta">Desktop</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/ppt-to-pdf">
-            <span class="index-num">09</span>
-            <span class="index-title">PowerPoint to PDF</span>
-            <span class="index-meta">Desktop</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/web-to-pdf">
-            <span class="index-num">10</span>
-            <span class="index-title">Web page to PDF</span>
-            <span class="index-meta">Desktop</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
-
-          <a class="index-row" href="/tools/edit-pdf">
-            <span class="index-num">11</span>
-            <span class="index-title">Edit PDF <em>text</em></span>
-            <span class="index-meta">Desktop</span>
-            <span class="index-thumb" aria-hidden="true"></span>
-          </a>
+          <div class="tool-group">
+            <h2>In the desktop app</h2>
+            <p class="group-note">These need the free Windows download.</p>
+            <div class="tool-list">
+              <a class="tool-item" href="/tools/pdf-to-word">
+                <span class="tool-item-name">PDF to Word</span>
+                <span class="tool-item-note">Uses Word's own PDF import.</span>
+              </a>
+              <a class="tool-item" href="/tools/word-to-pdf">
+                <span class="tool-item-name">Word to PDF</span>
+                <span class="tool-item-note">Uses your installed Word.</span>
+              </a>
+              <a class="tool-item" href="/tools/excel-to-pdf">
+                <span class="tool-item-name">Excel to PDF</span>
+                <span class="tool-item-note">Keeps print areas and formula values.</span>
+              </a>
+              <a class="tool-item" href="/tools/ppt-to-pdf">
+                <span class="tool-item-name">PowerPoint to PDF</span>
+                <span class="tool-item-note">Uses your installed PowerPoint.</span>
+              </a>
+              <a class="tool-item" href="/tools/web-to-pdf">
+                <span class="tool-item-name">Web page to PDF</span>
+                <span class="tool-item-note">Saves any address as a PDF.</span>
+              </a>
+              <a class="tool-item" href="/tools/edit-pdf">
+                <span class="tool-item-name">Edit PDF text</span>
+                <span class="tool-item-note">Change text and export a real PDF.</span>
+              </a>
+            </div>
+          </div>
 
         </div>
       </div>
     </section>
 
-    <!-- ===================== The privacy promise ===================== -->
+    <!-- ==================== The promise ==================== -->
     <section class="band band-plaster">
       <div class="wrap">
-        <p class="section-label">The promise</p>
-        <p class="statement">Your files never leave the device you are sitting at.</p>
-        <p class="statement-note">There is no upload step, no queue, and no account, because there is
-          nowhere for the file to go. The desktop app converts on your own PC using your own installed
-          copy of Office. The browser tools run as code inside your own browser. The one exception is
-          saving a web page as a PDF, which has to fetch the address you give it, and nothing else.</p>
-        <div class="page-cta">
-          <a class="btn" href="/privacy">Read the privacy page <span class="arrow" aria-hidden="true">&#8594;</span></a>
-        </div>
+        <p class="statement promise">Your files never leave the device you are sitting at.</p>
+        <p class="statement-note">There is no upload step and no account. The browser tools run as
+          code inside your own browser, and the desktop app converts on your own PC.</p>
+        <p style="margin-top:26px"><a href="/privacy">Read the privacy page</a></p>
       </div>
     </section>
 
@@ -221,15 +231,15 @@
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">
+        <a href="/blog">Blog</a>
         <a href="/changelog">Changelog</a>
         <a href="/privacy">Privacy</a>
-        <a href="/blog">Blog</a>
         <a href="https://github.com/zafwaqas-afk/benchpdf">Source</a>
       </nav>
       <span class="foot-year">2026</span>
     </div>
   </footer>
 
-  <script src="/assets/js/hero.js" defer></script>
+  <script type="module" src="/assets/js/convert.js"></script>
 </body>
 </html>

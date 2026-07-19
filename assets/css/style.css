@@ -67,11 +67,13 @@ img{max-width:100%; height:auto}
   padding:10px 18px; border-radius:var(--pill); font-size:13px; transition:top .15s}
 .skip-link:focus{top:16px}
 
-/* ---- film grain, sitewide, ~4% ---------------------------- */
+/* ---- film grain, sitewide ----------------------------------
+   No mix-blend-mode here. A full-viewport blend layer costs about 7fps
+   even when nothing is animating, and on a ground this light the blend
+   is visually indistinguishable from plain opacity. */
 .grain{
-  position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.045;
+  position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.05;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode:multiply;
 }
 
 /* ============================================================
@@ -100,53 +102,11 @@ img{max-width:100%; height:auto}
   transform:scaleX(0); transform-origin:right; transition:transform .35s cubic-bezier(.22,1,.36,1);
 }
 .nav-link:hover::after{transform:scaleX(1); transform-origin:left}
-.dot-menu{
-  width:40px; height:40px; border:1px solid var(--rule); border-radius:50%;
-  background:transparent; cursor:pointer; display:grid; place-items:center; gap:0;
-  transition:border-color .25s, background-color .25s;
-}
-.dot-menu:hover{border-color:var(--ink)}
-.dot-menu span{display:block; width:4px; height:4px; border-radius:50%; background:var(--ink)}
-.dot-menu span + span{margin-top:3px}
+.nav-link.is-here{text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:1px}
 
-/* inner pages sit on solid ground, so the bar needs its own footing */
+/* One bar on every page, always visible, same four items at every width. */
 .nav.is-solid{position:relative; border-bottom:1px solid var(--rule-soft)}
 .nav.is-solid::before{display:none}
-
-/* ---- full-screen overlay menu ------------------------------ */
-.overlay{
-  position:fixed; inset:0; z-index:100; background:var(--ink); color:var(--bone);
-  display:flex; flex-direction:column; padding:26px var(--gutter) 48px;
-  opacity:0; visibility:hidden; transition:opacity .5s cubic-bezier(.22,1,.36,1), visibility .5s;
-}
-.overlay.is-open{opacity:1; visibility:visible}
-.overlay-top{display:flex; align-items:center; max-width:var(--wrap); width:100%; margin:0 auto}
-.overlay .wordmark{color:var(--bone)}
-.overlay-close{
-  margin-left:auto; width:40px; height:40px; border:1px solid rgba(242,237,230,.3); border-radius:50%;
-  background:transparent; color:var(--bone); cursor:pointer; display:grid; place-items:center;
-  font-size:18px; line-height:1; transition:border-color .25s;
-}
-.overlay-close:hover{border-color:var(--bone)}
-.overlay-body{
-  flex:1; display:flex; align-items:center; max-width:var(--wrap); width:100%; margin:0 auto;
-}
-.overlay-nav{display:flex; flex-direction:column; gap:clamp(6px,1.4vh,16px); width:100%}
-.overlay-link{
-  font-family:var(--serif); font-weight:600; font-size:clamp(30px,6.5vw,76px);
-  line-height:1.06; letter-spacing:-.025em; text-decoration:none; color:var(--bone);
-  opacity:.72; transition:opacity .3s, transform .45s cubic-bezier(.22,1,.36,1);
-  width:max-content; max-width:100%;
-}
-.overlay-link:hover{opacity:1; transform:translateX(14px)}
-.overlay-link em{font-family:var(--display); font-style:italic; font-weight:400}
-.overlay-foot{
-  max-width:var(--wrap); width:100%; margin:0 auto; display:flex; gap:22px; flex-wrap:wrap;
-  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
-  color:rgba(242,237,230,.55);
-}
-.overlay-foot a{color:inherit; text-decoration:none}
-.overlay-foot a:hover{color:var(--bone)}
 
 /* ============================================================
    Pill button system, sitewide
@@ -174,11 +134,13 @@ img{max-width:100%; height:auto}
 .linkbtn:hover{text-decoration-thickness:2px}
 
 /* ============================================================
-   HERO — the whole viewport
+   HERO: a working drop zone, not a type showcase.
+   Sized by its contents so the tool sits high and the next section
+   peeks above the fold. The type line serves it, it does not lead.
    ============================================================ */
 .hero{
-  position:relative; min-height:100svh; display:flex; align-items:flex-end;
-  overflow:hidden; background:var(--bone); isolation:isolate;
+  position:relative; overflow:hidden; background:var(--bone); isolation:isolate;
+  padding:clamp(40px,6vh,76px) 0 clamp(52px,8vh,96px);
 }
 .hero-media{position:absolute; inset:-8% 0 -8% 0; z-index:0; will-change:transform}
 .hero-media img{
@@ -192,30 +154,35 @@ img{max-width:100%; height:auto}
     linear-gradient(to right, rgba(242,237,230,.62) 0%, rgba(242,237,230,.10) 42%, rgba(242,237,230,0) 62%);
 }
 .hero-inner{
-  position:relative; z-index:2; width:100%; max-width:var(--wrap);
-  margin:0 auto; padding:0 var(--gutter) clamp(56px,9vh,110px);
+  position:relative; z-index:2; width:100%; max-width:920px;
+  margin:0 auto; padding:0 var(--gutter);
 }
-.eyebrow{
-  font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--ink); margin:0 0 clamp(18px,3vh,32px);
-}
+/* The type collision survives, at a size that introduces the tool
+   rather than competing with it. */
 .hero-title{
-  margin:0; font-weight:400; letter-spacing:-.035em; line-height:.88;
-  font-size:clamp(2.7rem,10.4vw,10.4rem); text-wrap:balance; max-width:14ch;
+  margin:0 0 clamp(20px,3.2vh,34px); font-weight:400; letter-spacing:-.03em;
+  line-height:1.02; font-size:clamp(1.7rem,4.3vw,3.1rem); text-wrap:balance;
 }
-/* The collision is not two faces alone, it is two scales. The italic runs
-   smaller and sits slightly inset; the grotesk lands at full size beneath it,
-   tucked tight, so the second line is the one that carries the point. */
-.hero-title .serif{
-  font-family:var(--display); font-style:italic; font-weight:400; display:block;
-  font-size:.82em; margin-left:.055em;
-}
+.hero-title .serif{font-family:var(--display); font-style:italic; font-weight:400}
 .hero-title .grot{
-  font-family:var(--grotesk); font-weight:700; text-transform:lowercase;
-  letter-spacing:-.048em; display:block; margin-top:-.1em;
+  font-family:var(--grotesk); font-weight:700; text-transform:lowercase; letter-spacing:-.04em;
 }
-.hero-cta{margin-top:clamp(28px,5vh,54px); display:flex; align-items:center; gap:20px; flex-wrap:wrap}
-.hero-note{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-soft)}
+
+/* the drop zone is the page's one job, so it gets the visual weight */
+.hero .dropzone{
+  background:rgba(255,255,255,.74); border:1px solid var(--rule);
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+}
+.hero .dropzone:hover,.hero .dropzone.is-over{background:rgba(255,255,255,.9)}
+.hero .dz-inner{padding:clamp(52px,10vh,96px) 24px}
+.hero .dz-title{font-size:clamp(20px,2.7vw,29px)}
+
+/* the desktop upsell, deliberately quiet and directly beneath the tool */
+.upsell{
+  position:relative; z-index:2; max-width:920px; margin:clamp(22px,3.4vh,34px) auto 0;
+  padding:0 var(--gutter); display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+}
+.upsell p{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-soft); max-width:46ch}
 
 /* ---- generative paper-architecture scene (imagery fallback) ---
    An implied interior: light falls from the upper left, a colonnade of
@@ -341,35 +308,21 @@ img{max-width:100%; height:auto}
     radial-gradient(70% 60% at 96% 96%, rgba(150,138,168,.22) 0%, rgba(150,138,168,0) 60%);
 }
 
-/* drift: 20s, barely perceptible, the composition breathing as one */
-@media (prefers-reduced-motion:no-preference){
-  .arch-a,.arch-b,.arch-c,.leaf-a,.leaf-b,.leaf-c{
-    animation:drift 20s ease-in-out infinite alternate;
-  }
-  .arch-b{animation-duration:24s; animation-delay:-3s}
-  .arch-c{animation-duration:27s; animation-delay:-7s}
-  .leaf-a{animation-duration:18s; animation-delay:-5s}
-  .leaf-b{animation-duration:22s; animation-delay:-9s}
-  .leaf-c{animation-duration:26s; animation-delay:-2s}
-}
-@keyframes drift{
-  from{transform:translate3d(0,0,0) rotate(var(--r,0deg))}
-  to{transform:translate3d(0,-1.1%,0) rotate(var(--r,0deg))}
-}
-.leaf-a{--r:6deg} .leaf-b{--r:-9deg} .leaf-c{--r:17deg}
+/* No looping motion. Animating these clip-path gradient planes re-rasterised
+   them every frame and measured 10fps, which is what stalled screenshots.
+   The scene is now painted once and left alone; only the settle below runs. */
 
 /* ============================================================
    Page load sequence, under 1.2s, orchestrated
    ============================================================ */
+/* One gentle settle, and nothing after it. The drop zone must be usable
+   immediately, so it is never animated: only the backdrop and the line
+   above it settle in, and both are done inside 600ms. */
 @media (prefers-reduced-motion:no-preference){
-  .hero-media,.scene{animation:mediaIn 1s cubic-bezier(.22,1,.36,1) both}
-  .hero-title .serif{animation:riseIn .82s cubic-bezier(.22,1,.36,1) .16s both}
-  .hero-title .grot{animation:riseIn .82s cubic-bezier(.22,1,.36,1) .28s both}
-  .hero-cta{animation:riseIn .7s cubic-bezier(.22,1,.36,1) .46s both}
-  .hero .eyebrow{animation:fadeIn .5s ease .62s both}
+  .scene{animation:settle .6s cubic-bezier(.22,1,.36,1) both}
+  .hero-title{animation:fadeIn .45s ease .1s both}
 }
-@keyframes mediaIn{from{opacity:0; transform:scale(1.045)} to{opacity:1; transform:scale(1)}}
-@keyframes riseIn{from{opacity:0; transform:translateY(30px)} to{opacity:1; transform:translateY(0)}}
+@keyframes settle{from{opacity:0} to{opacity:1}}
 @keyframes fadeIn{from{opacity:0} to{opacity:1}}
 
 /* ============================================================
@@ -383,45 +336,6 @@ img{max-width:100%; height:auto}
   font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
   color:var(--ink-quiet); margin:0 0 clamp(28px,5vh,56px);
 }
-
-/* ---- editorial index (tools as a numbered index) ------------ */
-.index-list{border-top:1px solid var(--rule)}
-.index-row{
-  position:relative; display:grid; grid-template-columns:64px 1fr auto; align-items:center;
-  gap:24px; padding:clamp(20px,3.4vh,34px) 4px; border-bottom:1px solid var(--rule);
-  text-decoration:none; color:var(--ink); transition:padding-left .4s cubic-bezier(.22,1,.36,1);
-}
-.index-row:hover{padding-left:20px}
-.index-num{
-  font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:var(--ink-faint);
-  font-variant-numeric:tabular-nums;
-}
-.index-title{
-  font-family:var(--serif); font-weight:600; font-size:clamp(20px,2.9vw,34px);
-  letter-spacing:-.02em; line-height:1.15;
-}
-.index-title em{font-family:var(--display); font-style:italic; font-weight:400}
-.index-meta{
-  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--ink-quiet); text-align:right;
-}
-/* hover reveals a small paper-render thumbnail */
-.index-thumb{
-  position:absolute; right:16%; top:50%; width:150px; height:104px; pointer-events:none;
-  transform:translate(0,-50%) scale(.94) rotate(-3deg); opacity:0; z-index:3;
-  transition:opacity .4s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1);
-  background:linear-gradient(158deg,#FCFAF7,var(--bone) 55%,var(--plaster));
-  box-shadow:14px 20px 44px -18px rgba(94,86,116,.55); border-radius:2px; overflow:hidden;
-}
-.index-thumb::before{
-  content:""; position:absolute; left:14%; right:38%; top:20%; height:5px; border-radius:1px;
-  background:var(--ink); opacity:.16;
-}
-.index-thumb::after{
-  content:""; position:absolute; left:14%; right:20%; top:36%; bottom:24%; border-radius:1px;
-  background:repeating-linear-gradient(to bottom, rgba(26,24,30,.11) 0 3px, transparent 3px 11px);
-}
-.index-row:hover .index-thumb{opacity:1; transform:translate(0,-50%) scale(1) rotate(-3deg)}
 
 /* ---- the privacy promise, a quiet full-width statement ------ */
 .statement{
@@ -685,4 +599,35 @@ img{max-width:100%; height:auto}
   .step-3{left:64%; bottom:8%;  width:30%}
   .step-4{left:76%; bottom:2%;  width:30%}
   .floor{height:26%}
+}
+
+/* ============================================================
+   Tools, grouped by where they actually run
+   Plain grid, no numbering. The group heading carries the whole
+   expectation: a visitor knows before clicking whether a tool needs
+   a download.
+   ============================================================ */
+.tool-groups{display:grid; grid-template-columns:1fr 1fr; gap:clamp(32px,5vw,72px)}
+.tool-group h2{
+  font-family:var(--serif); font-weight:600; font-size:clamp(17px,2vw,21px);
+  letter-spacing:-.012em; margin:0 0 4px;
+}
+.tool-group .group-note{
+  margin:0 0 20px; font-size:13.5px; color:var(--ink-quiet); line-height:1.5;
+}
+.tool-list{display:flex; flex-direction:column; border-top:1px solid var(--rule)}
+.tool-item{
+  display:flex; flex-direction:column; gap:3px; padding:15px 2px;
+  border-bottom:1px solid var(--rule); text-decoration:none; color:var(--ink);
+  transition:padding-left .28s cubic-bezier(.22,1,.36,1);
+}
+.tool-item:hover{padding-left:10px}
+.tool-item-name{font-size:15.5px; font-weight:500}
+.tool-item-note{font-size:13px; color:var(--ink-quiet); line-height:1.45}
+
+/* the promise, cut to one sentence */
+.promise{max-width:22ch}
+
+@media (max-width:760px){
+  .tool-groups{grid-template-columns:1fr; gap:38px}
 }
