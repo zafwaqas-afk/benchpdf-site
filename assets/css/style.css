@@ -200,15 +200,19 @@ img{max-width:100%; height:auto}
   color:var(--ink); margin:0 0 clamp(18px,3vh,32px);
 }
 .hero-title{
-  margin:0; font-weight:400; letter-spacing:-.035em; line-height:.9;
-  font-size:clamp(2.6rem,9.6vw,9.4rem); text-wrap:balance; max-width:15ch;
+  margin:0; font-weight:400; letter-spacing:-.035em; line-height:.88;
+  font-size:clamp(2.7rem,10.4vw,10.4rem); text-wrap:balance; max-width:14ch;
 }
+/* The collision is not two faces alone, it is two scales. The italic runs
+   smaller and sits slightly inset; the grotesk lands at full size beneath it,
+   tucked tight, so the second line is the one that carries the point. */
 .hero-title .serif{
   font-family:var(--display); font-style:italic; font-weight:400; display:block;
+  font-size:.82em; margin-left:.055em;
 }
 .hero-title .grot{
   font-family:var(--grotesk); font-weight:700; text-transform:lowercase;
-  letter-spacing:-.045em; display:block; margin-top:-.06em;
+  letter-spacing:-.048em; display:block; margin-top:-.1em;
 }
 .hero-cta{margin-top:clamp(28px,5vh,54px); display:flex; align-items:center; gap:20px; flex-wrap:wrap}
 .hero-note{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-soft)}
@@ -310,12 +314,31 @@ img{max-width:100%; height:auto}
 .leaf-c::before{clip-path:polygon(0 4%, 50% 0, 50% 96%, 0 100%); background:linear-gradient(158deg,#F3EDE6,#E6DACF)}
 .leaf-c::after{clip-path:polygon(50% 0, 100% 6%, 100% 100%, 50% 96%); background:linear-gradient(158deg,#D9CCCE,var(--lilac))}
 
-/* the light pooling in from the upper left, and its falloff bottom right */
+/* Aerial perspective: a haze that thickens with distance, sitting between the
+   colonnade and the loose sheets so the far forms sink back. This is what
+   separates a rendered space from flat shapes with shadows on them. */
+.scene-haze{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    linear-gradient(102deg, rgba(242,237,230,0) 34%, rgba(238,231,226,.44) 68%, rgba(228,214,204,.62) 100%),
+    radial-gradient(58% 44% at 62% 40%, rgba(200,194,216,.20) 0%, rgba(200,194,216,0) 70%);
+}
+
+/* the floor takes a soft return of the colonnade above it */
+.floor-sheen{
+  position:absolute; left:0; right:0; bottom:0; height:30%; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(255,253,250,.34) 0%, rgba(255,253,250,0) 58%);
+  mix-blend-mode:soft-light;
+}
+
+/* the light pooling in from the upper left, its falloff bottom right, and a
+   single soft shaft raking down through the colonnade */
 .scene-light{
   position:absolute; inset:0; pointer-events:none;
   background:
+    linear-gradient(105deg, rgba(255,254,252,0) 18%, rgba(255,254,252,.42) 27%, rgba(255,254,252,0) 39%),
     radial-gradient(64% 54% at 14% 6%, rgba(255,254,252,.9) 0%, rgba(255,254,252,0) 62%),
-    radial-gradient(70% 60% at 96% 96%, rgba(150,138,168,.20) 0%, rgba(150,138,168,0) 60%);
+    radial-gradient(70% 60% at 96% 96%, rgba(150,138,168,.22) 0%, rgba(150,138,168,0) 60%);
 }
 
 /* drift: 20s, barely perceptible, the composition breathing as one */
