@@ -46,7 +46,17 @@ The exact string `Free during early access` appears in **exactly two places**
 and nowhere else:
 
 1. Directly under the hero drop zone on `/`.
-2. Under the download button in the desktop block on `/`.
+2. Next to the download button on `/download`.
+
+The home page no longer carries a desktop pitch block, so the second placement
+moved to `/download` when that block was removed.
+
+There is a third occurrence in the home page source, on the desktop-only
+interstitial. It is not a third placement: the interstitial replaces the drop
+zone and its badge hides the hero line (`[data-state="desktop"]` in
+`style.css`), so a visitor never sees two pricing lines at once. Any grep of
+the markup will return three hits on two pages; that is expected and correct.
+Four would not be.
 
 There is no pricing page and none is to be invented. Desktop tool pages carry a
 requirement note under their download button (`Needs Microsoft Word installed.`
@@ -132,6 +142,7 @@ via Cloudflare Pages. Static HTML and CSS, no build step, no framework.
 | URL | File | Purpose |
 |---|---|---|
 | `/` | `index.html` | The working browser converter, plus the tool index and the promise |
+| `/download` | `download.html` | The desktop app: what it adds, and the download |
 | `/privacy` | `privacy.html` | What happens to your files, in plain English |
 | `/changelog` | `changelog.html` | Released versions |
 | `/blog` | `blog/index.html` | Guides index |
@@ -166,7 +177,7 @@ no second nav system.** The same four items appear at every viewport width.
 |---|---|---|
 | Left | `benchpdf` (wordmark) | `/` |
 | Right | Tools | `/#tools` |
-| Right | Download | `https://github.com/zafwaqas-afk/benchpdf/releases/latest` |
+| Right | Download | `/download` |
 | Right | Privacy | `/privacy` |
 
 `Tools` points at the tool index section on the home page. That section is the
@@ -186,10 +197,13 @@ On the home page:
 
 1. Hero viewport: the **drop zone** is the primary action. There is no pill
    button competing with it. The `Download` top-bar item is plain nav text.
-2. Next: the **Download for Windows** pill is primary. The download is the
-   upsell, never the opener.
-3. Tools section: plain list links, no primary styling.
-4. Promise section: one plain text link to the privacy page.
+2. Tools section: plain list links, names only, no primary styling and no
+   descriptive notes.
+3. Promise section: one plain text link to the privacy page.
+
+The home page carries no download button. The desktop app is reached through
+the `Download` nav item, which lands on `/download`. That page carries the one
+primary pill.
 
 On tool pages: the drop zone (browser tools) or the download pill (desktop
 tools) is the single primary. Related links are plain.
@@ -261,14 +275,10 @@ without agreement.
 | Drop zone heading | `Drop a PDF here to convert it` |
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
 | Under-CTA line | `Free during early access. Your file stays on your computer.` |
-| Desktop block eyebrow | `PDF tools for Windows` |
-| Desktop block body | `For Word and Excel, the desktop app converts through the copy of Office already on your PC, so the output is what Word and Excel themselves would produce. It also edits PDF text in place.` |
-| Desktop block button | `Download BenchPDF 1.0.0 for Windows` |
-| Desktop block note | `Free during early access. Windows 10 and 11.` |
 | Tools group 1 heading | `In your browser` |
-| Tools group 1 note | `These run here on this page. Nothing to install.` |
+| Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` |
 | Tools group 2 heading | `In the desktop app` |
-| Tools group 2 note | `These need the Windows download.` |
+| Tools group 2 items | `PDF to PowerPoint` / `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
 | Promise | `Your files never leave the device you are sitting at.` |
 | Promise paragraph | `The browser tools run as code inside your own browser, and the desktop app converts on your own PC. You can watch your browser's network activity during a conversion and see for yourself that nothing is sent.` |
 | Promise link | `Read the privacy page` |
@@ -349,6 +359,27 @@ The stated limitation on each page, in one line:
 
 Each tool page keeps its FAQ, its how-to steps, its FAQPage and BreadcrumbList
 JSON-LD, and its related links.
+
+### Download `/download`
+
+Holds the desktop pitch copy that used to sit on the home page.
+
+| Element | String |
+|---|---|
+| Title | `Download BenchPDF for Windows` |
+| Meta description | `The BenchPDF desktop app for Windows 10 and 11. Converts Word, Excel and PowerPoint through the copy of Office already on your PC, and edits PDF text in place.` |
+| Eyebrow | `PDF tools for Windows` |
+| H1 | `Download BenchPDF` |
+| Lede | `For Word and Excel, the desktop app converts through the copy of Office already on your PC, so the output is what Word and Excel themselves would produce. It also edits PDF text in place.` |
+| Button | `Download BenchPDF 1.0.0 for Windows` |
+| CTA note | `Free during early access.` |
+| Requirements | `Windows 10 and 11. Office conversions need your own copy of Office.` |
+
+Section headings, in order: `What the desktop app adds`, `What it does not do`,
+`If you would rather not install anything`.
+
+The grid is names only. Tool names are the link text and carry no descriptive
+note, so the tool pages themselves do the explaining.
 
 ### Privacy `/privacy`
 
