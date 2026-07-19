@@ -60,7 +60,7 @@
       <div class="hero-inner">
         <p class="hero-eyebrow">PDF tools, in your browser</p>
         <h1 class="hero-title">
-          <span class="serif">Converted.</span> <span class="grot">not flattened.</span>
+          <span class="serif">Change the format.</span> <span class="grot">keep everything else.</span>
         </h1>
 
         <div class="dropzone" id="dropzone" role="button" tabindex="0">
@@ -130,6 +130,22 @@
           </div>
         </section>
 
+        <!-- PDF to PowerPoint is not done in the browser. Say why, plainly. -->
+        <section id="conv-desktop">
+          <div class="desktop-note">
+            <h2>This conversion runs in the desktop app</h2>
+            <p>Turning a PDF into slides means rebuilding paragraphs, tables and fonts, and the
+              desktop app does that against your own machine's fonts. Doing it here would hand you
+              a deck with the tables flattened and every line in its own box, so we do not offer it
+              here.</p>
+            <a class="btn btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">
+              Download BenchPDF 1.0.0 for Windows <span class="arrow" aria-hidden="true">&#8600;</span>
+            </a>
+            <p class="conv-badge">Free during early access. Windows 10 and 11.</p>
+            <button type="button" class="linkbtn" id="desktop-back">Convert this PDF another way</button>
+          </div>
+        </section>
+
         <section id="conv-error">
           <div class="err-head">
             <svg class="i-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
@@ -165,10 +181,6 @@
             <h2>In your browser</h2>
             <p class="group-note">These run here on this page. Nothing to install.</p>
             <div class="tool-list">
-              <a class="tool-item" href="/tools/pdf-to-ppt">
-                <span class="tool-item-name">PDF to PowerPoint</span>
-                <span class="tool-item-note">Text arrives as text boxes you can retype.</span>
-              </a>
               <a class="tool-item" href="/tools/pdf-to-images">
                 <span class="tool-item-name">PDF to Images</span>
                 <span class="tool-item-note">Every page rendered pixel for pixel.</span>
@@ -188,6 +200,10 @@
             <h2>In the desktop app</h2>
             <p class="group-note">These need the Windows download.</p>
             <div class="tool-list">
+              <a class="tool-item" href="/tools/pdf-to-ppt">
+                <span class="tool-item-name">PDF to PowerPoint</span>
+                <span class="tool-item-note">Paragraphs whole, tables as real tables.</span>
+              </a>
               <a class="tool-item" href="/tools/pdf-to-word">
                 <span class="tool-item-name">PDF to Word</span>
                 <span class="tool-item-note">Uses Word's own PDF import.</span>

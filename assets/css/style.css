@@ -432,6 +432,12 @@ img{max-width:100%; height:auto}
 .foot-latest span{display:block; max-width:74ch}
 .foot-latest a{color:var(--ink)}
 
+/* The honest interstitial for a conversion we will not do badly in a browser. */
+.desktop-note{max-width:52ch}
+.desktop-note h2{font-family:var(--serif); font-size:clamp(19px,2.2vw,25px); margin:0 0 12px; font-weight:600}
+.desktop-note p{margin:0 0 22px; font-size:15px; line-height:1.65; color:var(--ink-soft)}
+.desktop-note .btn{margin-bottom:14px}
+
 .foot-mark{font-family:var(--grotesk); font-weight:500; font-size:14px; letter-spacing:.22em; text-transform:lowercase}
 .foot-links{display:flex; gap:24px; flex-wrap:wrap; font-family:var(--mono); font-size:11px;
   letter-spacing:.1em; text-transform:uppercase; color:var(--ink-quiet)}
@@ -514,13 +520,22 @@ img{max-width:100%; height:auto}
 .notice svg{flex:none; margin-top:2px}
 
 /* state machine */
-#conv-actions,#conv-working,#conv-done,#conv-error{display:none}
+#conv-actions,#conv-working,#conv-done,#conv-error,#conv-desktop{display:none}
 [data-state="actions"] #conv-actions{display:block}
 [data-state="working"] #conv-working{display:block}
 [data-state="done"] #conv-done{display:block}
 [data-state="error"] #conv-error{display:block}
+[data-state="desktop"] #conv-desktop{display:block}
 [data-state="actions"] .dropzone,[data-state="working"] .dropzone,
-[data-state="done"] .dropzone,[data-state="error"] .dropzone{display:none}
+[data-state="done"] .dropzone,[data-state="error"] .dropzone,
+[data-state="desktop"] .dropzone{display:none}
+/* The badge belongs to the drop zone, so it leaves with it. Otherwise the
+   desktop note shows a second pricing line stacked under the first. */
+[data-state="actions"] .hero>.hero-inner>.conv-badge,
+[data-state="working"] .hero>.hero-inner>.conv-badge,
+[data-state="done"] .hero>.hero-inner>.conv-badge,
+[data-state="error"] .hero>.hero-inner>.conv-badge,
+[data-state="desktop"] .hero>.hero-inner>.conv-badge{display:none}
 
 /* honest caveat block under the tools */
 .conv-caveat{

@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF to PowerPoint: keeps text editable | BenchPDF</title>
-  <meta name="description" content="Turn a PDF into slides where the text is still text. Headings and body copy arrive as PowerPoint text boxes you can click into and retype, at their original size.">
+  <title>PDF to PowerPoint: tables stay tables | BenchPDF</title>
+  <meta name="description" content="Turn a PDF into slides where paragraphs stay whole, tables arrive as real PowerPoint tables, and the fonts are matched against the ones on your PC.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/pdf-to-ppt">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PDF to PowerPoint: keeps text editable | BenchPDF">
-  <meta property="og:description" content="Turn a PDF into slides where the text is still text. Headings and body copy arrive as PowerPoint text boxes you can click into and retype, at their original size.">
+  <meta property="og:title" content="PDF to PowerPoint: tables stay tables | BenchPDF">
+  <meta property="og:description" content="Turn a PDF into slides where paragraphs stay whole, tables arrive as real PowerPoint tables, and the fonts are matched against the ones on your PC.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/pdf-to-ppt">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -45,10 +45,10 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "Can I edit the text afterwards?",
+            "name": "Why is this not in the browser?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, on any page that had selectable text in the PDF. Those words become genuine PowerPoint text boxes, so you click in and type over them the same way you would in a deck you built yourself. Pages that were scans arrive as a single picture, which you can move and resize but not retype."
+                "text": "Because we tried it and the output was not good enough to put our name on. Rebuilding a page as slides needs paragraph clustering, table detection, font matching and a rendered background layer. Our browser attempt produced up to 116 text boxes on a page the desktop engine renders as six, with no tables at all, so we withdrew it rather than ship it."
             }
         },
         {
@@ -56,31 +56,15 @@
             "name": "What happens to my tables?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "In this browser version a table arrives as text positioned where the cells were, so it reads correctly but is not a PowerPoint table object. The desktop app rebuilds detected tables as real PowerPoint tables you can add rows to. If your deck depends on editing table structure, use the desktop app."
+                "text": "A table with ruling lines is detected and rebuilt as a real PowerPoint table, so you can click a cell, retype it, and add rows. This is checked on every release by a regression suite that fails the build if any table in the test documents comes back as loose text instead."
             }
         },
         {
             "@type": "Question",
-            "name": "Does my file get uploaded?",
+            "name": "Can I edit the text afterwards?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. The conversion runs as JavaScript inside your own browser, so the PDF is read on your device and the .pptx is built there too. You can watch your browser's network activity during a conversion and see that nothing is sent."
-            }
-        },
-        {
-            "@type": "Question",
-            "name": "Is there a page limit?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "None is set by the tool. What actually limits you is your own device's memory, since the work happens locally rather than on a server. A short document converts in a few seconds. A long, image-heavy one takes longer and uses more memory."
-            }
-        },
-        {
-            "@type": "Question",
-            "name": "Does it work on a Mac?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Yes. This page runs in the browser, so it works on macOS, Windows, Linux and ChromeOS alike. The separate BenchPDF desktop app, which handles Word and Excel conversions, is Windows only, but you do not need it for this."
+                "text": "Yes, on any page that had selectable text. Paragraphs become PowerPoint text boxes at paragraph level rather than line level, which matters: a line-level conversion looks similar until you try to edit a sentence and find it split across five boxes that will not reflow."
             }
         },
         {
@@ -88,14 +72,30 @@
             "name": "What fonts does the output use?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The slides are set in a standard font at the sizes read from the PDF, rather than embedding the original typeface. Line lengths and headings therefore stay close to the original, though an unusual display font will not carry across exactly. The desktop app maps fonts more closely."
+                "text": "Each source font is matched to the nearest equivalent installed on your PC, and the same source font always maps to the same target so the deck stays consistent. Where a font is substituted the app records it, and the conversion report lists every substitution it made."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is my document uploaded anywhere?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The app runs on your PC, reads the PDF from your disk and writes the .pptx back to it. No server is involved in the conversion at any point."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on a Mac?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Not yet, the app is Windows only. The PDF to Images and PDF to Text tools on this site run in any browser, including on a Mac, but they do not produce slides."
             }
         }
     ]
 }
   </script>
 </head>
-<body data-tool="pdf-to-pptx">
+<body>
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="grain" aria-hidden="true"></div>
   <header class="nav is-solid">
@@ -113,119 +113,58 @@
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>PDF to PowerPoint Converter</span></nav>
   </div>
 
-  <main class="main" id="main" data-state="idle">
+  <main class="main" id="main">
     <section class="tool-hero">
       <h1>PDF to PowerPoint Converter</h1>
-      <p class="lede">Drop a PDF below. The words arrive as PowerPoint text boxes you can click into and retype, not as a picture of a page.</p>
-    </section>
-
-    <section class="conv-panel">
-      <div class="dropzone" id="dropzone" role="button" tabindex="0">
-        <div class="dz-inner">
-          <svg class="dz-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
-            <path d="M12 15.5V4m0 0 4 4m-4-4-4 4" stroke="currentColor"
-                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
-                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <p class="dz-title">Drop a PDF here</p>
-          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.</p>
-        </div>
-        <input id="file" type="file" accept=".pdf" hidden>
+      <p class="lede">This one needs the Windows app. It rebuilds paragraphs, tables and fonts, so you get a deck you can edit rather than a page of stray text boxes.</p>
+      <div class="tool-cta">
+        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF 1.0.0 for Windows</a>
+        <span class="pitch-cta-note">Needs Windows 10 or 11. No Office required for this conversion.</span>
       </div>
-      <p class="conv-badge">Files stay on your computer.</p>
-
-      <section id="conv-working" aria-live="polite">
-        <div class="work-head">
-          <div class="spinner" aria-hidden="true"></div>
-          <div class="work-phase" id="work-phase">Getting ready</div>
-        </div>
-      </section>
-
-      <section id="conv-done">
-        <div class="done-head">
-          <svg class="i-check" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-            <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <h2>Your file is ready</h2>
-        </div>
-        <div class="notice notice-warn" id="done-notice" hidden>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-            <path d="M12 8.5v4.2m0 3.1h.01M12 3.4 2.7 19.6h18.6L12 3.4Z" stroke="currentColor"
-                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <span id="done-notice-text"></span>
-        </div>
-        <div class="result">
-          <div class="result-main">
-            <div class="result-name" id="result-name"></div>
-            <div class="result-size" id="result-size"></div>
-          </div>
-          <div class="result-actions">
-            <a class="btn btn-sm" id="result-download" download>Download</a>
-          </div>
-        </div>
-        <div style="margin-top:18px">
-          <button type="button" class="linkbtn" id="done-more">Convert another file</button>
-        </div>
-      </section>
-
-      <section id="conv-error">
-        <div class="err-head">
-          <svg class="i-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
-            <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-          </svg>
-          <h2>That did not work</h2>
-        </div>
-        <p class="err-body" id="err-body"></p>
-        <button type="button" class="btn btn-sm" id="err-retry">Try another file</button>
-      </section>
     </section>
 
     <section class="prose">
       <h2 id="what-comes-through">What comes through</h2>
       <ul>
-        <li>Text as real, editable PowerPoint text boxes, so you can click in and retype.</li>
-        <li>Font size, near enough that headings still read as headings.</li>
-        <li>Where things sat on the page, so the slide keeps the original arrangement.</li>
-        <li>One slide per page, in the original order.</li>
+        <li>Paragraphs as single text boxes, so a paragraph stays one thing you can edit.</li>
+        <li>Tables as real PowerPoint tables, with the rows and columns intact.</li>
+        <li>Fonts matched to the nearest equivalent installed on your PC, not collapsed to one face.</li>
+        <li>Backgrounds, fills and charts, kept as the graphic layer behind the text.</li>
       </ul>
 
       <h2 id="the-limit">Where it stops</h2>
-      <p>A page with no selectable text underneath, which is what a scan is, has no words to recover. That page arrives as a picture of itself instead, so nothing is lost visually but the text is not editable. Getting text out of a scan needs OCR, which BenchPDF does not do. The desktop app also rebuilds tables as real PowerPoint tables, which this browser version does not.</p>
+      <p>A page with no selectable text underneath, which is what a scan is, has no words to recover. That page arrives as a picture of itself, so nothing is lost visually, but the text is not editable. Getting text out of a scan needs OCR, which BenchPDF does not do. Tables drawn with spacing alone and no ruling lines are also hard to detect, and those arrive as positioned text rather than as a table.</p>
 
       <h2 id="how-to-convert-pdf-to-powerpoint">How to convert PDF to PowerPoint</h2>
       <ul>
-        <li>Drop your PDF into the box above, or choose a file.</li>
-        <li>Wait while your browser reads the text and layout of each page.</li>
-        <li>Click Download to save the .pptx file.</li>
-        <li>Open it in PowerPoint, Google Slides or Keynote.</li>
+        <li>Download and install BenchPDF, then open it.</li>
+        <li>Drop your PDF in, or pick PDF to PowerPoint from the grid.</li>
+        <li>The app rebuilds each page as a slide and saves a .pptx.</li>
+        <li>Download the result, or open the output folder from the app.</li>
       </ul>
 
-      <h2 id="can-i-edit-the-text-afterwards">Can I edit the text afterwards?</h2>
-      <p>Yes, on any page that had selectable text in the PDF. Those words become genuine PowerPoint text boxes, so you click in and type over them the same way you would in a deck you built yourself. Pages that were scans arrive as a single picture, which you can move and resize but not retype.</p>
+      <h2 id="why-is-this-not-in-the-browser">Why is this not in the browser?</h2>
+      <p>Because we tried it and the output was not good enough to put our name on. Rebuilding a page as slides needs paragraph clustering, table detection, font matching and a rendered background layer. Our browser attempt produced up to 116 text boxes on a page the desktop engine renders as six, with no tables at all, so we withdrew it rather than ship it.</p>
 
       <h2 id="what-happens-to-my-tables">What happens to my tables?</h2>
-      <p>In this browser version a table arrives as text positioned where the cells were, so it reads correctly but is not a PowerPoint table object. The desktop app rebuilds detected tables as real PowerPoint tables you can add rows to. If your deck depends on editing table structure, use the desktop app.</p>
+      <p>A table with ruling lines is detected and rebuilt as a real PowerPoint table, so you can click a cell, retype it, and add rows. This is checked on every release by a regression suite that fails the build if any table in the test documents comes back as loose text instead.</p>
 
-      <h2 id="does-my-file-get-uploaded">Does my file get uploaded?</h2>
-      <p>No. The conversion runs as JavaScript inside your own browser, so the PDF is read on your device and the .pptx is built there too. You can watch your browser's network activity during a conversion and see that nothing is sent.</p>
-
-      <h2 id="is-there-a-page-limit">Is there a page limit?</h2>
-      <p>None is set by the tool. What actually limits you is your own device's memory, since the work happens locally rather than on a server. A short document converts in a few seconds. A long, image-heavy one takes longer and uses more memory.</p>
-
-      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
-      <p>Yes. This page runs in the browser, so it works on macOS, Windows, Linux and ChromeOS alike. The separate BenchPDF desktop app, which handles Word and Excel conversions, is Windows only, but you do not need it for this.</p>
+      <h2 id="can-i-edit-the-text-afterwards">Can I edit the text afterwards?</h2>
+      <p>Yes, on any page that had selectable text. Paragraphs become PowerPoint text boxes at paragraph level rather than line level, which matters: a line-level conversion looks similar until you try to edit a sentence and find it split across five boxes that will not reflow.</p>
 
       <h2 id="what-fonts-does-the-output-use">What fonts does the output use?</h2>
-      <p>The slides are set in a standard font at the sizes read from the PDF, rather than embedding the original typeface. Line lengths and headings therefore stay close to the original, though an unusual display font will not carry across exactly. The desktop app maps fonts more closely.</p>
+      <p>Each source font is matched to the nearest equivalent installed on your PC, and the same source font always maps to the same target so the deck stays consistent. Where a font is substituted the app records it, and the conversion report lists every substitution it made.</p>
+
+      <h2 id="is-my-document-uploaded-anywhere">Is my document uploaded anywhere?</h2>
+      <p>No. The app runs on your PC, reads the PDF from your disk and writes the .pptx back to it. No server is involved in the conversion at any point.</p>
+
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>Not yet, the app is Windows only. The PDF to Images and PDF to Text tools on this site run in any browser, including on a Mac, but they do not produce slides.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/pdf-to-images">PDF to Images</a>, when you want a picture of each page instead of editable slides.</li>
-        <li><a href="/tools/pdf-to-text">PDF to Text</a>, when you only need the words and no layout at all.</li>
-        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine pictures into a PDF.</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, runs in your browser, a picture of each page.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, runs in your browser, just the words.</li>
+        <li><a href="/tools/ppt-to-pdf">PowerPoint to PDF</a>, to go the other way.</li>
         <li><a href="/tools/pdf-to-word">PDF to Word</a>, for an editable document rather than slides.</li>
       </ul>
     </section>
@@ -246,6 +185,5 @@
       <span class="foot-year">2026</span>
     </div>
   </footer>
-  <script type="module" src="/assets/js/convert.js"></script>
 </body>
 </html>

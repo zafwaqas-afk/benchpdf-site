@@ -12,8 +12,8 @@ function loadScript(src) {
     const s = document.createElement("script");
     s.src = src;
     // Dynamically created scripts default to async=true and can execute out
-    // of order. PptxGenJS expects JSZip to already be defined, so this must
-    // be false to guarantee jszip runs before pdf-lib/pptxgen.
+    // of order. Keep insertion order deterministic so a library that expects
+    // another to already be defined is never disappointed.
     s.async = false;
     s.onload = resolve;
     s.onerror = () => reject(new Error(`Failed to load ${src}`));
@@ -27,8 +27,11 @@ function ensureVendor() {
       const [pdfjsMod] = await Promise.all([
         import("/assets/vendor/pdfjs/pdf.min.mjs"),
         window.JSZip ? Promise.resolve() : loadScript("/assets/vendor/jszip.min.js"),
+        // pptxgen is deliberately NOT loaded. The browser PDF->PPTX engine was
+        // withdrawn on 2026-07-19 (see SITE_SPEC.md 0a); the file stays in
+        // assets/vendor only so the fidelity suite can keep measuring the
+        // quarantined engine. No shipped page uses it.
         window.PDFLib ? Promise.resolve() : loadScript("/assets/vendor/pdf-lib.min.js"),
-        window.PptxGenJS ? Promise.resolve() : loadScript("/assets/vendor/pptxgen.min.js"),
       ]);
       pdfjsLib = pdfjsMod;
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdfjs/pdf.worker.min.mjs";
@@ -62,6 +65,7 @@ const resultDownload = document.getElementById("result-download");
 const doneMore = document.getElementById("done-more");
 const errBody = document.getElementById("err-body");
 const errRetry = document.getElementById("err-retry");
+const desktopBack = document.getElementById("desktop-back");
 
 let currentFiles = [];
 let currentKind = null;
@@ -172,60 +176,6 @@ async function imagesToPdf(files, onProgress) {
   return new Blob([bytes], { type: "application/pdf" });
 }
 
-async function pdfToPptx(file, onProgress) {
-  const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({
-    data: buf, cMapUrl: CMAP_URL, cMapPacked: true, standardFontDataUrl: STANDARD_FONT_URL,
-  }).promise;
-
-  const page1 = await pdf.getPage(1);
-  const vp1 = page1.getViewport({ scale: 1 });
-  const pptx = new PptxGenJS();
-  pptx.defineLayout({ name: "PDFSIZE", width: vp1.width / 72, height: vp1.height / 72 });
-  pptx.layout = "PDFSIZE";
-
-  for (let i = 1; i <= pdf.numPages; i++) {
-    onProgress(`Building slide ${i} of ${pdf.numPages}`);
-    const page = await pdf.getPage(i);
-    const viewport = page.getViewport({ scale: 1 });
-    const pageWIn = viewport.width / 72;
-    const pageHIn = viewport.height / 72;
-    const tc = await page.getTextContent();
-    const lines = groupLines(tc.items);
-    const slide = pptx.addSlide();
-    const totalChars = lines.reduce((s, l) => s + l.items.reduce((a, it) => a + it.str.length, 0), 0);
-
-    if (totalChars < 4) {
-      const scale = 2;
-      const vp = page.getViewport({ scale });
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.round(vp.width);
-      canvas.height = Math.round(vp.height);
-      const ctx = canvas.getContext("2d");
-      await page.render({ canvasContext: ctx, viewport: vp }).promise;
-      slide.addImage({ data: canvas.toDataURL("image/png"), x: 0, y: 0, w: pageWIn, h: pageHIn });
-      continue;
-    }
-
-    for (const line of lines) {
-      const text = line.items.map((it) => it.str).join(" ").trim();
-      if (!text) continue;
-      const first = line.items[0];
-      const fontSizePt = Math.hypot(first.transform[0], first.transform[1]) || 12;
-      const xIn = first.x / 72;
-      const yIn = Math.max((viewport.height - line.y) / 72 - fontSizePt / 72, 0);
-      const wRemainIn = Math.max(pageWIn - xIn - 0.1, 0.3);
-      slide.addText(text, {
-        x: xIn, y: yIn, w: wRemainIn, h: (fontSizePt * 1.3) / 72,
-        fontSize: Math.max(Math.round(fontSizePt), 6), fontFace: "Arial",
-        color: "1A2238", align: "left", valign: "top", margin: 0,
-      });
-    }
-  }
-  onProgress("Packaging .pptx…");
-  return await pptx.write({ outputType: "blob" });
-}
-
 function renderActions(kind, files) {
   actionList.innerHTML = "";
   actionExtra.hidden = true;
@@ -235,7 +185,7 @@ function renderActions(kind, files) {
     actName.textContent = files[0].name;
     actSize.textContent = fmtBytes(files[0].size);
 
-    addAction("Convert to PowerPoint", "Editable slides, one per page.", () => runPptx(files[0]));
+    addAction("Convert to PowerPoint", "Runs in the desktop app.", showDesktopOnly);
     addAction("Convert to Images", "One PNG or JPG per page, zipped.", () => runImages(files[0]));
     addAction("Extract Text", "Plain text, one form-feed between pages.", () => runText(files[0]));
 
@@ -284,18 +234,12 @@ function showError(message) {
   setState("error");
 }
 
-async function runPptx(file) {
-  setState("working");
-  try {
-    workPhase.textContent = "Loading converter…";
-    await ensureVendor();
-    workPhase.textContent = "Preparing…";
-    const blob = await pdfToPptx(file, (p) => (workPhase.textContent = p));
-    showDone(blob, baseName(file.name) + ".pptx");
-  } catch (e) {
-    console.error(e);
-    showError("Couldn't convert that PDF to PowerPoint. " + (e && e.message ? e.message : "Try a different file."));
-  }
+// PDF -> PPTX is deliberately not a browser conversion. The JS path could not
+// hold the engine's fidelity invariants (see tests/js_engine/ in the app repo),
+// and shipping a converter that flattens tables and fragments paragraphs is the
+// one thing this product cannot do. Say so, and point at the engine that works.
+function showDesktopOnly() {
+  setState("desktop");
 }
 
 async function runImages(file) {
@@ -342,7 +286,6 @@ async function runMerge(files) {
 }
 
 const SINGLE_TOOLS = {
-  "pdf-to-pptx": { needKind: "pdf", run: (files) => runPptx(files[0]), wrongMsg: "Drop a PDF file to convert it to PowerPoint." },
   "pdf-to-images": { needKind: "pdf", run: (files) => runImages(files[0]), wrongMsg: "Drop a PDF file to convert it to images." },
   "pdf-to-text": { needKind: "pdf", run: (files) => runText(files[0]), wrongMsg: "Drop a PDF file to extract its text." },
   "images-to-pdf": { needKind: "images", run: (files) => runMerge(files), wrongMsg: "Drop one or more JPG or PNG images to merge into a PDF." },
@@ -416,3 +359,11 @@ errRetry.addEventListener("click", () => {
   fileInput.value = "";
   setState("idle");
 });
+// Back from the desktop-only note to the file we already have, so the visitor
+// does not have to pick it again just to reach a conversion that works here.
+if (desktopBack) {
+  desktopBack.addEventListener("click", () => {
+    if (currentKind && currentFiles.length) renderActions(currentKind, currentFiles);
+    else setState("idle");
+  });
+}

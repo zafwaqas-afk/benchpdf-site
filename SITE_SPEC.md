@@ -65,6 +65,65 @@ and so on) with no pricing claim.
 
 ---
 
+## 0a. A converter must be in the fidelity suite to be linked
+
+**No conversion may be linked from this site unless it is a registered engine in
+`tests/engines.py` in the app repo and its column reads GREEN in
+`tests/fidelity_suite.py`.**
+
+This is not a style rule. On 2026-07-19 a browser PDF to PowerPoint converter was
+live on the home page for weeks. It produced 242 fragmented text boxes on a
+9-page report the desktop engine renders as 38, zero native tables where the
+source had 17, no background layer at all, and every font collapsed to Arial. It
+was never in the suite, so nothing caught it.
+
+The suite now runs the same fixtures and the same assertions against every
+registered engine, with per-engine columns:
+
+```
+python tests/fidelity_suite.py                      # every engine
+python tests/fidelity_suite.py --engines=python     # one engine
+```
+
+An engine marked `ships = True` that fails any invariant exits non-zero and
+blocks the release. An engine marked `ships = False` is reported loudly but does
+not block, because it is not linked from anywhere.
+
+### Currently linked conversions
+
+| Conversion | Where | Engine | Suite |
+|---|---|---|---|
+| PDF to Images | browser | pdf.js canvas render | covered, GREEN |
+| PDF to Text | browser | pdf.js text content | covered, GREEN, byte-comparable to desktop |
+| Images to PDF | browser | pdf-lib | covered, GREEN |
+| PDF to PowerPoint | desktop only | python | covered, GREEN |
+| Word/Excel/PowerPoint to PDF, PDF to Word | desktop only | Office automation | covered by verify_outputs.py |
+| Edit PDF text | desktop only | python | covered, GREEN |
+
+**Withdrawn:** browser PDF to PowerPoint, on 2026-07-19. The engine is
+quarantined at `tests/js_engine/` in the app repo, is loaded by no page, and may
+not be relinked until its suite column reads GREEN. The port assessment is at
+`docs/browser-engine-assessment.md`.
+
+### The interstitial
+
+The home page drop zone still accepts a PDF and still offers PDF to PowerPoint
+as a choice, because hiding it would just move the disappointment. Choosing it
+shows the desktop note rather than converting:
+
+| Element | String |
+|---|---|
+| Heading | `This conversion runs in the desktop app` |
+| Body | `Turning a PDF into slides means rebuilding paragraphs, tables and fonts, and the desktop app does that against your own machine's fonts. Doing it here would hand you a deck with the tables flattened and every line in its own box, so we do not offer it here.` |
+| Button | `Download BenchPDF 1.0.0 for Windows` |
+| Note | `Free during early access. Windows 10 and 11.` |
+| Back | `Convert this PDF another way` |
+
+The note replaces the hero drop zone's pricing line rather than adding to it, so
+two pricing lines are never on screen at once.
+
+---
+
 ## 1. Page inventory
 
 Deployed at `https://benchpdf.pages.dev` from `github.com/zafwaqas-afk/benchpdf-site`
@@ -198,7 +257,7 @@ without agreement.
 | Title | `BenchPDF: documents that come out the way they went in` |
 | Meta description | `Convert a PDF to PowerPoint, images or text and keep the text editable, the layout intact and the file on your own computer. The Windows app adds Word, Excel and editing.` |
 | Hero eyebrow | `PDF tools, in your browser` |
-| H1 | `Converted. not flattened.` |
+| H1 | `Change the format. keep everything else.` |
 | Drop zone heading | `Drop a PDF here to convert it` |
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
 | Under-CTA line | `Free during early access. Your file stays on your computer.` |

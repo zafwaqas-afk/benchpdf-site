@@ -17,6 +17,12 @@ drifts from the shipped site.
 
 These are written out in full in SITE_SPEC.md. The short version:
 
+- **A converter must be in the fidelity suite to be linked from this site.**
+  It has to be a registered engine in `tests/engines.py` in the app repo with a
+  GREEN column in `tests/fidelity_suite.py`. A browser PDF to PowerPoint
+  converter shipped here for weeks producing 242 fragmented boxes, zero native
+  tables and no background layer, because nothing tested it. SITE_SPEC.md 0a
+  has the detail and the withdrawal record.
 - **Demonstrate, never claim.** The pillars are simplicity, functionality and
   trust, and none of those words may appear in the copy. Nor may `simple`,
   `powerful`, `secure`, `private` (outside `/privacy`), `forever`, `unlimited`,
