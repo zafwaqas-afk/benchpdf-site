@@ -17,6 +17,12 @@ drifts from the shipped site.
 
 These are written out in full in SITE_SPEC.md. The short version:
 
+- **Demonstrate, never claim.** The pillars are simplicity, functionality and
+  trust, and none of those words may appear in the copy. Nor may `simple`,
+  `powerful`, `secure`, `private` (outside `/privacy`), `forever`, `unlimited`,
+  `no limits` or `no signup`. SITE_SPEC.md §0 has the verifying grep.
+- **`Free during early access` appears in exactly two places**, both on the home
+  page. There is no pricing page and none is to be invented.
 - **No em-dashes in user-facing text.** Not one. Use a full stop or a comma.
 - **No mirrored two-part slogans.** Say the thing once, plainly.
 - **One primary call to action per viewport height.** Nothing else at primary weight.

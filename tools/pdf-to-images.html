@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF to Image Converter, Free and Private | BenchPDF</title>
-  <meta name="description" content="Turn each PDF page into a PNG or JPG image, right in your browser. No upload, no account, choice of resolution. Completely free, and nothing leaves your device.">
+  <title>PDF to Image: every page, pixel for pixel | BenchPDF</title>
+  <meta name="description" content="Render each PDF page to a PNG or JPG exactly as it looks on screen. Charts, colours and layout come through unchanged, at the resolution you pick.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/pdf-to-images">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PDF to Image Converter, Free and Private | BenchPDF">
-  <meta property="og:description" content="Turn each PDF page into a PNG or JPG image, right in your browser. No upload, no account, choice of resolution. Completely free, and nothing leaves your device.">
+  <meta property="og:title" content="PDF to Image: every page, pixel for pixel | BenchPDF">
+  <meta property="og:description" content="Render each PDF page to a PNG or JPG exactly as it looks on screen. Charts, colours and layout come through unchanged, at the resolution you pick.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/pdf-to-images">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -45,50 +45,50 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "Is it safe to convert my PDF here?",
+            "name": "Will the images look exactly like the PDF?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. Every page is rendered to an image inside your own browser, using your device's processing power. The PDF is never sent to a server, and nothing about it is transmitted anywhere. You can confirm this yourself by checking your browser's network activity while converting."
+                "text": "Yes. This conversion does not try to extract or rebuild anything. It draws each page the same way a PDF viewer draws it on screen, then saves that as an image. Charts, embedded photographs, colours and positioning all come through as they appear in the original."
             }
         },
         {
             "@type": "Question",
-            "name": "What image format do I get, PNG or JPG?",
+            "name": "Which should I pick, PNG or JPG?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Whichever you choose before converting. PNG is the default and keeps sharp edges on text and line art with no compression loss. JPG produces a smaller file and suits photo-heavy pages. Both options are available above the drop zone, and the choice applies to every page in that PDF."
+                "text": "PNG keeps text edges sharp with no compression artefacts, which suits pages that are mostly type or line drawings. JPG makes a smaller file and suits photographic pages. The choice applies to every page of that PDF, and you can run the conversion again with the other setting."
             }
         },
         {
             "@type": "Question",
-            "name": "Can I choose the resolution?",
+            "name": "What does the resolution setting change?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, in DPI: 96 for on-screen use, 150 for a good balance of quality and file size, or 300 for print-quality output. Higher DPI produces larger, sharper images but takes a little longer to render and produces a bigger download, since every pixel is generated on your own device."
+                "text": "It sets how many pixels each page is drawn at. Use 96 DPI for viewing on screen, 150 for a good balance, and 300 when the image needs to hold up in print. Higher settings take longer to render and produce a noticeably bigger download."
             }
         },
         {
             "@type": "Question",
-            "name": "Is there a file size or page limit?",
+            "name": "Does my file get uploaded?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No artificial limit is applied by this tool. The real constraint is your device's memory, since every page is rendered locally rather than on a server. A short PDF at 150 DPI converts in a few seconds. A long document at 300 DPI takes longer and produces a larger zip file to download."
+                "text": "No. Each page is rendered inside your own browser using your device's own graphics, and the zip is assembled there too. Nothing about the PDF is transmitted. You can confirm it by watching your browser's network activity while a conversion runs."
             }
         },
         {
             "@type": "Question",
-            "name": "Will the images match the PDF page exactly?",
+            "name": "Does it work on scanned PDFs?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. Unlike the PDF to PowerPoint tool, this one does not try to extract or rebuild anything, it renders each page pixel for pixel, the same way a PDF viewer would display it. Charts, photos, colours, and layout all come through exactly as they appear in the original PDF."
+                "text": "Yes, and this is the conversion that handles them best. A scan is already a picture, so rendering it to PNG or JPG loses nothing at all. Conversions that read text, such as PDF to Text, are the ones that come back empty on a scan."
             }
         },
         {
             "@type": "Question",
-            "name": "Does it work on Mac, or is it Windows only?",
+            "name": "Does it work on a Mac?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page."
+                "text": "Yes. This page runs in the browser, so macOS, Windows, Linux and ChromeOS all work. The separate BenchPDF desktop app is Windows only, but this conversion does not need it."
             }
         }
     ]
@@ -109,7 +109,6 @@
     </div>
   </header>
 
-
   <div class="main">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>PDF to Image Converter</span></nav>
   </div>
@@ -117,7 +116,7 @@
   <main class="main" id="main" data-state="idle">
     <section class="tool-hero">
       <h1>PDF to Image Converter</h1>
-      <p class="lede">Drop a PDF below and it converts here in your browser. Choose PNG or JPG, and the resolution you need.</p>
+      <p class="lede">Drop a PDF below. Each page is rendered exactly as it appears on screen, at the resolution you choose.</p>
     </section>
 
     <section class="conv-panel">
@@ -143,16 +142,17 @@
             <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <p class="dz-title">Drop a PDF to convert it to images</p>
-          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button> from your device.</p>
+          <p class="dz-title">Drop a PDF here</p>
+          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.</p>
         </div>
         <input id="file" type="file" accept=".pdf" hidden>
       </div>
+      <p class="conv-badge">Files stay on your computer.</p>
 
       <section id="conv-working" aria-live="polite">
         <div class="work-head">
           <div class="spinner" aria-hidden="true"></div>
-          <div class="work-phase" id="work-phase">Preparing&hellip;</div>
+          <div class="work-phase" id="work-phase">Getting ready</div>
         </div>
       </section>
 
@@ -162,7 +162,7 @@
             <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
                   stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Done</h2>
+          <h2>Your file is ready</h2>
         </div>
         <div class="notice notice-warn" id="done-notice" hidden>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
@@ -171,17 +171,17 @@
           </svg>
           <span id="done-notice-text"></span>
         </div>
-        <div class="result" style="margin-top:16px">
+        <div class="result">
           <div class="result-main">
             <div class="result-name" id="result-name"></div>
             <div class="result-size" id="result-size"></div>
           </div>
           <div class="result-actions">
-            <a class="btn btn-primary btn-sm" id="result-download" download>Download</a>
+            <a class="btn btn-sm" id="result-download" download>Download</a>
           </div>
         </div>
         <div style="margin-top:18px">
-          <button type="button" class="btn btn-ghost" id="done-more">Convert another PDF</button>
+          <button type="button" class="linkbtn" id="done-more">Convert another file</button>
         </div>
       </section>
 
@@ -191,53 +191,64 @@
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
             <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
           </svg>
-          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Something did not work</h2>
+          <h2>That did not work</h2>
         </div>
         <p class="err-body" id="err-body"></p>
-        <button type="button" class="btn btn-ghost" id="err-retry">Try another file</button>
+        <button type="button" class="btn btn-sm" id="err-retry">Try another file</button>
       </section>
     </section>
 
     <section class="prose">
-      <p>Most online "PDF to image" tools upload your file to a server, convert it there, and send the result back. This tool renders each page directly in your browser using your own device, and packages the images into a zip file you download. Nothing is transmitted anywhere. It is also the most reliable option if your PDF turns out to be
-        <a href="/blog/scanned-pdf-no-text">a scan with no real text underneath</a>, since it renders pixels rather than trying to read words that are not there.</p>
+      <h2 id="what-comes-through">What comes through</h2>
+      <ul>
+        <li>Every page rendered pixel for pixel, the way a PDF viewer draws it.</li>
+        <li>Charts, diagrams and photographs exactly as they appear, with nothing rebuilt or guessed.</li>
+        <li>Colours and page proportions unchanged.</li>
+        <li>Your choice of PNG for sharp text, or JPG for a smaller file.</li>
+      </ul>
+
+      <h2 id="the-limit">Where it stops</h2>
+      <p>The output is a picture, so the text in it is no longer selectable or searchable. That is the point of this conversion rather than a fault, but if you need the words back afterwards, use PDF to Text on the original PDF instead. Very long documents at 300 DPI produce large downloads and use a lot of memory, since every pixel is generated on your own device.</p>
 
       <h2 id="how-to-convert-pdf-to-images">How to convert PDF to images</h2>
       <ul>
-        <li>Choose PNG or JPG and a resolution above, or leave the defaults.</li>
-        <li>Drop your PDF into the box, or click to choose one from your device.</li>
-        <li>Wait while each page renders as an image.</li>
-        <li>Click Download to save a zip file containing one image per page.</li>
+        <li>Pick PNG or JPG and a resolution above, or leave the defaults.</li>
+        <li>Drop your PDF into the box, or choose a file.</li>
+        <li>Wait while each page renders.</li>
+        <li>Click Download to save a zip holding one image per page.</li>
       </ul>
-      <h2 id="is-it-safe-to-convert-my-pdf-here">Is it safe to convert my PDF here?</h2>
-      <p>Yes. Every page is rendered to an image inside your own browser, using your device's processing power. The PDF is never sent to a server, and nothing about it is transmitted anywhere. You can confirm this yourself by checking your browser's network activity while converting.</p>
 
-      <h2 id="what-image-format-do-i-get-png-or-jpg">What image format do I get, PNG or JPG?</h2>
-      <p>Whichever you choose before converting. PNG is the default and keeps sharp edges on text and line art with no compression loss. JPG produces a smaller file and suits photo-heavy pages. Both options are available above the drop zone, and the choice applies to every page in that PDF.</p>
+      <h2 id="will-the-images-look-exactly-like-the-pdf">Will the images look exactly like the PDF?</h2>
+      <p>Yes. This conversion does not try to extract or rebuild anything. It draws each page the same way a PDF viewer draws it on screen, then saves that as an image. Charts, embedded photographs, colours and positioning all come through as they appear in the original.</p>
 
-      <h2 id="can-i-choose-the-resolution">Can I choose the resolution?</h2>
-      <p>Yes, in DPI: 96 for on-screen use, 150 for a good balance of quality and file size, or 300 for print-quality output. Higher DPI produces larger, sharper images but takes a little longer to render and produces a bigger download, since every pixel is generated on your own device.</p>
+      <h2 id="which-should-i-pick-png-or-jpg">Which should I pick, PNG or JPG?</h2>
+      <p>PNG keeps text edges sharp with no compression artefacts, which suits pages that are mostly type or line drawings. JPG makes a smaller file and suits photographic pages. The choice applies to every page of that PDF, and you can run the conversion again with the other setting.</p>
 
-      <h2 id="is-there-a-file-size-or-page-limit">Is there a file size or page limit?</h2>
-      <p>No artificial limit is applied by this tool. The real constraint is your device's memory, since every page is rendered locally rather than on a server. A short PDF at 150 DPI converts in a few seconds. A long document at 300 DPI takes longer and produces a larger zip file to download.</p>
+      <h2 id="what-does-the-resolution-setting-change">What does the resolution setting change?</h2>
+      <p>It sets how many pixels each page is drawn at. Use 96 DPI for viewing on screen, 150 for a good balance, and 300 when the image needs to hold up in print. Higher settings take longer to render and produce a noticeably bigger download.</p>
 
-      <h2 id="will-the-images-match-the-pdf-page-exactly">Will the images match the PDF page exactly?</h2>
-      <p>Yes. Unlike the PDF to PowerPoint tool, this one does not try to extract or rebuild anything, it renders each page pixel for pixel, the same way a PDF viewer would display it. Charts, photos, colours, and layout all come through exactly as they appear in the original PDF.</p>
+      <h2 id="does-my-file-get-uploaded">Does my file get uploaded?</h2>
+      <p>No. Each page is rendered inside your own browser using your device's own graphics, and the zip is assembled there too. Nothing about the PDF is transmitted. You can confirm it by watching your browser's network activity while a conversion runs.</p>
 
-      <h2 id="does-it-work-on-mac-or-is-it-windows-only">Does it work on Mac, or is it Windows only?</h2>
-      <p>This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page.</p>
+      <h2 id="does-it-work-on-scanned-pdfs">Does it work on scanned PDFs?</h2>
+      <p>Yes, and this is the conversion that handles them best. A scan is already a picture, so rendering it to PNG or JPG loses nothing at all. Conversions that read text, such as PDF to Text, are the ones that come back empty on a scan.</p>
 
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>Yes. This page runs in the browser, so macOS, Windows, Linux and ChromeOS all work. The separate BenchPDF desktop app is Windows only, but this conversion does not need it.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, for a full slide deck instead of separate images.</li>
-        <li><a href="/tools/pdf-to-text">PDF to Text</a>, to pull out just the words with no layout at all.</li>
-        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine photos into one PDF.</li>
-        <li><a href="/tools/pdf-to-word">PDF to Word</a>, if you need an editable document (desktop app required).</li>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, when you want editable slides instead of pictures.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, when you need the words rather than the look.</li>
+        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine images into a PDF.</li>
+        <li><a href="/tools/edit-pdf">Edit PDF Text</a>, to change the words in the PDF itself.</li>
       </ul>
     </section>
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

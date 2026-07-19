@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF to Text Converter, Free and Private | BenchPDF</title>
-  <meta name="description" content="Extract the plain text from a PDF right in your browser. No upload, no account, no page limit. Works instantly on any device, and is completely free to use.">
+  <title>PDF to Text: keeps the reading order | BenchPDF</title>
+  <meta name="description" content="Pull the words out of a PDF as a plain .txt file, with line breaks, paragraph breaks and page breaks kept where the document had them.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/pdf-to-text">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PDF to Text Converter, Free and Private | BenchPDF">
-  <meta property="og:description" content="Extract the plain text from a PDF right in your browser. No upload, no account, no page limit. Works instantly on any device, and is completely free to use.">
+  <meta property="og:title" content="PDF to Text: keeps the reading order | BenchPDF">
+  <meta property="og:description" content="Pull the words out of a PDF as a plain .txt file, with line breaks, paragraph breaks and page breaks kept where the document had them.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/pdf-to-text">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -45,50 +45,50 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "Is it safe to convert my PDF here?",
+            "name": "Does it keep paragraphs and line breaks?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. The text is read out of your PDF using your own browser, and the resulting file is generated on your device. Nothing is uploaded to a server at any point. You can check this yourself by watching your browser's network activity while the conversion runs."
+                "text": "As closely as the PDF allows. Line and paragraph breaks are preserved where the document's own structure records them, and each page is separated by a form feed character. What does not survive is anything positional, so columns and tables are flattened into one reading order."
             }
         },
         {
             "@type": "Question",
-            "name": "Will it keep the layout or paragraph breaks?",
+            "name": "Why is my file empty?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Line and paragraph breaks are preserved as closely as the PDF's own internal structure allows, and each page is separated by a form-feed character. Multi-column layouts and tables are flattened into a single reading order, since plain text has no concept of columns or page position."
+                "text": "Almost always because the PDF is a scan. A scanned page is a photograph, with no text underneath for the tool to read. Try selecting a line of text in a PDF viewer: if nothing highlights, there is nothing to extract, and you will need OCR software to recognise the words first."
             }
         },
         {
             "@type": "Question",
-            "name": "Does it work on scanned PDFs?",
+            "name": "Does my file get uploaded?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. A scanned page is a photograph of a document, with no underlying text for a browser to read, only pixels. This tool extracts existing text, it does not recognise text in an image (OCR). If a PDF is a scan, this tool will return an empty or near-empty result for that page."
+                "text": "No. The text is read out of the PDF by your own browser and the .txt file is generated on your device. Nothing is sent anywhere. You can watch your browser's network activity during a conversion to confirm it."
             }
         },
         {
             "@type": "Question",
-            "name": "Is there a file size or page limit?",
+            "name": "What encoding is the output?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No artificial limit is applied by this tool. The real constraint is your device's memory and processing power, since the extraction happens locally rather than on a server. A short PDF converts in under a second. A very long document takes a little longer, with no upload cap involved."
+                "text": "UTF-8, so accented characters, currency symbols and other non-ASCII text come through intact rather than as question marks. The file opens in any text editor, word processor or code editor without needing a particular setting."
             }
         },
         {
             "@type": "Question",
-            "name": "What format is the output file?",
+            "name": "Is there a length limit?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "A plain .txt file, encoded as UTF-8, with pages separated by a form-feed character rather than any visible marker. It opens in any text editor, word processor, or code editor. There is no formatting, no fonts, and no images, only the words that were extracted from the PDF."
+                "text": "None is set by the tool. A one page letter extracts in well under a second. A very long report takes a little longer, and the practical ceiling is your own device's memory rather than any cap imposed here, because the work happens locally."
             }
         },
         {
             "@type": "Question",
-            "name": "Does it work on Mac, or is it Windows only?",
+            "name": "Does it work on a Mac?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page."
+                "text": "Yes. This page runs in the browser, so it works the same on macOS, Windows, Linux and ChromeOS. The separate BenchPDF desktop app is Windows only, but this conversion does not need it."
             }
         }
     ]
@@ -109,7 +109,6 @@
     </div>
   </header>
 
-
   <div class="main">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>PDF to Text Converter</span></nav>
   </div>
@@ -117,7 +116,7 @@
   <main class="main" id="main" data-state="idle">
     <section class="tool-hero">
       <h1>PDF to Text Converter</h1>
-      <p class="lede">Drop a PDF below and it converts here in your browser. You get a plain text file back.</p>
+      <p class="lede">Drop a PDF below. You get the words as a plain text file, with the line and page breaks kept where the document had them.</p>
     </section>
 
     <section class="conv-panel">
@@ -129,16 +128,17 @@
             <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <p class="dz-title">Drop a PDF to extract its text</p>
-          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button> from your device.</p>
+          <p class="dz-title">Drop a PDF here</p>
+          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.</p>
         </div>
         <input id="file" type="file" accept=".pdf" hidden>
       </div>
+      <p class="conv-badge">Files stay on your computer.</p>
 
       <section id="conv-working" aria-live="polite">
         <div class="work-head">
           <div class="spinner" aria-hidden="true"></div>
-          <div class="work-phase" id="work-phase">Preparing&hellip;</div>
+          <div class="work-phase" id="work-phase">Getting ready</div>
         </div>
       </section>
 
@@ -148,7 +148,7 @@
             <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
                   stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Done</h2>
+          <h2>Your file is ready</h2>
         </div>
         <div class="notice notice-warn" id="done-notice" hidden>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
@@ -157,17 +157,17 @@
           </svg>
           <span id="done-notice-text"></span>
         </div>
-        <div class="result" style="margin-top:16px">
+        <div class="result">
           <div class="result-main">
             <div class="result-name" id="result-name"></div>
             <div class="result-size" id="result-size"></div>
           </div>
           <div class="result-actions">
-            <a class="btn btn-primary btn-sm" id="result-download" download>Download</a>
+            <a class="btn btn-sm" id="result-download" download>Download</a>
           </div>
         </div>
         <div style="margin-top:18px">
-          <button type="button" class="btn btn-ghost" id="done-more">Convert another PDF</button>
+          <button type="button" class="linkbtn" id="done-more">Convert another file</button>
         </div>
       </section>
 
@@ -177,54 +177,64 @@
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
             <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
           </svg>
-          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Something did not work</h2>
+          <h2>That did not work</h2>
         </div>
         <p class="err-body" id="err-body"></p>
-        <button type="button" class="btn btn-ghost" id="err-retry">Try another file</button>
+        <button type="button" class="btn btn-sm" id="err-retry">Try another file</button>
       </section>
     </section>
 
     <section class="prose">
-      <p>Most online text-extraction tools upload your file to a server first. This tool reads the text layer of your PDF directly in your browser and writes it straight to a .txt file on your device. Nothing about the PDF or its contents is sent anywhere.</p>
+      <h2 id="what-comes-through">What comes through</h2>
+      <ul>
+        <li>The reading order of the page, so sentences arrive in the order they were written.</li>
+        <li>Line and paragraph breaks, as closely as the PDF's own structure allows.</li>
+        <li>Page breaks, marked with a form feed character between pages.</li>
+        <li>The characters themselves as UTF-8, so accents and symbols survive.</li>
+      </ul>
+
+      <h2 id="the-limit">Where it stops</h2>
+      <p>Plain text has no concept of columns, so a two-column layout or a table is flattened into a single run of text. It stays readable but the shape is gone. A scanned PDF has no text underneath at all and comes back empty or nearly so, because this reads existing text rather than recognising letters in a picture. That needs OCR, which BenchPDF does not do.</p>
 
       <h2 id="how-to-convert-pdf-to-text">How to convert PDF to text</h2>
       <ul>
-        <li>Drop your PDF into the box, or click to choose one from your device.</li>
-        <li>Wait a few seconds while your browser reads the text on each page.</li>
+        <li>Drop your PDF into the box, or choose a file.</li>
+        <li>Wait a moment while the text is read from each page.</li>
         <li>Click Download to save the .txt file.</li>
         <li>Open it in any text editor or word processor.</li>
       </ul>
-      <h2 id="is-it-safe-to-convert-my-pdf-here">Is it safe to convert my PDF here?</h2>
-      <p>Yes. The text is read out of your PDF using your own browser, and the resulting file is generated on your device. Nothing is uploaded to a server at any point. You can check this yourself by watching your browser's network activity while the conversion runs.</p>
 
-      <h2 id="will-it-keep-the-layout-or-paragraph-breaks">Will it keep the layout or paragraph breaks?</h2>
-      <p>Line and paragraph breaks are preserved as closely as the PDF's own internal structure allows, and each page is separated by a form-feed character. Multi-column layouts and tables are flattened into a single reading order, since plain text has no concept of columns or page position.</p>
+      <h2 id="does-it-keep-paragraphs-and-line-breaks">Does it keep paragraphs and line breaks?</h2>
+      <p>As closely as the PDF allows. Line and paragraph breaks are preserved where the document's own structure records them, and each page is separated by a form feed character. What does not survive is anything positional, so columns and tables are flattened into one reading order.</p>
 
-      <h2 id="does-it-work-on-scanned-pdfs">Does it work on scanned PDFs?</h2>
-      <p>No. A scanned page is a photograph of a document, with no underlying text for a browser to read, only pixels. This tool extracts existing text, it does not recognise text in an image (OCR). If a PDF is a scan, this tool will return an empty or near-empty result for that page. See
-        <a href="/blog/scanned-pdf-no-text">how to convert a scanned PDF that's just images</a>
-        for what to do instead.</p>
+      <h2 id="why-is-my-file-empty">Why is my file empty?</h2>
+      <p>Almost always because the PDF is a scan. A scanned page is a photograph, with no text underneath for the tool to read. Try selecting a line of text in a PDF viewer: if nothing highlights, there is nothing to extract, and you will need OCR software to recognise the words first.</p>
 
-      <h2 id="is-there-a-file-size-or-page-limit">Is there a file size or page limit?</h2>
-      <p>No artificial limit is applied by this tool. The real constraint is your device's memory and processing power, since the extraction happens locally rather than on a server. A short PDF converts in under a second. A very long document takes a little longer, with no upload cap involved.</p>
+      <h2 id="does-my-file-get-uploaded">Does my file get uploaded?</h2>
+      <p>No. The text is read out of the PDF by your own browser and the .txt file is generated on your device. Nothing is sent anywhere. You can watch your browser's network activity during a conversion to confirm it.</p>
 
-      <h2 id="what-format-is-the-output-file">What format is the output file?</h2>
-      <p>A plain .txt file, encoded as UTF-8, with pages separated by a form-feed character rather than any visible marker. It opens in any text editor, word processor, or code editor. There is no formatting, no fonts, and no images, only the words that were extracted from the PDF.</p>
+      <h2 id="what-encoding-is-the-output">What encoding is the output?</h2>
+      <p>UTF-8, so accented characters, currency symbols and other non-ASCII text come through intact rather than as question marks. The file opens in any text editor, word processor or code editor without needing a particular setting.</p>
 
-      <h2 id="does-it-work-on-mac-or-is-it-windows-only">Does it work on Mac, or is it Windows only?</h2>
-      <p>This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it for this page.</p>
+      <h2 id="is-there-a-length-limit">Is there a length limit?</h2>
+      <p>None is set by the tool. A one page letter extracts in well under a second. A very long report takes a little longer, and the practical ceiling is your own device's memory rather than any cap imposed here, because the work happens locally.</p>
 
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>Yes. This page runs in the browser, so it works the same on macOS, Windows, Linux and ChromeOS. The separate BenchPDF desktop app is Windows only, but this conversion does not need it.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, for a full slide deck instead of plain text.</li>
-        <li><a href="/tools/pdf-to-images">PDF to Images</a>, for a picture of each page instead of the words.</li>
-        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine photos into one PDF.</li>
-        <li><a href="/tools/pdf-to-word">PDF to Word</a>, if you need an editable document (desktop app required).</li>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, when you want the layout kept as editable slides.</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, when you need the look of the page rather than the words.</li>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, for an editable document with the formatting kept.</li>
+        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to combine pictures into a PDF.</li>
       </ul>
     </section>
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

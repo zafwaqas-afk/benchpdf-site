@@ -12,6 +12,59 @@ Last verified against the shipped site: 2026-07-19.
 
 ---
 
+## 0. Positioning
+
+**The three pillars are simplicity, functionality and trust. None of those three
+words, nor their synonyms, may appear anywhere in the copy.** Each is
+demonstrated instead:
+
+| Pillar | How it is demonstrated, never claimed |
+|---|---|
+| Simplicity | A working drop zone in the first viewport. No sign-up wall, no options to read before starting. |
+| Functionality | Copy leads with what the output preserves, in specifics a reader can check against their own file. |
+| Trust | A dated release line in every footer, a version number on the download button, one stated limitation on every tool page, and honest screenshots only. |
+
+**The lead is conversion quality.** The proposition is that your document comes
+out the way it went in. Not that the tool is easy, fast, or safe.
+
+### Banned words
+
+These must not appear in any user-facing string. Verified with:
+
+```
+grep -rniE "(simple|powerful|trust|secure|private|forever|unlimited|no limits|no signup)" --include=*.html . | grep -v privacy.html
+```
+
+`private` is exempt on `/privacy` only, where it is the subject of the page.
+Also banned as marketing phrases anywhere: `free forever`, `no watermarks`,
+`no account`. The word `watermark` is allowed where a blog post explains what
+actually happens to one during a conversion.
+
+### Pricing honesty
+
+The exact string `Free during early access` appears in **exactly two places**
+and nowhere else:
+
+1. Directly under the hero drop zone on `/`.
+2. Under the download button in the desktop block on `/`.
+
+There is no pricing page and none is to be invented. Desktop tool pages carry a
+requirement note under their download button (`Needs Microsoft Word installed.`
+and so on) with no pricing claim.
+
+### Structural trust
+
+- The download button reads `Download BenchPDF 1.0.0 for Windows`. The version
+  number is part of the string and is updated on each release.
+- Every page footer carries the dated latest-release line, linking to
+  `/changelog`.
+- Every tool page carries exactly one honest limitation, under a `Where it
+  stops` heading, before the how-to.
+- No testimonials, star ratings, user counts, download counters, awards, or
+  security certifications. None have been supplied and none are to be invented.
+
+---
+
 ## 1. Page inventory
 
 Deployed at `https://benchpdf.pages.dev` from `github.com/zafwaqas-afk/benchpdf-site`
@@ -95,7 +148,7 @@ requirement after scrolling.
   and show the download button above the fold. They must not show a drop zone.
 
 Every desktop tool lede begins with the exact string
-`This one needs the free Windows app.`
+`This one needs the Windows app.`
 
 The home page tool index states this in the group headings before any click.
 
@@ -142,21 +195,29 @@ without agreement.
 
 | Element | String |
 |---|---|
-| Title | `Convert PDFs in your browser, free \| BenchPDF` |
-| Meta description | `Convert PDF to PowerPoint, images or text in your browser. Files stay on your computer. The free Windows app also converts Word, Excel and PowerPoint.` |
-| H1 | `Convert privately. upload nothing.` |
+| Title | `BenchPDF: documents that come out the way they went in` |
+| Meta description | `Convert a PDF to PowerPoint, images or text and keep the text editable, the layout intact and the file on your own computer. The Windows app adds Word, Excel and editing.` |
+| Hero eyebrow | `PDF tools, in your browser` |
+| H1 | `Converted. not flattened.` |
 | Drop zone heading | `Drop a PDF here to convert it` |
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
-| Privacy label | `Files stay on your computer.` |
-| Upsell | `Need Word, Excel or edit tools? The free desktop app converts with your own Office, on your own PC.` |
-| Upsell button | `Download for Windows` |
+| Under-CTA line | `Free during early access. Your file stays on your computer.` |
+| Desktop block eyebrow | `PDF tools for Windows` |
+| Desktop block body | `For Word and Excel, the desktop app converts through the copy of Office already on your PC, so the output is what Word and Excel themselves would produce. It also edits PDF text in place.` |
+| Desktop block button | `Download BenchPDF 1.0.0 for Windows` |
+| Desktop block note | `Free during early access. Windows 10 and 11.` |
 | Tools group 1 heading | `In your browser` |
-| Tools group 1 note | `These work right now. Nothing to install.` |
+| Tools group 1 note | `These run here on this page. Nothing to install.` |
 | Tools group 2 heading | `In the desktop app` |
-| Tools group 2 note | `These need the free Windows download.` |
+| Tools group 2 note | `These need the Windows download.` |
 | Promise | `Your files never leave the device you are sitting at.` |
-| Promise paragraph | `There is no upload step and no account. The browser tools run as code inside your own browser, and the desktop app converts on your own PC.` |
+| Promise paragraph | `The browser tools run as code inside your own browser, and the desktop app converts on your own PC. You can watch your browser's network activity during a conversion and see for yourself that nothing is sent.` |
 | Promise link | `Read the privacy page` |
+| Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
+
+The hero eyebrow reads `in your browser`, not `for Windows`, because the hero
+tool is the browser converter and runs on any operating system. `PDF tools for
+Windows` sits on the desktop block, where it is true.
 
 Converter states (shared with tool pages, from `assets/js/convert.js` and the
 page markup):
@@ -174,31 +235,61 @@ page markup):
 
 ### Tool pages
 
+Each tool page is written around what its output preserves, and states exactly
+one honest limitation. Section order is fixed:
+
+1. H1 and lede
+2. The tool itself (drop zone) or the download button
+3. `What comes through`, four specifics about the output
+4. `Where it stops`, one real limitation
+5. `How to ...`
+6. FAQ, six questions
+7. `Related tools`
+
 Browser tools. H1, then lede:
 
 | Page | H1 | Lede |
 |---|---|---|
-| `/tools/pdf-to-ppt` | `PDF to PowerPoint Converter` | `Drop a PDF below and it converts here in your browser. It is free, and your file stays on your computer.` |
-| `/tools/pdf-to-images` | `PDF to Image Converter` | `Drop a PDF below and it converts here in your browser. Choose PNG or JPG, and the resolution you need.` |
-| `/tools/pdf-to-text` | `PDF to Text Converter` | `Drop a PDF below and it converts here in your browser. You get a plain text file back.` |
-| `/tools/images-to-pdf` | `Images to PDF Converter` | `Drop your photos below and they combine here in your browser into a single PDF.` |
+| `/tools/pdf-to-ppt` | `PDF to PowerPoint Converter` | `Drop a PDF below. The words arrive as PowerPoint text boxes you can click into and retype, not as a picture of a page.` |
+| `/tools/pdf-to-images` | `PDF to Image Converter` | `Drop a PDF below. Each page is rendered exactly as it appears on screen, at the resolution you choose.` |
+| `/tools/pdf-to-text` | `PDF to Text Converter` | `Drop a PDF below. You get the words as a plain text file, with the line and page breaks kept where the document had them.` |
+| `/tools/images-to-pdf` | `Images to PDF Converter` | `Drop your photos below. Each one goes into the PDF at its original resolution, in the order you dropped them.` |
 
-Desktop tools. Every lede begins `This one needs the free Windows app.`:
+Desktop tools. Every lede begins `This one needs the Windows app.`:
 
 | Page | H1 | Lede |
 |---|---|---|
-| `/tools/pdf-to-word` | `PDF to Word Converter` | `This one needs the free Windows app. It converts using Word's own PDF import, so the result matches what Word itself would produce.` |
-| `/tools/word-to-pdf` | `Word to PDF Converter` | `This one needs the free Windows app. It converts using your own installed Word, so the formatting matches exactly.` |
-| `/tools/excel-to-pdf` | `Excel to PDF Converter` | `This one needs the free Windows app. It converts using your own installed Excel, so print areas and formula values match exactly.` |
-| `/tools/ppt-to-pdf` | `PowerPoint to PDF Converter` | `This one needs the free Windows app. It converts using your own installed PowerPoint, so the slides render exactly.` |
-| `/tools/web-to-pdf` | `Web Page to PDF Converter` | `This one needs the free Windows app. It saves a web page as a PDF using a browser running on your own PC.` |
-| `/tools/edit-pdf` | `Edit PDF Text` | `This one needs the free Windows app. You click any text in a PDF to change it, then export a finished PDF.` |
+| `/tools/pdf-to-word` | `PDF to Word Converter` | `This one needs the Windows app. It hands the PDF to your own copy of Word and uses Word's own import, so the result is what Word itself would produce.` |
+| `/tools/word-to-pdf` | `Word to PDF Converter` | `This one needs the Windows app. Your own copy of Word does the export, so the PDF looks exactly like the document on your screen.` |
+| `/tools/excel-to-pdf` | `Excel to PDF Converter` | `This one needs the Windows app. Your own copy of Excel does the export, so print areas and calculated values land exactly where Excel puts them.` |
+| `/tools/ppt-to-pdf` | `PowerPoint to PDF Converter` | `This one needs the Windows app. Your own copy of PowerPoint does the export, so the slides look exactly as they do in the deck.` |
+| `/tools/web-to-pdf` | `Web Page to PDF Converter` | `This one needs the Windows app. It renders the address with a real browser engine on your PC, so the page arrives laid out as a browser draws it.` |
+| `/tools/edit-pdf` | `Edit PDF Text` | `This one needs the Windows app. You click a line, retype it, and export. Pages you did not touch come out byte for byte identical.` |
 
-Desktop tool CTA button: `Download BenchPDF for Windows`
+Desktop tool CTA button: `Download BenchPDF 1.0.0 for Windows`
 
-Tool page titles are unchanged from their SEO versions and are listed in the
-page inventory files themselves. Each tool page keeps its FAQ, its how-to
-steps, its FAQPage and BreadcrumbList JSON-LD, and its related links.
+Requirement notes under that button, by page: `Needs Microsoft Word installed.`
+(pdf-to-word, word-to-pdf), `Needs Microsoft Excel installed.`,
+`Needs Microsoft PowerPoint installed.`, `Windows 10 and 11.` (web-to-pdf,
+edit-pdf).
+
+The stated limitation on each page, in one line:
+
+| Page | The limit |
+|---|---|
+| pdf-to-ppt | Scanned pages have no text to recover and arrive as a picture. Tables are not rebuilt as PowerPoint tables in the browser. |
+| pdf-to-images | The output is a picture, so the text is no longer selectable or searchable. |
+| pdf-to-text | Columns and tables flatten into one reading order. A scan comes back empty. |
+| images-to-pdf | JPG and PNG only, so HEIC needs the desktop app. Nothing is recompressed, so the PDF is large. |
+| pdf-to-word | Structure has to be inferred, so multi-column and borderless tables need tidying. Scans need OCR. |
+| word-to-pdf | Tracked changes and comments export as displayed, so hide them first. |
+| excel-to-pdf | Output depends entirely on the print settings saved in the workbook. |
+| ppt-to-pdf | Animations flatten to their finished state. Video becomes its poster frame. |
+| web-to-pdf | Pages behind a login cannot be fetched. This is the one feature that makes a network request. |
+| edit-pdf | Edited text is redrawn in the nearest installed font, so an unusual embedded typeface will shift slightly. |
+
+Each tool page keeps its FAQ, its how-to steps, its FAQPage and BreadcrumbList
+JSON-LD, and its related links.
 
 ### Privacy `/privacy`
 

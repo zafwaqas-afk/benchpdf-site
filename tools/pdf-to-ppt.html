@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF to PowerPoint Converter, Free and Private | BenchPDF</title>
-  <meta name="description" content="Convert PDF to editable PowerPoint slides right in your browser. No upload, no account, no page limit. Nothing leaves your device, and it is completely free.">
+  <title>PDF to PowerPoint: keeps text editable | BenchPDF</title>
+  <meta name="description" content="Turn a PDF into slides where the text is still text. Headings and body copy arrive as PowerPoint text boxes you can click into and retype, at their original size.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/pdf-to-ppt">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PDF to PowerPoint Converter, Free and Private | BenchPDF">
-  <meta property="og:description" content="Convert PDF to editable PowerPoint slides right in your browser. No upload, no account, no page limit.">
+  <meta property="og:title" content="PDF to PowerPoint: keeps text editable | BenchPDF">
+  <meta property="og:description" content="Turn a PDF into slides where the text is still text. Headings and body copy arrive as PowerPoint text boxes you can click into and retype, at their original size.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/pdf-to-ppt">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -19,70 +19,80 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/BodoniModa-Italic.woff2">
   <link rel="stylesheet" href="/assets/css/style.css">
   <script type="application/ld+json">
-  {
+{
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://benchpdf.pages.dev/" },
-      { "@type": "ListItem", "position": 2, "name": "PDF to PowerPoint Converter", "item": "https://benchpdf.pages.dev/tools/pdf-to-ppt" }
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://benchpdf.pages.dev/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "PDF to PowerPoint Converter",
+            "item": "https://benchpdf.pages.dev/tools/pdf-to-ppt"
+        }
     ]
-  }
+}
   </script>
   <script type="application/ld+json">
-  {
+{
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Is it safe to convert my PDF here?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. This tool runs entirely in your browser using JavaScript. Your PDF is read and converted on your own device, and it is never sent to a server. You can check this yourself: open your browser's network activity while converting and you will see no upload taking place."
+        {
+            "@type": "Question",
+            "name": "Can I edit the text afterwards?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, on any page that had selectable text in the PDF. Those words become genuine PowerPoint text boxes, so you click in and type over them the same way you would in a deck you built yourself. Pages that were scans arrive as a single picture, which you can move and resize but not retype."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What happens to my tables?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In this browser version a table arrives as text positioned where the cells were, so it reads correctly but is not a PowerPoint table object. The desktop app rebuilds detected tables as real PowerPoint tables you can add rows to. If your deck depends on editing table structure, use the desktop app."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does my file get uploaded?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The conversion runs as JavaScript inside your own browser, so the PDF is read on your device and the .pptx is built there too. You can watch your browser's network activity during a conversion and see that nothing is sent."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is there a page limit?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "None is set by the tool. What actually limits you is your own device's memory, since the work happens locally rather than on a server. A short document converts in a few seconds. A long, image-heavy one takes longer and uses more memory."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does it work on a Mac?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. This page runs in the browser, so it works on macOS, Windows, Linux and ChromeOS alike. The separate BenchPDF desktop app, which handles Word and Excel conversions, is Windows only, but you do not need it for this."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What fonts does the output use?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The slides are set in a standard font at the sizes read from the PDF, rather than embedding the original typeface. Line lengths and headings therefore stay close to the original, though an unusual display font will not carry across exactly. The desktop app maps fonts more closely."
+            }
         }
-      },
-      {
-        "@type": "Question",
-        "name": "Will it keep my formatting?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "For pages that are mostly text, yes: paragraphs, font sizes, and rough positioning carry over as real, editable PowerPoint text boxes. Pages with charts, complex graphics, or scanned images are placed as a single picture instead, since rebuilding those precisely in a browser is not yet reliable. BenchPDF's desktop app handles tables and charts with more fidelity."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a file size or page limit?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No artificial limit is applied by this tool. The practical limit is your own device's memory and processing power, since everything happens locally. A short text-based PDF converts in a few seconds. A long or image-heavy PDF takes longer, but there is no upload cap, account tier, or subscription involved."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I edit the PowerPoint after converting?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes, for any page that had selectable text in the original PDF. That text becomes a genuine, editable text box in the .pptx file, openable in PowerPoint, Google Slides, or Keynote. Pages with no extractable text, typically scans, are inserted as a single image instead, which you can resize but not edit as text."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does it work on Mac, or is it Windows only?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "This online converter works on any device with a modern browser, including Mac, Windows, Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF also has a separate Windows desktop app with extra features, but you do not need it, or a Windows PC, to use this page."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What happens to scanned PDFs with no real text?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "A scanned page has no underlying text for a browser to read, only pixels. When that happens, this tool renders the page as an image and places it on its own slide, so nothing is lost visually, though the words on it are not selectable or editable. Recognising text in a scan, OCR, is not part of this tool."
-        }
-      }
     ]
-  }
+}
   </script>
 </head>
 <body data-tool="pdf-to-pptx">
@@ -99,7 +109,6 @@
     </div>
   </header>
 
-
   <div class="main">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>PDF to PowerPoint Converter</span></nav>
   </div>
@@ -107,7 +116,7 @@
   <main class="main" id="main" data-state="idle">
     <section class="tool-hero">
       <h1>PDF to PowerPoint Converter</h1>
-      <p class="lede">Drop a PDF below and it converts here in your browser. It is free, and your file stays on your computer.</p>
+      <p class="lede">Drop a PDF below. The words arrive as PowerPoint text boxes you can click into and retype, not as a picture of a page.</p>
     </section>
 
     <section class="conv-panel">
@@ -119,16 +128,17 @@
             <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
                   stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <p class="dz-title">Drop a PDF to convert it to PowerPoint</p>
-          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button> from your device.</p>
+          <p class="dz-title">Drop a PDF here</p>
+          <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.</p>
         </div>
         <input id="file" type="file" accept=".pdf" hidden>
       </div>
+      <p class="conv-badge">Files stay on your computer.</p>
 
       <section id="conv-working" aria-live="polite">
         <div class="work-head">
           <div class="spinner" aria-hidden="true"></div>
-          <div class="work-phase" id="work-phase">Preparing&hellip;</div>
+          <div class="work-phase" id="work-phase">Getting ready</div>
         </div>
       </section>
 
@@ -138,7 +148,7 @@
             <path d="m5 12.5 4.3 4.3L19 7.2" stroke="currentColor" stroke-width="1.8"
                   stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Done</h2>
+          <h2>Your file is ready</h2>
         </div>
         <div class="notice notice-warn" id="done-notice" hidden>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
@@ -147,17 +157,17 @@
           </svg>
           <span id="done-notice-text"></span>
         </div>
-        <div class="result" style="margin-top:16px">
+        <div class="result">
           <div class="result-main">
             <div class="result-name" id="result-name"></div>
             <div class="result-size" id="result-size"></div>
           </div>
           <div class="result-actions">
-            <a class="btn btn-primary btn-sm" id="result-download" download>Download</a>
+            <a class="btn btn-sm" id="result-download" download>Download</a>
           </div>
         </div>
         <div style="margin-top:18px">
-          <button type="button" class="btn btn-ghost" id="done-more">Convert another PDF</button>
+          <button type="button" class="linkbtn" id="done-more">Convert another file</button>
         </div>
       </section>
 
@@ -167,81 +177,64 @@
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
             <path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
           </svg>
-          <h2 style="font-family:var(--serif);font-weight:600;font-size:16px;margin:0">Something did not work</h2>
+          <h2>That did not work</h2>
         </div>
         <p class="err-body" id="err-body"></p>
-        <button type="button" class="btn btn-ghost" id="err-retry">Try another file</button>
+        <button type="button" class="btn btn-sm" id="err-retry">Try another file</button>
       </section>
     </section>
 
     <section class="prose">
-      <p>Most "PDF to PPT" sites ask you to upload the file to their server, wait in a queue, then
-        download the result. This tool skips that: it reads your PDF's text and layout using your
-        own browser's JavaScript engine and builds the .pptx file on your device. Nothing is
-        transmitted anywhere, at any point.</p>
+      <h2 id="what-comes-through">What comes through</h2>
+      <ul>
+        <li>Text as real, editable PowerPoint text boxes, so you can click in and retype.</li>
+        <li>Font size, near enough that headings still read as headings.</li>
+        <li>Where things sat on the page, so the slide keeps the original arrangement.</li>
+        <li>One slide per page, in the original order.</li>
+      </ul>
+
+      <h2 id="the-limit">Where it stops</h2>
+      <p>A page with no selectable text underneath, which is what a scan is, has no words to recover. That page arrives as a picture of itself instead, so nothing is lost visually but the text is not editable. Getting text out of a scan needs OCR, which BenchPDF does not do. The desktop app also rebuilds tables as real PowerPoint tables, which this browser version does not.</p>
 
       <h2 id="how-to-convert-pdf-to-powerpoint">How to convert PDF to PowerPoint</h2>
       <ul>
-        <li>Drop your PDF into the box above, or click to choose a file from your device.</li>
-        <li>Wait a few seconds while your browser reads the text and layout of each page.</li>
-        <li>Click Download once it finishes, to save the .pptx file.</li>
-        <li>Open it in PowerPoint, Google Slides, or Keynote and check the result.</li>
+        <li>Drop your PDF into the box above, or choose a file.</li>
+        <li>Wait while your browser reads the text and layout of each page.</li>
+        <li>Click Download to save the .pptx file.</li>
+        <li>Open it in PowerPoint, Google Slides or Keynote.</li>
       </ul>
 
-      <h2 id="is-it-safe-to-convert-my-pdf-here">Is it safe to convert my PDF here?</h2>
-      <p>Yes. This tool runs entirely in your browser using JavaScript. Your PDF is read and
-        converted on your own device, and it is never sent to a server. You can check this
-        yourself: open your browser's network activity while converting and you will see no
-        upload taking place.</p>
+      <h2 id="can-i-edit-the-text-afterwards">Can I edit the text afterwards?</h2>
+      <p>Yes, on any page that had selectable text in the PDF. Those words become genuine PowerPoint text boxes, so you click in and type over them the same way you would in a deck you built yourself. Pages that were scans arrive as a single picture, which you can move and resize but not retype.</p>
 
-      <h2 id="will-it-keep-my-formatting">Will it keep my formatting?</h2>
-      <p>For pages that are mostly text, yes: paragraphs, font sizes, and rough positioning carry
-        over as real, editable PowerPoint text boxes. Pages with charts, complex graphics, or
-        scanned images are placed as a single picture instead, since rebuilding those precisely in
-        a browser is not yet reliable. BenchPDF's desktop app handles tables and charts with more
-        fidelity.</p>
+      <h2 id="what-happens-to-my-tables">What happens to my tables?</h2>
+      <p>In this browser version a table arrives as text positioned where the cells were, so it reads correctly but is not a PowerPoint table object. The desktop app rebuilds detected tables as real PowerPoint tables you can add rows to. If your deck depends on editing table structure, use the desktop app.</p>
 
-      <h2 id="is-there-a-file-size-or-page-limit">Is there a file size or page limit?</h2>
-      <p>No artificial limit is applied by this tool. The practical limit is your own device's
-        memory and processing power, since everything happens locally. A short text-based PDF
-        converts in a few seconds. A long or image-heavy PDF takes longer, but there is no upload
-        cap, account tier, or subscription involved.</p>
+      <h2 id="does-my-file-get-uploaded">Does my file get uploaded?</h2>
+      <p>No. The conversion runs as JavaScript inside your own browser, so the PDF is read on your device and the .pptx is built there too. You can watch your browser's network activity during a conversion and see that nothing is sent.</p>
 
-      <h2 id="can-i-edit-the-powerpoint-after-converting">Can I edit the PowerPoint after converting?</h2>
-      <p>Yes, for any page that had selectable text in the original PDF. That text becomes a
-        genuine, editable text box in the .pptx file, openable in PowerPoint, Google Slides, or
-        Keynote. Pages with no extractable text, typically scans, are inserted as a single image
-        instead, which you can resize but not edit as text.</p>
+      <h2 id="is-there-a-page-limit">Is there a page limit?</h2>
+      <p>None is set by the tool. What actually limits you is your own device's memory, since the work happens locally rather than on a server. A short document converts in a few seconds. A long, image-heavy one takes longer and uses more memory.</p>
 
-      <h2 id="does-it-work-on-mac-or-is-it-windows-only">Does it work on Mac, or is it Windows only?</h2>
-      <p>This online converter works on any device with a modern browser, including Mac, Windows,
-        Linux, and Chromebooks, since it runs as JavaScript rather than a Windows program. BenchPDF
-        also has a separate Windows desktop app with extra features, but you do not need it, or a
-        Windows PC, to use this page.</p>
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>Yes. This page runs in the browser, so it works on macOS, Windows, Linux and ChromeOS alike. The separate BenchPDF desktop app, which handles Word and Excel conversions, is Windows only, but you do not need it for this.</p>
 
-      <h2 id="what-happens-to-scanned-pdfs-with-no-real-text">What happens to scanned PDFs with no real text?</h2>
-      <p>A scanned page has no underlying text for a browser to read, only pixels. When that
-        happens, this tool renders the page as an image and places it on its own slide, so nothing
-        is lost visually, though the words on it are not selectable or editable. Recognising text
-        in a scan, OCR, is not part of this tool. See
-        <a href="/blog/scanned-pdf-no-text">how to convert a scanned PDF that's just images</a>
-        for more on what your options are.</p>
-
+      <h2 id="what-fonts-does-the-output-use">What fonts does the output use?</h2>
+      <p>The slides are set in a standard font at the sizes read from the PDF, rather than embedding the original typeface. Line lengths and headings therefore stay close to the original, though an unusual display font will not carry across exactly. The desktop app maps fonts more closely.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/pdf-to-images">PDF to Images</a>, for when you want a picture of
-          each page rather than a slide deck.</li>
-        <li><a href="/tools/pdf-to-text">PDF to Text</a>, to pull out just the words with no
-          layout at all.</li>
-        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine
-          photos or scans into one PDF.</li>
-        <li><a href="/tools/pdf-to-word">PDF to Word</a>, if you need an editable document
-          rather than slides (desktop app required).</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, when you want a picture of each page instead of editable slides.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, when you only need the words and no layout at all.</li>
+        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to go the other way and combine pictures into a PDF.</li>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, for an editable document rather than slides.</li>
       </ul>
     </section>
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

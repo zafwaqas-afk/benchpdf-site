@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF to Word Converter, Free and Private | BenchPDF</title>
-  <meta name="description" content="Convert PDF to an editable Word document using Word's own built-in import feature. Free desktop app, no account, and nothing is ever uploaded to a server.">
+  <title>PDF to Word, converted by Word itself | BenchPDF</title>
+  <meta name="description" content="Rebuild a PDF as an editable Word document using Word's own PDF import on your PC, so paragraphs, tables and styles land the way Word itself reads them.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/pdf-to-word">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PDF to Word Converter, Free and Private | BenchPDF">
-  <meta property="og:description" content="Convert PDF to an editable Word document using Word's own built-in import feature. Free desktop app, no account, and nothing is ever uploaded to a server.">
+  <meta property="og:title" content="PDF to Word, converted by Word itself | BenchPDF">
+  <meta property="og:description" content="Rebuild a PDF as an editable Word document using Word's own PDF import on your PC, so paragraphs, tables and styles land the way Word itself reads them.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/pdf-to-word">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -45,50 +45,50 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "Why isn't this available online, only as a desktop download?",
+            "name": "Why is this not in the browser?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Rebuilding a PDF as an editable document accurately means using Word's own PDF import, since Word's interpretation of paragraphs, tables, and layout from a PDF is specific to Word itself. A browser-based reconstruction would guess differently. BenchPDF's desktop app drives your own installed copy of Word directly, matching what Word itself would produce."
+                "text": "Because the quality comes from Word doing the work. Word's reading of paragraphs, tables and layout from a PDF is particular to Word, and a browser cannot run it. A browser rebuild would be a second guess at what Word would have done, so BenchPDF drives your installed copy directly instead."
             }
         },
         {
             "@type": "Question",
-            "name": "Is it safe? Does my PDF get uploaded anywhere?",
+            "name": "Do I need Word installed?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, it is safe, and no, nothing is uploaded. The desktop app runs entirely on your own PC: it opens your PDF using your installed copy of Word's own import feature, and saves the resulting document to your disk. There is no server involved at any point, and no account is required."
+                "text": "Yes, because your copy of Word performs the conversion. If BenchPDF cannot find Word on the PC, this conversion is greyed out with an explanation rather than falling back to a rougher method that would quietly give you a worse document."
             }
         },
         {
             "@type": "Question",
-            "name": "Do I need Microsoft Word installed?",
+            "name": "Will my tables survive?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. This conversion uses Word's own built-in PDF import, so Word needs to already be on your PC. If it isn't detected, this specific conversion is greyed out in the app with an explanation, rather than falling back to a separate, less accurate reconstruction of the document."
+                "text": "Usually, when the table has visible rules that mark out the cells. Word reconstructs those as real Word tables you can edit. Tables laid out with spacing alone and no borders are the hard case, because there is nothing in the file that says where one cell ends, so expect to fix those by hand."
             }
         },
         {
             "@type": "Question",
-            "name": "Will the result be fully editable?",
+            "name": "What about a scanned PDF?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "For PDFs that contain real text, yes, the output is a genuine, editable .docx file, exactly as if you had opened the PDF in Word and saved it. For scanned PDFs with no underlying text, Word's import has the same limits it always has: there is no text to recover without OCR."
+                "text": "There is nothing to convert. A scan is a photograph of a page, so there is no text underneath for Word to import, and you get a document containing a picture. Recognising the words needs OCR software, which BenchPDF does not include."
             }
         },
         {
             "@type": "Question",
-            "name": "Is there a file size or page limit?",
+            "name": "Is my document uploaded anywhere?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No artificial limit is set by BenchPDF. The practical limit is whatever your own copy of Word can import, since the conversion is Word doing the work. A short PDF converts in a few seconds. A long or complex PDF takes Word longer, exactly as it would if you opened it yourself."
+                "text": "No. The app runs on your PC and opens the PDF through the copy of Word already installed there, saving the result to your own disk. No server is involved at any point in the conversion."
             }
         },
         {
             "@type": "Question",
-            "name": "Does it work on Mac?",
+            "name": "Does it work on a Mac?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The BenchPDF desktop app is Windows only, since it automates the Windows version of Microsoft Word directly. On a Mac, Word has the same built-in PDF import under File then Open, which you can use directly for a similarly faithful result."
+                "text": "The app is Windows only, because it automates the Windows build of Word. Word for Mac has the same PDF import built in under File then Open, which gives a comparable result since it is also Word doing the reading."
             }
         }
     ]
@@ -109,7 +109,6 @@
     </div>
   </header>
 
-
   <div class="main">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>PDF to Word Converter</span></nav>
   </div>
@@ -117,54 +116,64 @@
   <main class="main" id="main">
     <section class="tool-hero">
       <h1>PDF to Word Converter</h1>
-      <p class="lede">This one needs the free Windows app. It converts using Word's own PDF import, so the result matches what Word itself would produce.</p>
+      <p class="lede">This one needs the Windows app. It hands the PDF to your own copy of Word and uses Word's own import, so the result is what Word itself would produce.</p>
       <div class="tool-cta">
-        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF for Windows</a>
-        <span class="pitch-cta-note">Free, no account. Requires Microsoft Word installed.</span>
+        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF 1.0.0 for Windows</a>
+        <span class="pitch-cta-note">Needs Microsoft Word installed.</span>
       </div>
     </section>
 
     <section class="prose">
-      <p>BenchPDF's PDF to Word conversion drives your own installed copy of Microsoft Word and uses Word's own PDF import, rather than a separate parser guessing at Word's layout rules. That means the result is exactly as good as opening that PDF directly in Word yourself, with the same fidelity and the same limitations.</p>
+      <h2 id="what-comes-through">What comes through</h2>
+      <ul>
+        <li>Paragraphs, headings and styles exactly as Word's own PDF import reads them.</li>
+        <li>Tables as Word tables, where Word can identify the cell boundaries.</li>
+        <li>Embedded images, placed roughly where they sat on the page.</li>
+        <li>A genuine .docx you can edit, not a page of text boxes.</li>
+      </ul>
+
+      <h2 id="the-limit">Where it stops</h2>
+      <p>A PDF is a fixed arrangement of characters at coordinates, with no record of where a paragraph or a table begins, so any conversion has to infer that structure. Word is doing the inferring here rather than a separate parser guessing at Word's rules, which is why the result matches Word. Complex multi-column layouts and borderless tables are still the hardest cases and will need tidying. Scanned PDFs contain no text to recover and need OCR first.</p>
 
       <h2 id="how-to-convert-pdf-to-word">How to convert PDF to Word</h2>
       <ul>
-        <li>Download and install BenchPDF (free, no account).</li>
-        <li>Open the app and drop your PDF, or choose PDF to Word from the grid.</li>
-        <li>BenchPDF opens the PDF using Word's own import and saves it as a .docx file.</li>
-        <li>Download the result or open the output folder directly from the app.</li>
+        <li>Download and install BenchPDF.</li>
+        <li>Open the app and drop your PDF in, or pick PDF to Word from the grid.</li>
+        <li>BenchPDF opens the file through Word's own import and saves a .docx.</li>
+        <li>Download the result, or open the output folder from the app.</li>
       </ul>
-      <h2 id="why-isnt-this-available-online-only-as-a-desktop-download">Why isn&#x27;t this available online, only as a desktop download?</h2>
-      <p>Rebuilding a PDF as an editable document accurately means using Word's own PDF import, since Word's interpretation of paragraphs, tables, and layout from a PDF is specific to Word itself. A browser-based reconstruction would guess differently. BenchPDF's desktop app drives your own installed copy of Word directly, matching what Word itself would produce.</p>
 
-      <h2 id="is-it-safe-does-my-pdf-get-uploaded-anywhere">Is it safe? Does my PDF get uploaded anywhere?</h2>
-      <p>Yes, it is safe, and no, nothing is uploaded. The desktop app runs entirely on your own PC: it opens your PDF using your installed copy of Word's own import feature, and saves the resulting document to your disk. There is no server involved at any point, and no account is required.</p>
+      <h2 id="why-is-this-not-in-the-browser">Why is this not in the browser?</h2>
+      <p>Because the quality comes from Word doing the work. Word's reading of paragraphs, tables and layout from a PDF is particular to Word, and a browser cannot run it. A browser rebuild would be a second guess at what Word would have done, so BenchPDF drives your installed copy directly instead.</p>
 
-      <h2 id="do-i-need-microsoft-word-installed">Do I need Microsoft Word installed?</h2>
-      <p>Yes. This conversion uses Word's own built-in PDF import, so Word needs to already be on your PC. If it isn't detected, this specific conversion is greyed out in the app with an explanation, rather than falling back to a separate, less accurate reconstruction of the document.</p>
+      <h2 id="do-i-need-word-installed">Do I need Word installed?</h2>
+      <p>Yes, because your copy of Word performs the conversion. If BenchPDF cannot find Word on the PC, this conversion is greyed out with an explanation rather than falling back to a rougher method that would quietly give you a worse document.</p>
 
-      <h2 id="will-the-result-be-fully-editable">Will the result be fully editable?</h2>
-      <p>For PDFs that contain real text, yes, the output is a genuine, editable .docx file, exactly as if you had opened the PDF in Word and saved it. For scanned PDFs with no underlying text, Word's import has the same limits it always has: there is no text to recover without OCR. If the layout shifts on a complex page, see
-        <a href="/blog/pdf-to-word-formatting">why PDFs lose formatting in Word</a> for the reason
-        and what to expect.</p>
+      <h2 id="will-my-tables-survive">Will my tables survive?</h2>
+      <p>Usually, when the table has visible rules that mark out the cells. Word reconstructs those as real Word tables you can edit. Tables laid out with spacing alone and no borders are the hard case, because there is nothing in the file that says where one cell ends, so expect to fix those by hand.</p>
 
-      <h2 id="is-there-a-file-size-or-page-limit">Is there a file size or page limit?</h2>
-      <p>No artificial limit is set by BenchPDF. The practical limit is whatever your own copy of Word can import, since the conversion is Word doing the work. A short PDF converts in a few seconds. A long or complex PDF takes Word longer, exactly as it would if you opened it yourself.</p>
+      <h2 id="what-about-a-scanned-pdf">What about a scanned PDF?</h2>
+      <p>There is nothing to convert. A scan is a photograph of a page, so there is no text underneath for Word to import, and you get a document containing a picture. Recognising the words needs OCR software, which BenchPDF does not include.</p>
 
-      <h2 id="does-it-work-on-mac">Does it work on Mac?</h2>
-      <p>The BenchPDF desktop app is Windows only, since it automates the Windows version of Microsoft Word directly. On a Mac, Word has the same built-in PDF import under File then Open, which you can use directly for a similarly faithful result.</p>
+      <h2 id="is-my-document-uploaded-anywhere">Is my document uploaded anywhere?</h2>
+      <p>No. The app runs on your PC and opens the PDF through the copy of Word already installed there, saving the result to your own disk. No server is involved at any point in the conversion.</p>
 
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>The app is Windows only, because it automates the Windows build of Word. Word for Mac has the same PDF import built in under File then Open, which gives a comparable result since it is also Word doing the reading.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/word-to-pdf">Word to PDF</a>, to go the other way, a document into PDF.</li>
-        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, an online tool that works in any browser, no install.</li>
-        <li><a href="/tools/pdf-to-text">PDF to Text</a>, an online tool for just the words, no formatting.</li>
-        <li><a href="/tools/edit-pdf">Edit PDF Text</a>, to change a PDF directly without converting it at all.</li>
+        <li><a href="/tools/word-to-pdf">Word to PDF</a>, to go the other way, a document into a PDF.</li>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, a browser conversion that needs no install.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, when formatting does not matter and you want the words.</li>
+        <li><a href="/tools/edit-pdf">Edit PDF Text</a>, to change a line in the PDF instead of converting it.</li>
       </ul>
     </section>
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

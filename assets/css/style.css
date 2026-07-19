@@ -180,9 +180,18 @@ img{max-width:100%; height:auto}
 /* the desktop upsell, deliberately quiet and directly beneath the tool */
 .upsell{
   position:relative; z-index:2; max-width:920px; margin:clamp(22px,3.4vh,34px) auto 0;
-  padding:0 var(--gutter); display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  padding:0 var(--gutter); display:flex; flex-direction:column; align-items:flex-start; gap:14px;
 }
-.upsell p{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-soft); max-width:46ch}
+.upsell p{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-soft); max-width:52ch}
+.upsell .conv-badge{margin:0}
+
+/* Eyebrow. Sits above a heading to say which surface you are looking at,
+   so "in your browser" and "for Windows" are settled before anyone clicks. */
+.hero-eyebrow{
+  margin:0 0 clamp(14px,2vh,20px); font-family:var(--mono); font-size:11px;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-faint);
+}
+.upsell .hero-eyebrow{margin:0}
 
 /* ---- generative paper-architecture scene (imagery fallback) ---
    An implied interior: light falls from the upper left, a colonnade of
@@ -413,6 +422,16 @@ img{max-width:100%; height:auto}
   max-width:var(--wrap); margin:0 auto; padding:0 var(--gutter);
   display:flex; align-items:baseline; justify-content:space-between; gap:20px; flex-wrap:wrap;
 }
+/* What shipped and when, on every page. Trust is easier to read off a dated
+   release than off an adjective. */
+.foot-latest{
+  max-width:var(--wrap); margin:0 auto clamp(24px,4vh,38px); padding:0 var(--gutter);
+  font-size:13.5px; line-height:1.65; color:var(--ink-quiet);
+}
+/* Aligns with the wordmark below it, but keeps a readable measure. */
+.foot-latest span{display:block; max-width:74ch}
+.foot-latest a{color:var(--ink)}
+
 .foot-mark{font-family:var(--grotesk); font-weight:500; font-size:14px; letter-spacing:.22em; text-transform:lowercase}
 .foot-links{display:flex; gap:24px; flex-wrap:wrap; font-family:var(--mono); font-size:11px;
   letter-spacing:.1em; text-transform:uppercase; color:var(--ink-quiet)}

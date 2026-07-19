@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Web Page to PDF Converter, Free, Private | BenchPDF</title>
-  <meta name="description" content="Save any web page as a PDF using a local headless browser running on your own PC. Free desktop app, no account, and no server ever sees the page you save.">
+  <title>Web page to PDF, rendered by a real browser | BenchPDF</title>
+  <meta name="description" content="Save any web address as a PDF using a browser engine running on your own PC, so the page is laid out properly rather than scraped and rebuilt.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/web-to-pdf">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Web Page to PDF Converter, Free, Private | BenchPDF">
-  <meta property="og:description" content="Save any web page as a PDF using a local headless browser running on your own PC. Free desktop app, no account, and no server ever sees the page you save.">
+  <meta property="og:title" content="Web page to PDF, rendered by a real browser | BenchPDF">
+  <meta property="og:description" content="Save any web address as a PDF using a browser engine running on your own PC, so the page is laid out properly rather than scraped and rebuilt.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/web-to-pdf">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -45,26 +45,34 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "Why isn't this available as a web tool?",
+            "name": "Will it look like the page I see?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "A browser tab cannot fetch and render an arbitrary third-party web page on your behalf due to cross-origin browser security rules, the same restriction that stops any web page from silently loading another site's content. BenchPDF's desktop app works around this using its own local headless browser process, which a web page cannot do."
+                "text": "Usually, because a real browser engine renders it rather than a scraper rebuilding it. Web fonts, CSS layout and images come through. Where it differs is anything tied to your session or your interaction, since the page is fetched fresh and anonymously."
             }
         },
         {
             "@type": "Question",
-            "name": "Does this upload anything to a server?",
+            "name": "Can I save a page behind a login?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. This is the one BenchPDF feature that makes a network request at all, and it is exactly the request needed to do the job: fetching the URL you give it, the same way your own browser would. Nothing else is contacted, and no copy of the page is kept anywhere except the PDF handed back to you."
+                "text": "No. The page is fetched as an anonymous visitor, with none of your cookies or session, so anything requiring you to be signed in will come back as the logged out view or an error page. For those, printing to PDF from your own browser is the better route."
             }
         },
         {
             "@type": "Question",
-            "name": "Will it capture the page exactly as I see it?",
+            "name": "Does this send my data anywhere?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "In most cases, yes, since it uses a real browser engine to render the page before printing. Pages that require you to be logged in, or that load content only after you scroll or click, may not capture identically, since the headless browser sees the page fresh, without your existing session or manual interaction."
+                "text": "It fetches the address you type, which is unavoidable when the task is saving a web page, and it contacts nothing else. This is the only BenchPDF feature that makes a network request at all. No copy of the page is kept anywhere except the PDF handed back to you."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Are links still clickable?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Hyperlinks on the page are carried into the PDF as real links, so a saved article keeps its references working. Anything that depended on JavaScript running after the page loaded may not behave the same way in a static file."
             }
         },
         {
@@ -72,23 +80,15 @@
             "name": "Is there a page length limit?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No artificial limit is set by BenchPDF. Very long pages produce a longer PDF and take a little more time to render, but there is no cap on page length, number of images, or file size, since everything runs on your own PC rather than a shared server with usage limits."
+                "text": "No cap is set. A very long page produces a longer PDF and takes a little more time to render. Because everything runs on your own PC there is no shared server quota to run into, so length is limited only by your machine."
             }
         },
         {
             "@type": "Question",
-            "name": "Can I convert a password-protected or private page?",
+            "name": "Does it work on a Mac?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Only if the headless browser can reach it without you being logged in, which most private pages will not allow. This tool fetches a page the way an anonymous visitor would, so content behind a login wall generally will not appear in the resulting PDF."
-            }
-        },
-        {
-            "@type": "Question",
-            "name": "Does it work on Mac?",
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "The BenchPDF desktop app is Windows only at present. On a Mac, most browsers offer their own Print to PDF option directly from the print dialog, which achieves a similar result for pages you can already see in your own browser."
+                "text": "The app is Windows only. On a Mac, most browsers offer Print to PDF straight from the print dialog, which handles pages you can already see, including ones you are signed in to."
             }
         }
     ]
@@ -109,7 +109,6 @@
     </div>
   </header>
 
-
   <div class="main">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>Web Page to PDF Converter</span></nav>
   </div>
@@ -117,52 +116,64 @@
   <main class="main" id="main">
     <section class="tool-hero">
       <h1>Web Page to PDF Converter</h1>
-      <p class="lede">This one needs the free Windows app. It saves a web page as a PDF using a browser running on your own PC.</p>
+      <p class="lede">This one needs the Windows app. It renders the address with a real browser engine on your PC, so the page arrives laid out as a browser draws it.</p>
       <div class="tool-cta">
-        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF for Windows</a>
-        <span class="pitch-cta-note">Free, no account. Windows desktop app.</span>
+        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF 1.0.0 for Windows</a>
+        <span class="pitch-cta-note">Windows 10 and 11.</span>
       </div>
     </section>
 
     <section class="prose">
-      <p>To save a page as a PDF, something has to fetch that page, the same way your own browser would if you opened the address and pressed Print. BenchPDF does this with a local, headless browser running on your own PC, not a server elsewhere, and fetches only the address you give it.</p>
-
-      <h2 id="how-to-convert-a-web-page-to-pdf">How to convert a web page to PDF</h2>
+      <h2 id="what-comes-through">What comes through</h2>
       <ul>
-        <li>Download and install BenchPDF (free, no account).</li>
-        <li>Open the app and paste the web address into the URL field.</li>
-        <li>BenchPDF fetches and prints the page to PDF using a local headless browser.</li>
-        <li>Download the result or open the output folder directly from the app.</li>
+        <li>The page as a real browser engine lays it out, including web fonts and CSS.</li>
+        <li>Images, charts and styling as rendered, not scraped and rebuilt.</li>
+        <li>Links on the page, which stay clickable in the PDF.</li>
+        <li>Print stylesheets, where the site provides one.</li>
       </ul>
-      <h2 id="why-isnt-this-available-as-a-web-tool">Why isn&#x27;t this available as a web tool?</h2>
-      <p>A browser tab cannot fetch and render an arbitrary third-party web page on your behalf due to cross-origin browser security rules, the same restriction that stops any web page from silently loading another site's content. BenchPDF's desktop app works around this using its own local headless browser process, which a web page cannot do.</p>
 
-      <h2 id="does-this-upload-anything-to-a-server">Does this upload anything to a server?</h2>
-      <p>No. This is the one BenchPDF feature that makes a network request at all, and it is exactly the request needed to do the job: fetching the URL you give it, the same way your own browser would. Nothing else is contacted, and no copy of the page is kept anywhere except the PDF handed back to you.</p>
+      <h2 id="the-limit">Where it stops</h2>
+      <p>The page is fetched as an anonymous visitor, so anything behind a login will not appear. Content that only loads after you scroll or click may also be missing, because the headless browser sees the page fresh and does not interact with it. This is also the one feature in BenchPDF that makes a network request, since saving a page necessarily means fetching it.</p>
 
-      <h2 id="will-it-capture-the-page-exactly-as-i-see-it">Will it capture the page exactly as I see it?</h2>
-      <p>In most cases, yes, since it uses a real browser engine to render the page before printing. Pages that require you to be logged in, or that load content only after you scroll or click, may not capture identically, since the headless browser sees the page fresh, without your existing session or manual interaction.</p>
+      <h2 id="how-to-convert-a-web-page-to-pdf">How to save a web page as a PDF</h2>
+      <ul>
+        <li>Download and install BenchPDF, then open it.</li>
+        <li>Paste the web address into the URL field.</li>
+        <li>BenchPDF fetches and renders the page with a local browser engine.</li>
+        <li>Download the result, or open the output folder from the app.</li>
+      </ul>
+
+      <h2 id="will-it-look-like-the-page-i-see">Will it look like the page I see?</h2>
+      <p>Usually, because a real browser engine renders it rather than a scraper rebuilding it. Web fonts, CSS layout and images come through. Where it differs is anything tied to your session or your interaction, since the page is fetched fresh and anonymously.</p>
+
+      <h2 id="can-i-save-a-page-behind-a-login">Can I save a page behind a login?</h2>
+      <p>No. The page is fetched as an anonymous visitor, with none of your cookies or session, so anything requiring you to be signed in will come back as the logged out view or an error page. For those, printing to PDF from your own browser is the better route.</p>
+
+      <h2 id="does-this-send-my-data-anywhere">Does this send my data anywhere?</h2>
+      <p>It fetches the address you type, which is unavoidable when the task is saving a web page, and it contacts nothing else. This is the only BenchPDF feature that makes a network request at all. No copy of the page is kept anywhere except the PDF handed back to you.</p>
+
+      <h2 id="are-links-still-clickable">Are links still clickable?</h2>
+      <p>Yes. Hyperlinks on the page are carried into the PDF as real links, so a saved article keeps its references working. Anything that depended on JavaScript running after the page loaded may not behave the same way in a static file.</p>
 
       <h2 id="is-there-a-page-length-limit">Is there a page length limit?</h2>
-      <p>No artificial limit is set by BenchPDF. Very long pages produce a longer PDF and take a little more time to render, but there is no cap on page length, number of images, or file size, since everything runs on your own PC rather than a shared server with usage limits.</p>
+      <p>No cap is set. A very long page produces a longer PDF and takes a little more time to render. Because everything runs on your own PC there is no shared server quota to run into, so length is limited only by your machine.</p>
 
-      <h2 id="can-i-convert-a-password-protected-or-private-page">Can I convert a password-protected or private page?</h2>
-      <p>Only if the headless browser can reach it without you being logged in, which most private pages will not allow. This tool fetches a page the way an anonymous visitor would, so content behind a login wall generally will not appear in the resulting PDF.</p>
-
-      <h2 id="does-it-work-on-mac">Does it work on Mac?</h2>
-      <p>The BenchPDF desktop app is Windows only at present. On a Mac, most browsers offer their own Print to PDF option directly from the print dialog, which achieves a similar result for pages you can already see in your own browser.</p>
-
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>The app is Windows only. On a Mac, most browsers offer Print to PDF straight from the print dialog, which handles pages you can already see, including ones you are signed in to.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/pdf-to-images">PDF to Images</a>, an online tool that works in any browser, no install.</li>
-        <li><a href="/tools/images-to-pdf">Images to PDF</a>, an online tool that works in any browser, no install.</li>
-        <li><a href="/tools/word-to-pdf">Word to PDF</a>, for documents rather than web pages.</li>
-        <li><a href="/tools/edit-pdf">Edit PDF Text</a>, to change text in a PDF after saving it.</li>
+        <li><a href="/tools/images-to-pdf">Images to PDF</a>, a browser conversion that needs no install.</li>
+        <li><a href="/tools/pdf-to-images">PDF to Images</a>, to turn a PDF back into pictures.</li>
+        <li><a href="/tools/word-to-pdf">Word to PDF</a>, for documents.</li>
+        <li><a href="/tools/edit-pdf">Edit PDF Text</a>, to change wording in a saved PDF.</li>
       </ul>
     </section>
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

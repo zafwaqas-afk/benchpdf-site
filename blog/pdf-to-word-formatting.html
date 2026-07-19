@@ -78,7 +78,7 @@
             "name": "Does the source of the PDF matter?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, significantly. A PDF that was originally created by exporting from Word tends to convert back to Word cleanly, since the structure it is reconstructing from was fairly simple to begin with. A PDF built in a design tool such as InDesign, where text is often placed freely rather than flowing in paragraphs, gives the reconstruction much less to work with, and a scanned PDF has no text at all to convert, only an image."
+                "text": "Yes, significantly. A PDF that was originally created by exporting from Word tends to convert back to Word cleanly, since the structure it is reconstructing from was fairly regular to begin with. A PDF built in a design tool such as InDesign, where text is often placed freely rather than flowing in paragraphs, gives the reconstruction much less to work with, and a scanned PDF has no text at all to convert, only an image."
             }
         },
         {
@@ -138,7 +138,7 @@
       <section class="prose">
         <h2 id="why-does-converting-a-pdf-to-word-ever-change-the-formatting">Why does converting a PDF to Word ever change the formatting?</h2>
         <p>A PDF stores a page as a fixed arrangement of shapes and characters at exact coordinates, closer to a printed page than to a document. It has no concept of a paragraph, a table, or a heading the way a Word document does, only text sitting at position X, Y, in a particular font. When you convert to Word, something has to look at all those positioned characters and work out where paragraphs, tables, and columns are meant to be, essentially reverse-engineering structure that was never explicitly stored.</p>
-        <p>That reconstruction is inherently a best guess, even when it is a very good one. Most of the time it works cleanly, especially on simple documents, but any PDF with an unusual layout gives the reconstruction more opportunities to guess differently than the original author intended.</p>
+        <p>That reconstruction is inherently a best guess, even when it is a very good one. Most of the time it works cleanly, especially on plainly laid out documents, but any PDF with an unusual layout gives the reconstruction more opportunities to guess differently than the original author intended.</p>
 
         <h2 id="does-this-happen-with-benchpdf-too">Does this happen with BenchPDF too?</h2>
         <p>Less than with most tools, but the same underlying limitation applies. BenchPDF's PDF to Word conversion uses Microsoft Word's own built-in PDF import, rather than a separate reimplementation trying to guess at Word's rules independently. That means you get exactly the result Word itself would produce if you opened the PDF directly, no better and no worse, rather than a second guess from a different piece of software layered on top.</p>
@@ -149,7 +149,7 @@
         <p>Plain, single-column body text, the kind found in most letters, reports, and articles, converts the most reliably, since there is little structural ambiguity for the reconstruction to resolve incorrectly.</p>
 
         <h2 id="does-the-source-of-the-pdf-matter">Does the source of the PDF matter?</h2>
-        <p>Yes, significantly. A PDF that was originally created by exporting from Word tends to convert back to Word cleanly, since the structure it is reconstructing from was fairly simple to begin with. A PDF built in a design tool such as InDesign, where text is often placed freely rather than flowing in paragraphs, gives the reconstruction much less to work with, and a scanned PDF has no text at all to convert, only an image.</p>
+        <p>Yes, significantly. A PDF that was originally created by exporting from Word tends to convert back to Word cleanly, since the structure it is reconstructing from was fairly regular to begin with. A PDF built in a design tool such as InDesign, where text is often placed freely rather than flowing in paragraphs, gives the reconstruction much less to work with, and a scanned PDF has no text at all to convert, only an image.</p>
 
         <h2 id="what-happens-to-images-and-embedded-pictures">What happens to images and embedded pictures?</h2>
         <p>Images generally survive a PDF to Word conversion far more reliably than text layout does, since an image is just a block of pixels sitting at a position, with no structure to reconstruct. Word's import places embedded pictures back roughly where they were, at roughly their original size. What can shift is how text wraps around an image, since the PDF stores the visual result of that wrapping rather than a rule saying wrap text around this picture, and the reconstruction has to infer the rule from the result.</p>
@@ -174,6 +174,9 @@
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

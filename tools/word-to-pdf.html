@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Word to PDF Converter, Free and Private | BenchPDF</title>
-  <meta name="description" content="Convert Word documents to PDF using your own installed Microsoft Word. Free desktop app, no account, no watermark, and nothing is uploaded to a server.">
+  <title>Word to PDF, rendered by Word itself | BenchPDF</title>
+  <meta name="description" content="Export a Word document to PDF using your own installed Word, so fonts, page breaks, headers and embedded objects come out exactly as Word draws them.">
   <link rel="canonical" href="https://benchpdf.pages.dev/tools/word-to-pdf">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Word to PDF Converter, Free and Private | BenchPDF">
-  <meta property="og:description" content="Convert Word documents to PDF using your own installed Microsoft Word. Free desktop app, no account, no watermark, and nothing is uploaded to a server.">
+  <meta property="og:title" content="Word to PDF, rendered by Word itself | BenchPDF">
+  <meta property="og:description" content="Export a Word document to PDF using your own installed Word, so fonts, page breaks, headers and embedded objects come out exactly as Word draws them.">
   <meta property="og:url" content="https://benchpdf.pages.dev/tools/word-to-pdf">
   <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -45,50 +45,50 @@
     "mainEntity": [
         {
             "@type": "Question",
-            "name": "Why isn't this available online, only as a desktop download?",
+            "name": "Will the formatting match exactly?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Converting Word to PDF accurately means using Word's own rendering engine, since Word's page layout, fonts, and embedded objects are specific to how Word draws them. A browser cannot replicate that. BenchPDF's desktop app drives your own installed copy of Word directly, so the PDF matches exactly, rather than offering a lower-fidelity online approximation."
+                "text": "Yes, because Word produces the PDF rather than a separate engine imitating Word. Fonts, column layouts, page breaks, headers and embedded objects come out as Word renders them, which avoids the drift that browser based converters introduce on anything more involved than a plain letter."
             }
         },
         {
             "@type": "Question",
-            "name": "Is it safe? Does my document get uploaded anywhere?",
+            "name": "Why is this not in the browser?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes, it is safe, and no, nothing is uploaded. The desktop app runs entirely on your own PC: it opens your document in your installed copy of Word, exports it to PDF, and saves the result to your disk. There is no server involved in the conversion at any point, and no account is required."
+                "text": "A browser has no way to run Word's layout engine, so it would have to reinterpret the .docx and draw its own approximation. On a plain letter you might not notice. On multi-column layouts, unusual fonts or embedded objects you would. Driving your installed Word removes that whole class of difference."
             }
         },
         {
             "@type": "Question",
-            "name": "Do I need Microsoft Word installed?",
+            "name": "Do I need Word installed?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. This conversion drives your own installed copy of Microsoft Word to do the actual rendering, so Word needs to already be on your PC. If it isn't detected, this specific conversion is greyed out in the app with an explanation, rather than failing partway through or silently producing a worse result."
+                "text": "Yes. Your own copy does the rendering, so Word has to be on the PC. If it is not detected, BenchPDF greys this conversion out and says why, rather than substituting a lower fidelity method without telling you."
             }
         },
         {
             "@type": "Question",
-            "name": "Will it keep my formatting exactly?",
+            "name": "What happens to tracked changes?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. Since the PDF is produced by Word itself rather than a separate reimplementation, fonts, page breaks, headers, footers, and embedded images come out exactly as Word renders them. This avoids the drift that browser-based converters can introduce on complex documents such as multi-column layouts or tracked changes."
+                "text": "They export the way they are currently displayed. If markup is showing in Word, the PDF shows the markup. Set the document to show the final version, or accept the changes, before converting if you want a clean copy."
             }
         },
         {
             "@type": "Question",
-            "name": "Is there a file size limit?",
+            "name": "Is my document uploaded anywhere?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No artificial limit is set by BenchPDF. The practical limit is whatever your own copy of Word can open, since the conversion is Word doing the work. A short letter converts in a couple of seconds. A long document with many images takes Word longer, exactly as it would if you exported it yourself."
+                "text": "No. The app opens your document in the copy of Word already on your PC, exports it, and writes the PDF to your disk. Nothing is sent to a server during the conversion."
             }
         },
         {
             "@type": "Question",
-            "name": "Does it work on Mac?",
+            "name": "Does it work on a Mac?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "The BenchPDF desktop app is Windows only, since it automates the Windows version of Microsoft Word directly. On a Mac, Word has its own built-in Save as PDF export you can use instead, which produces a similarly faithful result since it is also Word doing the rendering."
+                "text": "The app is Windows only, because it automates the Windows build of Word. Word for Mac has its own Save as PDF export, which gives a comparable result for the same reason: Word is doing the rendering either way."
             }
         }
     ]
@@ -109,7 +109,6 @@
     </div>
   </header>
 
-
   <div class="main">
     <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>Word to PDF Converter</span></nav>
   </div>
@@ -117,52 +116,64 @@
   <main class="main" id="main">
     <section class="tool-hero">
       <h1>Word to PDF Converter</h1>
-      <p class="lede">This one needs the free Windows app. It converts using your own installed Word, so the formatting matches exactly.</p>
+      <p class="lede">This one needs the Windows app. Your own copy of Word does the export, so the PDF looks exactly like the document on your screen.</p>
       <div class="tool-cta">
-        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF for Windows</a>
-        <span class="pitch-cta-note">Free, no account. Requires Microsoft Word installed.</span>
+        <a class="btn btn-primary btn-download" href="https://github.com/zafwaqas-afk/benchpdf/releases/latest">Download BenchPDF 1.0.0 for Windows</a>
+        <span class="pitch-cta-note">Needs Microsoft Word installed.</span>
       </div>
     </section>
 
     <section class="prose">
-      <p>Converting Word to PDF accurately means using Word's own rendering engine, since Word's page layout, fonts, and embedded objects are specific to how Word itself draws them. A browser cannot faithfully replicate that. BenchPDF's desktop app drives your own installed copy of Word directly, so the PDF matches exactly what Word would produce.</p>
+      <h2 id="what-comes-through">What comes through</h2>
+      <ul>
+        <li>Fonts as embedded by Word, including any installed on your PC.</li>
+        <li>Page breaks and pagination, matching what you see in Word.</li>
+        <li>Headers, footers and page numbering.</li>
+        <li>Embedded images, charts and shapes, drawn by Word rather than redrawn.</li>
+      </ul>
+
+      <h2 id="the-limit">Where it stops</h2>
+      <p>The conversion is only as current as the document you hand it. If the file has tracked changes showing or comments displayed, they render into the PDF exactly as they appear on screen, so accept or hide them first. The app also needs Word itself installed, and it drives your licensed copy rather than replacing it.</p>
 
       <h2 id="how-to-convert-word-to-pdf">How to convert Word to PDF</h2>
       <ul>
-        <li>Download and install BenchPDF (free, no account).</li>
-        <li>Open the app and drop your .docx or .doc file, or choose Word to PDF from the grid.</li>
-        <li>BenchPDF opens the document in your installed Word and exports it to PDF.</li>
-        <li>Download the result or open the output folder directly from the app.</li>
+        <li>Download and install BenchPDF.</li>
+        <li>Open the app and drop your .docx or .doc in, or pick Word to PDF from the grid.</li>
+        <li>BenchPDF opens it in your installed Word and exports the PDF.</li>
+        <li>Download the result, or open the output folder from the app.</li>
       </ul>
-      <h2 id="why-isnt-this-available-online-only-as-a-desktop-download">Why isn&#x27;t this available online, only as a desktop download?</h2>
-      <p>Converting Word to PDF accurately means using Word's own rendering engine, since Word's page layout, fonts, and embedded objects are specific to how Word draws them. A browser cannot replicate that. BenchPDF's desktop app drives your own installed copy of Word directly, so the PDF matches exactly, rather than offering a lower-fidelity online approximation.</p>
 
-      <h2 id="is-it-safe-does-my-document-get-uploaded-anywhere">Is it safe? Does my document get uploaded anywhere?</h2>
-      <p>Yes, it is safe, and no, nothing is uploaded. The desktop app runs entirely on your own PC: it opens your document in your installed copy of Word, exports it to PDF, and saves the result to your disk. There is no server involved in the conversion at any point, and no account is required.</p>
+      <h2 id="will-the-formatting-match-exactly">Will the formatting match exactly?</h2>
+      <p>Yes, because Word produces the PDF rather than a separate engine imitating Word. Fonts, column layouts, page breaks, headers and embedded objects come out as Word renders them, which avoids the drift that browser based converters introduce on anything more involved than a plain letter.</p>
 
-      <h2 id="do-i-need-microsoft-word-installed">Do I need Microsoft Word installed?</h2>
-      <p>Yes. This conversion drives your own installed copy of Microsoft Word to do the actual rendering, so Word needs to already be on your PC. If it isn't detected, this specific conversion is greyed out in the app with an explanation, rather than failing partway through or silently producing a worse result.</p>
+      <h2 id="why-is-this-not-in-the-browser">Why is this not in the browser?</h2>
+      <p>A browser has no way to run Word's layout engine, so it would have to reinterpret the .docx and draw its own approximation. On a plain letter you might not notice. On multi-column layouts, unusual fonts or embedded objects you would. Driving your installed Word removes that whole class of difference.</p>
 
-      <h2 id="will-it-keep-my-formatting-exactly">Will it keep my formatting exactly?</h2>
-      <p>Yes. Since the PDF is produced by Word itself rather than a separate reimplementation, fonts, page breaks, headers, footers, and embedded images come out exactly as Word renders them. This avoids the drift that browser-based converters can introduce on complex documents such as multi-column layouts or tracked changes.</p>
+      <h2 id="do-i-need-word-installed">Do I need Word installed?</h2>
+      <p>Yes. Your own copy does the rendering, so Word has to be on the PC. If it is not detected, BenchPDF greys this conversion out and says why, rather than substituting a lower fidelity method without telling you.</p>
 
-      <h2 id="is-there-a-file-size-limit">Is there a file size limit?</h2>
-      <p>No artificial limit is set by BenchPDF. The practical limit is whatever your own copy of Word can open, since the conversion is Word doing the work. A short letter converts in a couple of seconds. A long document with many images takes Word longer, exactly as it would if you exported it yourself.</p>
+      <h2 id="what-happens-to-tracked-changes">What happens to tracked changes?</h2>
+      <p>They export the way they are currently displayed. If markup is showing in Word, the PDF shows the markup. Set the document to show the final version, or accept the changes, before converting if you want a clean copy.</p>
 
-      <h2 id="does-it-work-on-mac">Does it work on Mac?</h2>
-      <p>The BenchPDF desktop app is Windows only, since it automates the Windows version of Microsoft Word directly. On a Mac, Word has its own built-in Save as PDF export you can use instead, which produces a similarly faithful result since it is also Word doing the rendering.</p>
+      <h2 id="is-my-document-uploaded-anywhere">Is my document uploaded anywhere?</h2>
+      <p>No. The app opens your document in the copy of Word already on your PC, exports it, and writes the PDF to your disk. Nothing is sent to a server during the conversion.</p>
 
+      <h2 id="does-it-work-on-a-mac">Does it work on a Mac?</h2>
+      <p>The app is Windows only, because it automates the Windows build of Word. Word for Mac has its own Save as PDF export, which gives a comparable result for the same reason: Word is doing the rendering either way.</p>
       <h2 id="related-tools">Related tools</h2>
       <ul>
-        <li><a href="/tools/pdf-to-word">PDF to Word</a>, to go the other way, back into an editable document.</li>
-        <li><a href="/tools/excel-to-pdf">Excel to PDF</a>, for spreadsheets rather than documents.</li>
-        <li><a href="/tools/ppt-to-pdf">PowerPoint to PDF</a>, for presentations rather than documents.</li>
-        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, an online tool that works in any browser, no install.</li>
+        <li><a href="/tools/pdf-to-word">PDF to Word</a>, to go the other way, back to an editable document.</li>
+        <li><a href="/tools/excel-to-pdf">Excel to PDF</a>, for spreadsheets.</li>
+        <li><a href="/tools/ppt-to-pdf">PowerPoint to PDF</a>, for presentations.</li>
+        <li><a href="/tools/pdf-to-ppt">PDF to PowerPoint</a>, a browser conversion that needs no install.</li>
       </ul>
     </section>
   </main>
 
   <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
+      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
+      PDF text editing.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">
