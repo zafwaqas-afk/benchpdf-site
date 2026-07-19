@@ -107,6 +107,9 @@ These apply to every user-facing string: headings, body, buttons, labels,
 tooltips, empty states, error messages, meta titles and descriptions.
 
 1. **No em-dashes. Not one.** Use a full stop and a new sentence, or a comma.
+   Check the entity forms as well as the literal character. Grepping for the
+   em-dash character alone will miss `&mdash;`, `&#8212;`, `&ndash;` and
+   `&#8211;`, which render identically. That was missed once already.
 2. **No mirrored two-part constructions.** Banned shapes include
    `X, nothing Y`, `No accounts. No uploads. No nonsense.`, and
    `It is not just A, it is B`. Say the thing once, plainly.
@@ -274,7 +277,9 @@ Every change to this site must still pass:
 
 - Lighthouse performance ≥90, accessibility ≥95, SEO ≥95 on every page type
   (currently 98 to 99 / 100 / 100 / 100)
-- Zero em-dashes in user-facing text
+- Zero em-dashes in user-facing text, checked as both the literal character
+  and the entity forms:
+  `grep -rn "—\|&mdash;\|&#8212;\|&ndash;\|&#8211;" --include=*.html .`
 - Every nav and footer link lands where its label says, at 1440px and 1024px
 - A real conversion completes from the home page drop zone
 - The browser/desktop expectation rule holds on all ten tool pages
