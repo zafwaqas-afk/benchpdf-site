@@ -494,5 +494,9 @@ Every change to this site must still pass:
   and the entity forms:
   `grep -rn "—\|&mdash;\|&#8212;\|&ndash;\|&#8211;" --include=*.html .`
 - Every nav and footer link lands where its label says, at 1440px and 1024px
-- A real conversion completes from the home page drop zone
+- A real conversion completes from the home page drop zone, scripted as
+  `tests/site_verify.py` in the app repo: it also asserts the done state
+  shows NO empty warning shell (the hidden-attribute regression that shipped
+  unnoticed for weeks), that no visible styled box in the done panel is
+  empty, and that a genuine warning still renders when set
 - The browser/desktop expectation rule holds on all ten tool pages
