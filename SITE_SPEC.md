@@ -106,31 +106,35 @@ not block, because it is not linked from anywhere.
 | PDF to Images | browser | pdf.js canvas render | covered, GREEN |
 | PDF to Text | browser | pdf.js text content | covered, GREEN, byte-comparable to desktop |
 | Images to PDF | browser | pdf-lib | covered, GREEN |
-| PDF to PowerPoint | desktop only | python | covered, GREEN |
+| PDF to PowerPoint | browser AND desktop | ported JS engine / python | covered, GREEN in BOTH engine columns |
 | Word/Excel/PowerPoint to PDF, PDF to Word | desktop only | Office automation | covered by verify_outputs.py |
 | Edit PDF text | desktop only | python | covered, GREEN |
 
-**Withdrawn:** browser PDF to PowerPoint, on 2026-07-19. The engine is
-quarantined at `tests/js_engine/` in the app repo, is loaded by no page, and may
-not be relinked until its suite column reads GREEN. The port assessment is at
-`docs/browser-engine-assessment.md`.
+**History:** the first browser PDF to PowerPoint converter was withdrawn on
+2026-07-19 after failing 18 suite checks. The pipeline was then ported properly
+(assets/js/engine/) and relinked on 2026-07-20 once its suite column read GREEN
+alongside the python engine: 131/131 checks, plus a golden render comparison
+through PowerPoint itself. The engine lazy-loads on first conversion (2.6 MB,
+mostly the pdf.js worker); page load fetches none of it. The one documented
+parity gap: the browser maps fonts to metric-compatible equivalents from a
+fixed table, because it cannot see the fonts installed on the visitor's PC.
 
 ### The interstitial
 
-The home page drop zone still accepts a PDF and still offers PDF to PowerPoint
-as a choice, because hiding it would just move the disappointment. Choosing it
-shows the desktop note rather than converting:
+The home page drop zone accepts PDF and image files and converts them in the
+browser. A Word, Excel or PowerPoint file routes to the desktop note instead,
+because a browser cannot run Office:
 
 | Element | String |
 |---|---|
 | Heading | `This conversion runs in the desktop app` |
-| Body | `Turning a PDF into slides means rebuilding paragraphs, tables and fonts, and the desktop app does that against your own machine's fonts. Doing it here would hand you a deck with the tables flattened and every line in its own box, so we do not offer it here.` |
+| Body | `Word, Excel and PowerPoint files convert through the copy of Office already on your PC, so the output is what Office itself would produce. A browser cannot run Office, so these conversions live in the desktop app.` |
 | Button | `Download BenchPDF 1.0.0 for Windows` |
 | Note | `Free during early access. Windows 10 and 11.` |
-| Back | `Convert this PDF another way` |
+| Back | `Choose a different file` |
 
-The note replaces the hero drop zone's pricing line rather than adding to it, so
-two pricing lines are never on screen at once.
+The note replaces the hero drop zone's pricing line rather than adding to it,
+so two pricing lines are never on screen at once.
 
 ---
 
@@ -283,9 +287,9 @@ without agreement.
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
 | Under-CTA line | `Free during early access.` |
 | Tools group 1 heading | `In your browser` |
-| Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` |
+| Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` / `PDF to PowerPoint` |
 | Tools group 2 heading | `In the desktop app` |
-| Tools group 2 items | `PDF to PowerPoint` / `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
+| Tools group 2 items | `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
 | Tools group 2 CTA | `Download BenchPDF 1.0.0 for Windows` (links to the GitHub latest release) |
 | Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
 

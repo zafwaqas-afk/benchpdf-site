@@ -27,11 +27,8 @@ function ensureVendor() {
       const [pdfjsMod] = await Promise.all([
         import("/assets/vendor/pdfjs/pdf.min.mjs"),
         window.JSZip ? Promise.resolve() : loadScript("/assets/vendor/jszip.min.js"),
-        // pptxgen is deliberately NOT loaded. The browser PDF->PPTX engine was
-        // withdrawn on 2026-07-19 (see SITE_SPEC.md 0a); the file stays in
-        // assets/vendor only so the fidelity suite can keep measuring the
-        // quarantined engine. No shipped page uses it.
         window.PDFLib ? Promise.resolve() : loadScript("/assets/vendor/pdf-lib.min.js"),
+        window.PptxGenJS ? Promise.resolve() : loadScript("/assets/vendor/pptxgen.min.js"),
       ]);
       pdfjsLib = pdfjsMod;
       pdfjsLib.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdfjs/pdf.worker.min.mjs";
@@ -99,6 +96,7 @@ function detectKind(fileList) {
   const allImages = arr.every((f) => /\.(jpe?g|png)$/i.test(f.name));
   if (allImages) return { kind: "images", files: arr };
   if (arr.length === 1 && /\.pdf$/i.test(arr[0].name)) return { kind: "pdf", files: arr };
+  if (arr.length === 1 && /\.(docx?|xlsx?|pptx?)$/i.test(arr[0].name)) return { kind: "office", files: arr };
   return { kind: "unsupported" };
 }
 
@@ -185,7 +183,7 @@ function renderActions(kind, files) {
     actName.textContent = files[0].name;
     actSize.textContent = fmtBytes(files[0].size);
 
-    addAction("Convert to PowerPoint", "Runs in the desktop app.", showDesktopOnly);
+    addAction("Convert to PowerPoint", "Editable slides. Tables stay tables.", () => runPptx(files[0]));
     addAction("Convert to Images", "One PNG or JPG per page, zipped.", () => runImages(files[0]));
     addAction("Extract Text", "Plain text, one form-feed between pages.", () => runText(files[0]));
 
@@ -234,12 +232,28 @@ function showError(message) {
   setState("error");
 }
 
-// PDF -> PPTX is deliberately not a browser conversion. The JS path could not
-// hold the engine's fidelity invariants (see tests/js_engine/ in the app repo),
-// and shipping a converter that flattens tables and fragments paragraphs is the
-// one thing this product cannot do. Say so, and point at the engine that works.
-function showDesktopOnly() {
-  setState("desktop");
+// PDF -> PPTX runs the ported fidelity engine (assets/js/engine/), the same
+// pipeline the desktop app uses: paragraph clustering, native tables from
+// ruling lines, filtered background renders. It shipped only after its column
+// in the per-engine fidelity suite went GREEN, and it stays linked only while
+// that holds. The engine lazy-loads here, on first use, never at page load.
+async function runPptx(file) {
+  setState("working");
+  try {
+    workPhase.textContent = "Loading converter…";
+    await ensureVendor();
+    const eng = await import("/assets/js/engine/engine.js");
+    workPhase.textContent = "Preparing…";
+    const bytes = await file.arrayBuffer();
+    const { blob } = await eng.convertPdfToPptx(bytes, {
+      pdfjs: pdfjsLib, PptxGenJS: window.PptxGenJS,
+      PDFLib: window.PDFLib, JSZip: window.JSZip,
+    }, (done, total, msg) => (workPhase.textContent = msg));
+    showDone(blob, baseName(file.name) + ".pptx");
+  } catch (e) {
+    console.error(e);
+    showError("Couldn't convert that PDF to PowerPoint. " + (e && e.message ? e.message : "Try a different file."));
+  }
 }
 
 async function runImages(file) {
@@ -286,6 +300,7 @@ async function runMerge(files) {
 }
 
 const SINGLE_TOOLS = {
+  "pdf-to-pptx": { needKind: "pdf", run: (files) => runPptx(files[0]), wrongMsg: "Drop a PDF file to convert it to PowerPoint." },
   "pdf-to-images": { needKind: "pdf", run: (files) => runImages(files[0]), wrongMsg: "Drop a PDF file to convert it to images." },
   "pdf-to-text": { needKind: "pdf", run: (files) => runText(files[0]), wrongMsg: "Drop a PDF file to extract its text." },
   "images-to-pdf": { needKind: "images", run: (files) => runMerge(files), wrongMsg: "Drop one or more JPG or PNG images to merge into a PDF." },
@@ -308,6 +323,10 @@ function handleFiles(fileList) {
     currentKind = kind;
     currentFiles = files;
     renderActions(kind, files);
+  } else if (kind === "office") {
+    currentKind = null;
+    currentFiles = [];
+    setState("desktop");
   } else if (kind === "unsupported") {
     showError("Drop a single PDF, or one or more JPG/PNG images.");
   }
@@ -363,7 +382,7 @@ errRetry.addEventListener("click", () => {
 // does not have to pick it again just to reach a conversion that works here.
 if (desktopBack) {
   desktopBack.addEventListener("click", () => {
-    if (currentKind && currentFiles.length) renderActions(currentKind, currentFiles);
-    else setState("idle");
+    fileInput.value = "";
+    setState("idle");
   });
 }
