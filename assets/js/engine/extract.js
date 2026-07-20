@@ -303,6 +303,20 @@ export async function extractLines(page, opList, embeddedMetrics) {
     });
   }
 
+  // Overprinted text (the same run drawn twice for a poor man's bold or
+  // shadow) must render once: identical text at near-identical position and
+  // size is one span. The desktop extraction applies the same rule.
+  {
+    const seen = new Map();
+    for (let i = spans.length - 1; i >= 0; i--) {
+      const sp = spans[i];
+      const key = sp.text + "|" + Math.round(sp.x0 * 2) + "|" +
+                  Math.round(sp.baseline * 2) + "|" + Math.round(sp.size * 2);
+      if (seen.has(key)) spans.splice(i, 1);
+      else seen.set(key, true);
+    }
+  }
+
   // Assemble spans into lines the way MuPDF's text device does: same baseline,
   // reading order, split on a horizontal gap large enough to be a column or
   // table-cell boundary rather than word spacing.
@@ -343,9 +357,14 @@ export async function extractLines(page, opList, embeddedMetrics) {
     // a genuine line boundary measures 1.41x the font size, so merge up to
     // 1.2x and restore the swallowed space below.
     const gapLimit = cur ? 1.2 * Math.max(sp.size, cur.sizeLast) : 0;
-    if (!forceBreak && sameBaseline && gap <= gapLimit && gap > -2.0) {
+    // negative tracking (digits drawn overlapping) stays one run; only a
+    // deep overlap means genuinely restarted text
+    if (!forceBreak && sameBaseline && gap <= gapLimit
+        && gap > -0.5 * Math.min(sp.size, cur.sizeLast)) {
       const prev = cur.spans[cur.spans.length - 1];
-      if (gap > 0.15 * sp.size && !/\s$/.test(prev.text) && !/^\s/.test(sp.text)) {
+      // a gap over 0.3em of the effective size is a word gap, even when
+      // the document never drew a space glyph (tracked headings)
+      if (gap > 0.3 * sp.size && !/\s$/.test(prev.text) && !/^\s/.test(sp.text)) {
         prev.text += " ";
       }
       cur.spans.push(sp);
