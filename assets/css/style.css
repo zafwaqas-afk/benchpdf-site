@@ -650,6 +650,10 @@ img{max-width:100%; height:auto}
   margin:0 0 20px; font-size:13.5px; color:var(--ink-quiet); line-height:1.5;
 }
 .tool-list{display:flex; flex-direction:column; border-top:1px solid var(--rule)}
+/* The desktop group closes with its own call to action, sitting a full
+   viewport below the hero so the drop zone keeps the first one to itself. */
+.group-cta{margin-top:clamp(24px,4vh,36px)}
+
 .tool-item{
   display:flex; flex-direction:column; gap:3px; padding:15px 2px;
   border-bottom:1px solid var(--rule); text-decoration:none; color:var(--ink);

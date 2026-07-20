@@ -201,9 +201,12 @@ On the home page:
    descriptive notes.
 3. Promise section: one plain text link to the privacy page.
 
-The home page carries no download button. The desktop app is reached through
-the `Download` nav item, which lands on `/download`. That page carries the one
-primary pill.
+The desktop group in the tools section closes with the one download pill on
+the home page, a full viewport below the hero, linking straight to the GitHub
+latest release. The `Download` nav item still lands on `/download`, which
+carries the requirements and the honest feature list.
+
+There is no hero eyebrow. The drop zone heading does the orientation work.
 
 On tool pages: the drop zone (browser tools) or the download pill (desktop
 tools) is the single primary. Related links are plain.
@@ -270,7 +273,6 @@ without agreement.
 |---|---|
 | Title | `BenchPDF: documents that come out the way they went in` |
 | Meta description | `Convert a PDF to PowerPoint, images or text and keep the text editable, the layout intact and the file on your own computer. The Windows app adds Word, Excel and editing.` |
-| Hero eyebrow | `PDF tools, in your browser` |
 | H1 | `Change the format. keep everything else.` |
 | Drop zone heading | `Drop a PDF here to convert it` |
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
@@ -279,6 +281,7 @@ without agreement.
 | Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` |
 | Tools group 2 heading | `In the desktop app` |
 | Tools group 2 items | `PDF to PowerPoint` / `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
+| Tools group 2 CTA | `Download BenchPDF 1.0.0 for Windows` (links to the GitHub latest release) |
 | Promise | `Your files never leave the device you are sitting at.` |
 | Promise paragraph | `The browser tools run as code inside your own browser, and the desktop app converts on your own PC. You can watch your browser's network activity during a conversion and see for yourself that nothing is sent.` |
 | Promise link | `Read the privacy page` |
