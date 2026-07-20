@@ -564,6 +564,9 @@ img{max-width:100%; height:auto}
   border:1px solid var(--rule); border-radius:4px; font-size:13.5px; line-height:1.55;
   background:rgba(183,178,169,.22);
 }
+/* display:flex would otherwise defeat the hidden attribute and show the
+   empty warning shell on every successful conversion */
+.notice[hidden]{display:none}
 .notice svg{flex:none; margin-top:2px}
 
 /* state machine */
