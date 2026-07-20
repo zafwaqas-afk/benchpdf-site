@@ -215,7 +215,15 @@ the home page, a full viewport below the hero, linking straight to the GitHub
 latest release. The `Download` nav item still lands on `/download`, which
 carries the requirements and the honest feature list.
 
-There is no hero eyebrow. The drop zone heading does the orientation work.
+The hero eyebrow is the literal statement `Online PDF converter`, reinstated
+on 2026-07-20 from peer feedback: a visitor and a search engine need the plain
+words. First-viewport word budget holds: eyebrow (3) plus headline (6) is 9
+words before the drop zone, under the 15-word ceiling.
+
+Below the tool grid, two sections returned that the earlier slimming pass
+removed. That reversal is deliberate and approved: the slimming removed
+selling copy, and what returned is literal orientation instead: a three-step
+How it works row and a three-item strip naming what the output preserves.
 
 On tool pages: the drop zone (browser tools) or the download pill (desktop
 tools) is the single primary. Related links are plain.
@@ -282,6 +290,8 @@ without agreement.
 |---|---|
 | Title | `BenchPDF: documents that come out the way they went in` |
 | Meta description | `Convert a PDF to PowerPoint, images or text and keep the text editable, the layout intact and the file on your own computer. The Windows app adds Word, Excel and editing.` |
+| Title | `Online PDF converter \| BenchPDF` |
+| Hero eyebrow | `Online PDF converter` |
 | H1 | `Change the format. keep everything else.` |
 | Drop zone heading | `Drop a PDF here to convert it` |
 | Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
@@ -291,6 +301,8 @@ without agreement.
 | Tools group 2 heading | `In the desktop app` |
 | Tools group 2 items | `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
 | Tools group 2 CTA | `Download BenchPDF 1.0.1 for Windows` (links to the GitHub latest release) |
+| Steps | `Drop your file in the box above.` / `Choose the format you need.` / `Download the result.` |
+| Keep strip | `Editable text` + `Words arrive as text you can click into and retype, not a picture of a page.` / `Tables stay tables` + `Ruled tables are rebuilt as real tables, with rows and columns you can edit.` / `Layout intact` + `Positions, sizes and backgrounds land where the original put them.` |
 | Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
 
 The hero eyebrow reads `in your browser`, not `for Windows`, because the hero

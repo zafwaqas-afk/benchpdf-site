@@ -478,6 +478,22 @@ img{max-width:100%; height:auto}
 .foot-latest span{display:block; max-width:74ch}
 .foot-latest a{color:var(--ink)}
 
+/* How it works: three one-line steps, mono-numbered, no ornament. */
+.steps{list-style:none; margin:0; padding:0; display:grid;
+  grid-template-columns:repeat(3,1fr); gap:clamp(18px,3vw,44px)}
+.steps li{font-size:15px; color:var(--ink-soft); display:flex; gap:12px; align-items:baseline}
+.step-n{font-family:var(--mono); font-size:12px; color:var(--ink-faint);
+  border:1px solid var(--rule); border-radius:50%; width:22px; height:22px;
+  display:inline-flex; align-items:center; justify-content:center; flex:none}
+
+/* What the output preserves: three quiet statements. */
+.keep-strip{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(20px,4vw,56px)}
+.keep h2{font-family:var(--serif); font-size:17px; font-weight:600; margin:0 0 6px}
+.keep p{margin:0; font-size:14px; line-height:1.6; color:var(--ink-quiet)}
+@media (max-width:820px){
+  .steps,.keep-strip{grid-template-columns:1fr}
+}
+
 /* The honest interstitial for a conversion we will not do badly in a browser. */
 .desktop-note{max-width:52ch}
 .desktop-note h2{font-family:var(--serif); font-size:clamp(19px,2.2vw,25px); margin:0 0 12px; font-weight:600}
