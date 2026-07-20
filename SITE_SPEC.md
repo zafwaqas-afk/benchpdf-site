@@ -177,8 +177,14 @@ no second nav system.** The same four items appear at every viewport width.
 |---|---|---|
 | Left | `benchpdf` (wordmark) | `/` |
 | Right | Tools | `/#tools` |
-| Right | Download | `/download` |
+| Right | Download | `/download` (compact primary pill, the navbar instance of the Download signature) |
 | Right | Privacy | `/privacy` |
+
+Download is the only pill in the header; Tools and Privacy stay text links.
+The pill wears the Download signature (ink fill, white text, ember ring) at
+compact padding, on every page and at every width. The old mobile rule that
+hid the nav links under 720px is gone; the same three items now show at every
+viewport width.
 
 `Tools` points at the tool index section on the home page. That section is the
 tool index, so the label is honest. There is no separate `/tools` page.
@@ -452,11 +458,13 @@ ring described below.
   outline pill on the hairline. A grey or silver fill on an enabled button is
   forbidden; grey fill is reserved for disabled states only
 - **The Download signature.** Every Download CTA (`.btn-download`: home grid,
-  `/download`, the desktop interstitial, tool pages) is a primary pill wearing
+  `/download`, the desktop interstitial, tool pages, **and the navbar `.nav-cta`
+  on every page**) is a primary pill wearing
   an ember ring: `box-shadow: 0 0 0 2px ground, 0 0 0 4px #E57A44`, hover
   deepens to `#D2652F`. The same hex would serve in a dark theme. This ring
   appears on **no other element in the product**, and ember is never borrowed
-  for warnings or errors. Focus-visible is the ink outline, never ember
+  for warnings or errors. Focus-visible is the ink outline, never ember. No
+  Download CTA may ever render greyed, outline-only, or disabled-looking
 - **Links**: ink text, underlined; the underline is muted at rest and full ink
   on hover, so links stay distinguishable without colour
 - Selection, spinners, progress and active states: ink
