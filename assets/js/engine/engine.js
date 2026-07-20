@@ -93,7 +93,9 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts) {
     y: (offY + y0 * scale) / IN,
     w: Math.max((x1 - x0) * scale / IN, 1 / IN),
     h: Math.max((y1 - y0) * scale / IN, 0.5 / IN),
-    margin: 0, valign: "top", wrap: true,
+    // single-line blocks never need to wrap; with substituted fonts running
+    // wider than the source, wrap:true breaks headings into two lines
+    margin: 0, valign: "top", wrap: cluster.length > 1,
     ...(align ? { align } : {}),
   });
 }
@@ -149,6 +151,10 @@ function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, of
           fill: { color: hex6((fill[0] << 16) | (fill[1] << 8) | fill[2]) },
           valign: "top",
           margin: [1, 4, 1, 4],
+          // explicit thin grid: the stamped tableStyleId names a style that
+          // PptxGenJS's tableStyles.xml never defines, so PowerPoint draws
+          // no borders from it. Corpus invoices exposed this.
+          border: { type: "solid", pt: 0.5, color: "000000" },
         },
       });
     }
