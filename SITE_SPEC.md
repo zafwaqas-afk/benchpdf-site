@@ -141,7 +141,7 @@ via Cloudflare Pages. Static HTML and CSS, no build step, no framework.
 
 | URL | File | Purpose |
 |---|---|---|
-| `/` | `index.html` | The working browser converter, plus the tool index and the promise |
+| `/` | `index.html` | The working browser converter and the tool index |
 | `/download` | `download.html` | The desktop app: what it adds, and the download |
 | `/privacy` | `privacy.html` | What happens to your files, in plain English |
 | `/changelog` | `changelog.html` | Released versions |
@@ -198,8 +198,7 @@ On the home page:
 1. Hero viewport: the **drop zone** is the primary action. There is no pill
    button competing with it. The `Download` top-bar item is plain nav text.
 2. Tools section: plain list links, names only, no primary styling and no
-   descriptive notes.
-3. Promise section: one plain text link to the privacy page.
+   descriptive notes. The desktop group closes with the download pill.
 
 The desktop group in the tools section closes with the one download pill on
 the home page, a full viewport below the hero, linking straight to the GitHub
@@ -282,9 +281,6 @@ without agreement.
 | Tools group 2 heading | `In the desktop app` |
 | Tools group 2 items | `PDF to PowerPoint` / `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
 | Tools group 2 CTA | `Download BenchPDF 1.0.0 for Windows` (links to the GitHub latest release) |
-| Promise | `Your files never leave the device you are sitting at.` |
-| Promise paragraph | `The browser tools run as code inside your own browser, and the desktop app converts on your own PC. You can watch your browser's network activity during a conversion and see for yourself that nothing is sent.` |
-| Promise link | `Read the privacy page` |
 | Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
 
 The hero eyebrow reads `in your browser`, not `for Windows`, because the hero
@@ -390,6 +386,8 @@ note, so the tool pages themselves do the explaining.
 |---|---|
 | Title | `Privacy \| BenchPDF` |
 | H1 | `Privacy` |
+| Opening statement | `Your files never leave the device you are sitting at.` |
+| Statement note | `The browser tools run as code inside your own browser, and the desktop app converts on your own PC. You can watch your browser's network activity during a conversion and see for yourself that nothing is sent.` |
 | Lede | `In plain English: what BenchPDF does with your files, what it doesn't, and what this website collects.` |
 
 Section headings, in order: `The short version`, `What the app does`,
