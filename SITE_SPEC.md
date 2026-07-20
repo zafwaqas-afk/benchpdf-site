@@ -34,8 +34,9 @@ an instant swap.
 | muted | `#8A96A2` | `#4F565C` |
 | faint | `#5A6472` | `#6E767C` |
 | ghost (hero question) | `#4E565F` | `#A9AFB2` |
-| grid minor / major | `#1C2A22` / `#26402F` | `#C2CDC5` / `#AFC0B4` |
+| grid minor / major | `#1C2A22` / `#26402F` | `#B7CFBC` / `#9FC0A9` (green stays on in light) |
 | tick | `#2FBF6B` at 25% | same |
+| etch (filled grid bands) | `rgba(47,191,107,.05)` | `rgba(31,138,74,.06)` |
 | brand (wordmark pdf) | `#F37021` | `#D6116A` |
 | download block / text | `#0E1012` / `#8AE000` | same |
 | ok / err / warn | `#4CAF7D` / `#E06A56` / `#D09A3E` | `#226245` / `#963524` / `#6F4D14` |
@@ -336,7 +337,13 @@ without agreement.
 | Drop zone tags | `Input` / `Auto` (mono, aria-hidden) |
 | Drop zone heading | `Drop PDF / JPG / PNG` |
 | Drop zone sub | `or choose a file` |
-| Hero strip | `Drop → Select → Done` + `Free during early access.` |
+| Hero strip | `Drop → Select → Done` + `Free during early access.` (the pricing line is a quiet ringed chip linking to `/download`) |
+
+The grid is painted on a fixed `.gridlayer` element behind the content on
+every page, never as a `background-attachment:fixed` body background (that
+hit a Chrome/Windows stale-paint bug that blanked sections below the fold).
+The layer carries three faintly filled "etched" bands in the green etch
+token, both themes.
 
 The visible eyebrow and headline are retired; the ghost question and the
 hidden h1 carry their jobs. The hero strip replaces the numbered steps row on
