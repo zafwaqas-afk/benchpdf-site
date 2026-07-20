@@ -436,22 +436,41 @@ the settle.
 
 ---
 
-## 8. Art direction
+## 8. Art direction: Monochrome & Ember
 
-Unchanged by the IA work and not to be altered casually.
+Replaced the previous Warm Satin & Cobalt palette on 2026-07-20. There is no
+blue anywhere in the system, and no accent colour exists apart from the ember
+ring described below.
 
-- Ground: bone `#F2EDE6`, warm plaster `#E4D6CC`, shadow lilac `#C8C2D8`
-- Text: ink `#1A181E` only, at measured alphas (`--ink-soft` 7.9:1,
-  `--ink-quiet` 5.7:1, `--ink-faint` 4.7:1 on bone, so 11px labels clear AA)
-- Accent: cobalt `#2C4BE0` appears exactly once sitewide, as the download
-  button hover fill
-- Type: Bodoni Moda Italic for the display collision and quiet statements,
-  IBM Plex Sans for everything else, IBM Plex Serif for headings, IBM Plex Mono
-  for labels
-- All buttons are the same ghost pill
-- Single light theme, committed. There is no dark mode and no theme toggle.
-
----
+- Ground `#F6F5F2`, panel `#FFFFFF`, recess `#ECEAE6`, hairline `#B7B2A9`
+- Text: ink `#2A2723`, muted `#6B655C`. Hierarchy tiers are ink at measured
+  alphas (`--ink-soft` .82 = 7.8:1, `--ink-quiet` .68 = 5.0:1, `--ink-faint`
+  .66 = 4.7:1 on the ground), so 11px mono labels clear WCAG AA
+- The generative hero scene is the same tonal ladder desaturated onto the warm
+  neutral hue (38 degrees, saturation capped at 10%): depth kept, colour gone
+- **Buttons.** Primary is ink-filled (`#2A2723`, white text). Secondary is the
+  outline pill on the hairline. A grey or silver fill on an enabled button is
+  forbidden; grey fill is reserved for disabled states only
+- **The Download signature.** Every Download CTA (`.btn-download`: home grid,
+  `/download`, the desktop interstitial, tool pages) is a primary pill wearing
+  an ember ring: `box-shadow: 0 0 0 2px ground, 0 0 0 4px #E57A44`, hover
+  deepens to `#D2652F`. The same hex would serve in a dark theme. This ring
+  appears on **no other element in the product**, and ember is never borrowed
+  for warnings or errors. Focus-visible is the ink outline, never ember
+- **Links**: ink text, underlined; the underline is muted at rest and full ink
+  on hover, so links stay distinguishable without colour
+- Selection, spinners, progress and active states: ink
+- Semantic colours, the only others in the system: success `#2E7D54`, error
+  `#C24A38`, warning `#9A6B1F`. As text they sit on the panel (4.5:1 holds
+  there); on the ground they colour icons beside ink text
+- Type: unchanged. Bodoni Moda Italic display, IBM Plex Sans/Serif/Mono
+- Single light theme, committed: no dark mode and no theme toggle on the site.
+  The desktop app carries both themes; its dark tokens are ground `#1B1A18`,
+  panel `#242220`, hairline `#3E3B36`, text `#ECEAE5`, muted `#A29C92`, with
+  the primary button inverted (`#ECEAE5` fill, `#1B1A18` text) and semantics
+  `#4CAF7D` / `#E06A56` / `#D09A3E`
+- Verified gate: `grep` of the built CSS finds zero blue-ish values (hue 190
+  to 280 at any saturation above 8%), both repos
 
 ## 9. Quality gates
 

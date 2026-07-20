@@ -1,8 +1,8 @@
 /* ============================================================
-   BenchPDF — cinematic editorial art direction
-   Warm, dusty, single committed light world. Ink is the only
-   text colour; cobalt appears exactly once, on the download
-   button hover. Atmosphere comes from imagery and grain.
+   BenchPDF - Monochrome & Ember
+   One warm-neutral ramp, ink for every interactive job, and one
+   ember ring reserved for the Download signature. No blue exists
+   anywhere in this file; the audit gate greps for it.
    ============================================================ */
 
 /* ---- Faces ---------------------------------------------------
@@ -21,24 +21,41 @@
 @font-face{font-family:"Plex Mono";src:url("../fonts/IBMPlexMono-Medium.woff2") format("woff2");font-weight:500;font-display:swap}
 
 :root{
-  /* ground */
-  --bone:#F2EDE6;
-  --plaster:#E4D6CC;
-  --lilac:#C8C2D8;
-  --ink:#1A181E;
+  /* Monochrome & Ember. One warm-neutral ramp; ink does every interactive
+     job; ember exists solely as the Download signature ring. No blue exists
+     anywhere in the system. */
+  --ground:#F6F5F2;
+  --panel:#FFFFFF;
+  --recess:#ECEAE6;
+  --hairline:#B7B2A9;
+  --ink:#2A2723;
+  --muted:#6B655C;
 
-  /* the single accent, used once: download hover */
-  --cobalt:#2C4BE0;
+  /* The Download signature. Same hex would apply in a dark theme; this site
+     ships light only. Never borrowed by warnings, errors or anything else. */
+  --ember:#E57A44;
+  --ember-hover:#D2652F;
 
-  /* Hierarchy is ink at reduced strength, never a second hue.
-     These alphas are set by measured contrast on the bone ground, not by
-     eye: 7.9:1, 5.7:1 and 4.7:1 respectively, so even the 11px mono
-     labels clear WCAG AA for small text. */
-  --ink-soft:rgba(26,24,30,.78);
-  --ink-quiet:rgba(26,24,30,.68);
-  --ink-faint:rgba(26,24,30,.62);
-  --rule:rgba(26,24,30,.16);
-  --rule-soft:rgba(26,24,30,.09);
+  /* Semantic. The only colours besides ember. As text they sit on panel;
+     on the ground they colour icons beside ink text (4.5:1 as text holds on
+     panel: 4.85 err, 4.67 warn, 5.03 ok). */
+  --ok:#2E7D54;
+  --err:#C24A38;
+  --warn:#9A6B1F;
+
+  /* Hierarchy is ink at reduced strength, never a second hue. Alphas are set
+     by measured contrast on the ground, not by eye: 7.8:1, 5.0:1 and 4.7:1,
+     so the 11px mono labels clear WCAG AA for small text. */
+  --ink-soft:rgba(42,39,35,.82);
+  --ink-quiet:rgba(42,39,35,.68);
+  --ink-faint:rgba(42,39,35,.66);
+  --rule:rgba(42,39,35,.16);
+  --rule-soft:rgba(42,39,35,.09);
+
+  /* Legacy aliases so the layout rules did not have to change. */
+  --bone:var(--ground);
+  --plaster:var(--recess);
+  --lilac:var(--hairline);
 
   --display:"Bodoni Display",Georgia,"Times New Roman",serif;
   --grotesk:"Plex Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
@@ -58,7 +75,8 @@ body{
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
-a{color:inherit}
+a{color:inherit; text-decoration-color:var(--muted); text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink)}
 img{max-width:100%; height:auto}
 ::selection{background:var(--ink); color:var(--bone)}
 :focus-visible{outline:2px solid var(--ink); outline-offset:3px}
@@ -82,7 +100,7 @@ img{max-width:100%; height:auto}
 .nav{position:absolute; top:0; left:0; right:0; z-index:50}
 .nav::before{
   content:""; position:absolute; inset:0 0 auto 0; height:190px; pointer-events:none;
-  background:linear-gradient(to bottom, rgba(242,237,230,.78), rgba(242,237,230,0));
+  background:linear-gradient(to bottom, rgba(246,245,242,.78), rgba(246,245,242,0));
 }
 .nav-in{
   position:relative; display:flex; align-items:center; gap:28px;
@@ -111,18 +129,33 @@ img{max-width:100%; height:auto}
 /* ============================================================
    Pill button system, sitewide
    ============================================================ */
+/* Secondary: outline pill on the hairline. Grey FILL is reserved for
+   disabled states only; an enabled button is either outlined or ink-filled. */
 .btn{
   display:inline-flex; align-items:center; gap:10px; white-space:nowrap;
   font-family:var(--grotesk); font-size:14px; font-weight:500; letter-spacing:.01em; line-height:1;
-  padding:15px 28px; border-radius:var(--pill); border:1px solid var(--ink);
+  padding:15px 28px; border-radius:var(--pill); border:1px solid var(--hairline);
   background:transparent; color:var(--ink); text-decoration:none; cursor:pointer;
   -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
-  transition:background-color .32s cubic-bezier(.22,1,.36,1), color .32s cubic-bezier(.22,1,.36,1), border-color .32s;
+  transition:background-color .32s cubic-bezier(.22,1,.36,1), color .32s cubic-bezier(.22,1,.36,1), border-color .32s, box-shadow .32s;
 }
-.btn:hover{background:var(--ink); color:var(--bone)}
+.btn:hover{background:var(--ink); border-color:var(--ink); color:var(--ground)}
 .btn-sm{padding:11px 20px; font-size:13px}
-/* the one cobalt moment on the whole site */
-.btn-download:hover{background:var(--cobalt); border-color:var(--cobalt); color:#FFFFFF}
+/* Primary: ink-filled. */
+.btn-primary{background:var(--ink); border-color:var(--ink); color:#FFFFFF}
+.btn-primary:hover{background:#191713; border-color:#191713; color:#FFFFFF}
+/* The Download signature: a primary pill wearing the ember ring, floated off
+   the pill by a ground-colour gap. This ring appears on no other element in
+   the product. Focus-visible stays the ink outline so keyboard focus is never
+   confused with it. */
+.btn-download{
+  background:var(--ink); border-color:var(--ink); color:#FFFFFF;
+  box-shadow:0 0 0 2px var(--ground), 0 0 0 4px var(--ember);
+}
+.btn-download:hover{
+  background:#191713; border-color:#191713; color:#FFFFFF;
+  box-shadow:0 0 0 2px var(--ground), 0 0 0 4px var(--ember-hover);
+}
 .btn[aria-disabled="true"]{opacity:.45; pointer-events:none}
 .btn .arrow{font-family:var(--mono); font-size:12px; transition:transform .32s cubic-bezier(.22,1,.36,1)}
 .btn:hover .arrow{transform:translate(2px,2px)}
@@ -150,8 +183,8 @@ img{max-width:100%; height:auto}
 .hero::after{
   content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
   background:
-    linear-gradient(to top, rgba(242,237,230,.52) 0%, rgba(242,237,230,.20) 30%, rgba(242,237,230,0) 56%),
-    linear-gradient(to right, rgba(242,237,230,.62) 0%, rgba(242,237,230,.10) 42%, rgba(242,237,230,0) 62%);
+    linear-gradient(to top, rgba(246,245,242,.52) 0%, rgba(246,245,242,.20) 30%, rgba(246,245,242,0) 56%),
+    linear-gradient(to right, rgba(246,245,242,.62) 0%, rgba(246,245,242,.10) 42%, rgba(246,245,242,0) 62%);
 }
 .hero-inner{
   position:relative; z-index:2; width:100%; max-width:920px;
@@ -203,8 +236,8 @@ img{max-width:100%; height:auto}
 .scene{
   position:absolute; inset:0; overflow:hidden;
   background:
-    radial-gradient(120% 90% at 12% 4%, #FEFCFA 0%, rgba(254,252,250,0) 52%),
-    linear-gradient(168deg, #F7F3ED 0%, var(--bone) 34%, #E9DED4 72%, var(--plaster) 100%);
+    radial-gradient(120% 90% at 12% 4%, #FCFCFC 0%, rgba(252,252,252,0) 52%),
+    linear-gradient(168deg, #F3F2F1 0%, var(--bone) 34%, #E2DFDB 72%, var(--plaster) 100%);
 }
 .scene-stage{position:absolute; inset:0}
 .plane{position:absolute}
@@ -213,7 +246,7 @@ img{max-width:100%; height:auto}
    not as a seam drawn across the picture. */
 .floor{
   left:-6%; right:-6%; bottom:-1%; width:112%; height:34%;
-  background:linear-gradient(176deg, rgba(200,194,216,0) 0%, rgba(210,196,190,.42) 40%, rgba(226,212,202,.8) 100%);
+  background:linear-gradient(176deg, rgba(183,178,169,0) 0%, rgba(206,201,194,.42) 40%, rgba(218,215,210,.8) 100%);
   clip-path:polygon(0 46%, 100% 22%, 100% 100%, 0 100%);
   filter:blur(3px);
 }
@@ -228,39 +261,39 @@ img{max-width:100%; height:auto}
 
 .arch-a{
   left:20%; bottom:16%; width:27%; height:66%;
-  filter:drop-shadow(46px 34px 46px rgba(96,84,116,.30));
+  filter:drop-shadow(46px 34px 46px rgba(110,103,90,.30));
 }
-.arch-a::before{background:linear-gradient(172deg,#FEFDFB 0%,#F6F1EA 100%)}
-.arch-a::after{background:linear-gradient(172deg,#EFE5DA 0%,#DFD0C4 100%)}
+.arch-a::before{background:linear-gradient(172deg,#FDFDFC 0%,#F2F0EE 100%)}
+.arch-a::after{background:linear-gradient(172deg,#E7E5E2 0%,#D6D3CD 100%)}
 
 .arch-b{
   left:41%; bottom:19%; width:21%; height:52%;
-  filter:drop-shadow(40px 28px 40px rgba(96,84,116,.28));
+  filter:drop-shadow(40px 28px 40px rgba(110,103,90,.28));
 }
-.arch-b::before{background:linear-gradient(172deg,#F8F4EE 0%,#EDE3D8 100%)}
-.arch-b::after{background:linear-gradient(172deg,#E2D4C8 0%,#D2C2BA 100%)}
+.arch-b::before{background:linear-gradient(172deg,#F4F3F2 0%,#E5E3E0 100%)}
+.arch-b::after{background:linear-gradient(172deg,#D9D6D1 0%,#CCC8C0 100%)}
 
 .arch-c{
   left:57%; bottom:21%; width:15%; height:40%;
-  filter:drop-shadow(30px 22px 34px rgba(96,84,116,.26));
+  filter:drop-shadow(30px 22px 34px rgba(110,103,90,.26));
 }
-.arch-c::before{background:linear-gradient(172deg,#EFE7DE 0%,#E1D5CB 100%)}
-.arch-c::after{background:linear-gradient(172deg,#D4C6C4 0%,#C6BCC8 100%)}
+.arch-c::before{background:linear-gradient(172deg,#E9E7E4 0%,#DAD7D2 100%)}
+.arch-c::after{background:linear-gradient(172deg,#D1CDC7 0%,#C8C4BC 100%)}
 
 /* --- sheets stepping down out of the colonnade, sharing the floor tilt.
    Each tread is a lit top face over a darker riser, so the run reads as
    a stair descending toward the viewer rather than as stacked slabs. --- */
-.step{height:11%; filter:drop-shadow(16px 12px 18px rgba(96,84,116,.24))}
+.step{height:11%; filter:drop-shadow(16px 12px 18px rgba(110,103,90,.24))}
 .step::before,.step::after{content:""; position:absolute; inset:0}
 /* top face, catching the light */
 .step::before{
   clip-path:polygon(0 34%, 100% 0, 100% 40%, 0 74%);
-  background:linear-gradient(96deg,#FEFCFA 0%,#F6F1EA 60%,#EDE4DA 100%);
+  background:linear-gradient(96deg,#FCFCFC 0%,#F2F0EE 60%,#E6E4E1 100%);
 }
 /* riser, turned away from the light */
 .step::after{
   clip-path:polygon(0 74%, 100% 40%, 100% 74%, 0 108%);
-  background:linear-gradient(96deg,#D9C9BF 0%,#C7B5AE 60%,#B9A8A8 100%);
+  background:linear-gradient(96deg,#D1CDC7 0%,#C1BCB4 60%,#B8B3A9 100%);
 }
 .step-1{left:55%; bottom:23%; width:16%}
 .step-2{left:61%; bottom:16%; width:16%}
@@ -271,24 +304,24 @@ img{max-width:100%; height:auto}
 .leaf::before,.leaf::after{content:""; position:absolute; inset:0}
 .leaf-a{
   right:6%; top:12%; width:17%; height:30%; transform:rotate(6deg);
-  filter:drop-shadow(26px 30px 34px rgba(96,84,116,.30));
+  filter:drop-shadow(26px 30px 34px rgba(110,103,90,.30));
 }
-.leaf-a::before{clip-path:polygon(0 6%, 54% 0, 54% 94%, 0 100%); background:linear-gradient(158deg,#FEFDFC,#F4EFE8)}
-.leaf-a::after{clip-path:polygon(54% 0, 100% 9%, 100% 100%, 54% 94%); background:linear-gradient(158deg,#EBE0D5,#DACBBF)}
+.leaf-a::before{clip-path:polygon(0 6%, 54% 0, 54% 94%, 0 100%); background:linear-gradient(158deg,#FDFDFD,#F0EEEC)}
+.leaf-a::after{clip-path:polygon(54% 0, 100% 9%, 100% 100%, 54% 94%); background:linear-gradient(158deg,#E3E1DD,#D2CEC7)}
 
 .leaf-b{
   right:22%; top:30%; width:12%; height:21%; transform:rotate(-9deg);
-  filter:drop-shadow(20px 24px 28px rgba(96,84,116,.26));
+  filter:drop-shadow(20px 24px 28px rgba(110,103,90,.26));
 }
-.leaf-b::before{clip-path:polygon(0 0, 46% 7%, 46% 100%, 0 93%); background:linear-gradient(158deg,#FBF7F2,#EFE6DC)}
-.leaf-b::after{clip-path:polygon(46% 7%, 100% 0, 100% 93%, 46% 100%); background:linear-gradient(158deg,#E4D8CC,#D0C3C4)}
+.leaf-b::before{clip-path:polygon(0 0, 46% 7%, 46% 100%, 0 93%); background:linear-gradient(158deg,#F7F7F6,#E8E6E3)}
+.leaf-b::after{clip-path:polygon(46% 7%, 100% 0, 100% 93%, 46% 100%); background:linear-gradient(158deg,#DCD9D4,#CFCBC4)}
 
 .leaf-c{
   right:2%; top:44%; width:10%; height:16%; transform:rotate(17deg);
-  filter:drop-shadow(16px 18px 26px rgba(96,84,116,.22)); opacity:.8;
+  filter:drop-shadow(16px 18px 26px rgba(110,103,90,.22)); opacity:.8;
 }
-.leaf-c::before{clip-path:polygon(0 4%, 50% 0, 50% 96%, 0 100%); background:linear-gradient(158deg,#F3EDE6,#E6DACF)}
-.leaf-c::after{clip-path:polygon(50% 0, 100% 6%, 100% 100%, 50% 96%); background:linear-gradient(158deg,#D9CCCE,var(--lilac))}
+.leaf-c::before{clip-path:polygon(0 4%, 50% 0, 50% 96%, 0 100%); background:linear-gradient(158deg,#EEEDEB,#DEDBD7)}
+.leaf-c::after{clip-path:polygon(50% 0, 100% 6%, 100% 100%, 50% 96%); background:linear-gradient(158deg,#D7D4CE,var(--lilac))}
 
 /* Aerial perspective: a haze that thickens with distance, sitting between the
    colonnade and the loose sheets so the far forms sink back. This is what
@@ -296,14 +329,14 @@ img{max-width:100%; height:auto}
 .scene-haze{
   position:absolute; inset:0; pointer-events:none;
   background:
-    linear-gradient(102deg, rgba(242,237,230,0) 34%, rgba(238,231,226,.44) 68%, rgba(228,214,204,.62) 100%),
-    radial-gradient(58% 44% at 62% 40%, rgba(200,194,216,.20) 0%, rgba(200,194,216,0) 70%);
+    linear-gradient(102deg, rgba(246,245,242,0) 34%, rgba(234,233,230,.44) 68%, rgba(236,234,230,.62) 100%),
+    radial-gradient(58% 44% at 62% 40%, rgba(183,178,169,.20) 0%, rgba(183,178,169,0) 70%);
 }
 
 /* the floor takes a soft return of the colonnade above it */
 .floor-sheen{
   position:absolute; left:0; right:0; bottom:0; height:30%; pointer-events:none;
-  background:linear-gradient(to bottom, rgba(255,253,250,.34) 0%, rgba(255,253,250,0) 58%);
+  background:linear-gradient(to bottom, rgba(253,253,252,.34) 0%, rgba(253,253,252,0) 58%);
   mix-blend-mode:soft-light;
 }
 
@@ -312,9 +345,9 @@ img{max-width:100%; height:auto}
 .scene-light{
   position:absolute; inset:0; pointer-events:none;
   background:
-    linear-gradient(105deg, rgba(255,254,252,0) 18%, rgba(255,254,252,.42) 27%, rgba(255,254,252,0) 39%),
-    radial-gradient(64% 54% at 14% 6%, rgba(255,254,252,.9) 0%, rgba(255,254,252,0) 62%),
-    radial-gradient(70% 60% at 96% 96%, rgba(150,138,168,.22) 0%, rgba(150,138,168,0) 60%);
+    linear-gradient(105deg, rgba(254,254,253,0) 18%, rgba(254,254,253,.42) 27%, rgba(254,254,253,0) 39%),
+    radial-gradient(64% 54% at 14% 6%, rgba(254,254,253,.9) 0%, rgba(254,254,253,0) 62%),
+    radial-gradient(70% 60% at 96% 96%, rgba(163,156,143,.22) 0%, rgba(163,156,143,0) 60%);
 }
 
 /* No looping motion. Animating these clip-path gradient planes re-rasterised
@@ -502,7 +535,8 @@ img{max-width:100%; height:auto}
 
 .done-head,.err-head{display:flex; align-items:center; gap:12px; margin-bottom:4px}
 .done-head h2,.err-head h2{font-family:var(--serif); font-weight:600; font-size:19px; margin:0; letter-spacing:-.015em}
-.i-check,.i-alert{color:var(--ink)}
+.i-check{color:var(--ok)}
+.i-alert{color:var(--err)}
 .result{
   display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-top:18px;
   border:1px solid var(--rule); border-radius:4px; padding:18px 20px; background:rgba(255,255,255,.55);
@@ -515,7 +549,7 @@ img{max-width:100%; height:auto}
 .notice{
   display:flex; gap:12px; align-items:flex-start; margin-top:18px; padding:14px 16px;
   border:1px solid var(--rule); border-radius:4px; font-size:13.5px; line-height:1.55;
-  background:rgba(200,194,216,.22);
+  background:rgba(183,178,169,.22);
 }
 .notice svg{flex:none; margin-top:2px}
 
@@ -595,25 +629,24 @@ img{max-width:100%; height:auto}
 }
 .conv-badge::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--ink); flex:none}
 
-/* every button on the site is the same pill */
+/* Shared pill geometry for the tool-page buttons. Colour comes from the
+   primary/secondary rules in the button system above; nothing here may
+   override a fill, or the Download signature stops being a primary pill. */
 .btn-primary,.btn-ghost{
   display:inline-flex; align-items:center; gap:10px; white-space:nowrap;
   font-family:var(--grotesk); font-size:14px; font-weight:500; line-height:1;
-  padding:15px 28px; border-radius:var(--pill); border:1px solid var(--ink);
-  background:transparent; color:var(--ink); text-decoration:none; cursor:pointer;
-  transition:background-color .32s cubic-bezier(.22,1,.36,1), color .32s cubic-bezier(.22,1,.36,1), border-color .32s;
+  padding:15px 28px; border-radius:var(--pill); text-decoration:none; cursor:pointer;
+  transition:background-color .32s cubic-bezier(.22,1,.36,1), color .32s cubic-bezier(.22,1,.36,1), border-color .32s, box-shadow .32s;
 }
-.btn-primary:hover,.btn-ghost:hover{background:var(--ink); color:var(--bone)}
+.btn-ghost{border:1px solid var(--hairline); background:transparent; color:var(--ink)}
+.btn-ghost:hover{background:var(--ink); border-color:var(--ink); color:var(--ground)}
 .btn-primary.btn-sm,.btn-ghost.btn-sm{padding:11px 20px; font-size:13px}
-/* the single cobalt moment, wherever the download CTA appears */
-.btn-primary.btn-download:hover,.btn-ghost.btn-download:hover{
-  background:var(--cobalt); border-color:var(--cobalt); color:#FFFFFF;
-}
 
 .tool-cta{margin-top:clamp(26px,4vh,40px); display:flex; gap:16px; align-items:center; flex-wrap:wrap}
 .pitch-cta-note{font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; color:var(--ink-soft); margin:0; max-width:56ch; line-height:1.7}
 .section-h{font-family:var(--serif); font-weight:600; letter-spacing:-.015em}
-.notice-warn{background:rgba(200,194,216,.24)}
+.notice-warn{background:rgba(154,107,31,.10)}
+.notice-warn svg{color:var(--warn)}
 
 /* ---- the scene on narrow viewports -------------------------
    Widths are a share of a narrow screen while heights are a share of a
