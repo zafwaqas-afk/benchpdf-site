@@ -58,7 +58,10 @@ export class FontMapper {
       if (compact.includes(key)) { target = val; break; }
     }
     if (target === null) {
-      if (["mono", "consol", "courier"].some((k) => low.includes(k)) || (flags & FLAG_MONO)) {
+      if (low.startsWith("unmappable-")) {
+        target = low.includes("mono") ? FALLBACK_MONO
+               : low.includes("serif") ? FALLBACK_SERIF : FALLBACK_SANS;
+      } else if (["mono", "consol", "courier"].some((k) => low.includes(k)) || (flags & FLAG_MONO)) {
         target = FALLBACK_MONO;
       } else if (low.includes("sans")) {
         target = FALLBACK_SANS;

@@ -44,6 +44,16 @@ function matApply(m, x, y) {
   return [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
 }
 
+/* pdf.js delivers matrices either bare ([a,b,c,d,e,f]) or wrapped in a
+ * one-element args array ([Float32Array(6)]), varying by op and build.
+ * Normalise before any multiply, or one wrapped matrix NaNs the whole walk. */
+function asMat(a) {
+  if (!a) return null;
+  if (a.length === 6 && typeof a[0] === "number") return a;
+  if (a[0] && a[0].length === 6 && typeof a[0][0] === "number") return a[0];
+  return null;
+}
+
 /* ------------------------------------------------------------------------- */
 /* Font info from the page's common objects                                  */
 /* ------------------------------------------------------------------------- */
@@ -56,10 +66,22 @@ async function fontInfo(page, styles, fontName, embeddedMetrics) {
   const st = styles[fontName] || {};
   const [ascent, descent] = resolveMetrics(
     info.name || fontName, embeddedMetrics, st.ascent, st.descent);
+  // When the real name is unrecoverable, carry pdf.js's own serif/sans/mono
+  // classification so the mapper lands on the right family instead of a
+  // silent Arial, and say so in the console.
+  let name = info.name;
+  if (!name || /^g_d\d+_f\d+$/.test(name)) {
+    const fam = st.fontFamily || "";
+    name = fam.includes("mono") ? "unmappable-mono"
+         : fam.includes("serif") && !fam.includes("sans") ? "unmappable-serif"
+         : "unmappable-sans";
+    console.warn(`BenchPDF engine: font ${fontName} has no recoverable name; ` +
+                 `classified as ${fam || "sans-serif"} for mapping`);
+  }
   return {
-    name: info.name,
-    bold: info.bold || /bold|black|heavy/i.test(info.name),
-    italic: info.italic || /italic|oblique/i.test(info.name),
+    name,
+    bold: info.bold || /bold|black|heavy/i.test(info.name || ""),
+    italic: info.italic || /italic|oblique/i.test(info.name || ""),
     ascent, descent,
   };
 }
@@ -78,9 +100,10 @@ export function textOps(opList) {
   let lineMat = MAT_ID.slice();   // text line matrix (Tm; advanced by Td/T*)
   let cursor = 0;                 // x advance within the line, text space
   let fontSize = 0, charSpacing = 0, wordSpacing = 0, leading = 0, hScale = 1;
+  let textRise = 0, fontRef = null;
   const out = [];
 
-  const startPos = () => matApply(matMul(ctm, lineMat), cursor, 0);
+  const startPos = () => matApply(matMul(ctm, lineMat), cursor, textRise);
 
   for (let i = 0; i < opList.fnArray.length; i++) {
     const fn = opList.fnArray[i];
@@ -90,18 +113,34 @@ export function textOps(opList) {
       fill = stack.length ? stack.pop() : fill;
       ctm = ctmStack.length ? ctmStack.pop() : ctm;
     }
-    else if (fn === OPS.transform) ctm = matMul(ctm, a);
+    else if (fn === OPS.transform) { const m = asMat(a); if (m) ctm = matMul(ctm, m); }
+    else if (fn === OPS.paintFormXObjectBegin) {
+      // a form's content replays inline under its own matrix: compose it, or
+      // every op position inside the form (and after a desync, the whole rest
+      // of the page) comes out in the wrong space. This was the statement bug.
+      ctmStack.push(ctm.slice());
+      const m = asMat(a);
+      if (m) ctm = matMul(ctm, m);
+    }
+    else if (fn === OPS.paintFormXObjectEnd) {
+      ctm = ctmStack.length ? ctmStack.pop() : ctm;
+    }
+    else if (fn === OPS.setTextRise) textRise = a[0];
     else if (fn === OPS.setFillRGBColor) {
       if (a.length >= 3) fill = ((a[0] & 255) << 16) | ((a[1] & 255) << 8) | (a[2] & 255);
       else if (typeof a[0] === "number") fill = a[0] & 0xffffff;
       else if (typeof a[0] === "string") fill = parseInt(a[0].replace("#", ""), 16) || 0;
     }
     else if (fn === OPS.beginText) { lineMat = MAT_ID.slice(); cursor = 0; }
-    else if (fn === OPS.setTextMatrix) { lineMat = a.slice(0, 6); cursor = 0; }
+    else if (fn === OPS.setTextMatrix) {
+      const m = asMat(a);
+      if (m) lineMat = Array.from(m);
+      cursor = 0;
+    }
     else if (fn === OPS.moveText) { lineMat = matMul(lineMat, [1, 0, 0, 1, a[0], a[1]]); cursor = 0; }
     else if (fn === OPS.setLeading) leading = a[0];
     else if (fn === OPS.nextLine) { lineMat = matMul(lineMat, [1, 0, 0, 1, 0, -leading]); cursor = 0; }
-    else if (fn === OPS.setFont) fontSize = a[1];
+    else if (fn === OPS.setFont) { fontRef = a[0]; fontSize = a[1]; }
     else if (fn === OPS.setCharSpacing) charSpacing = a[0];
     else if (fn === OPS.setWordSpacing) wordSpacing = a[0];
     else if (fn === OPS.setHScale) hScale = a[0] / 100;
@@ -136,8 +175,9 @@ export function textOps(opList) {
       cursor += advance;
       const [ex, ey] = startPos();
       const m = matMul(ctm, lineMat);
-      const scale = Math.hypot(m[0], m[1]) || 1;
-      out.push({ fill, trail, ux, uy, ex, ey,
+      // effective size comes from the composed matrix's scale, never Tf alone
+      const scale = Math.hypot(m[0], m[1]) || Math.abs(m[3]) || 1;
+      out.push({ fill, trail, ux, uy, ex, ey, fontRef,
                  size: fontSize * scale, allSpace: allSpace && anyGlyph });
     }
   }
@@ -237,6 +277,7 @@ export async function extractLines(page, opList, embeddedMetrics) {
     spans.push({
       text,
       font: fi.name || it.fontName,
+      fontRef: it.fontName,
       size,
       flags,
       color: it._fill,
@@ -255,7 +296,7 @@ export async function extractLines(page, opList, embeddedMetrics) {
     const w = Math.abs(op.ex - op.ux);
     if (w <= 0 || !(op.size > 0)) continue;
     spans.push({
-      text: " ", font: "", size: op.size, flags: 0, color: op.fill,
+      text: " ", font: "", fontRef: op.fontRef, size: op.size, flags: 0, color: op.fill,
       x0: Math.min(op.ux, op.ex), x1: Math.max(op.ux, op.ex),
       y0: pageH - (op.uy + 0.8 * op.size), y1: pageH - (op.uy - 0.2 * op.size),
       baseline: pageH - op.uy, spaceW: op.size * 0.25,
@@ -277,8 +318,12 @@ export async function extractLines(page, opList, embeddedMetrics) {
       const w = sp.x1 - sp.x0;
       const onCur = cur && Math.abs(sp.baseline - cur.baseline) <=
         Math.max(0.5 * Math.min(sp.size, cur.sizeLast), 1.0);
-      if (!onCur || w > 1.2 * sp.size) {
+      const sameFont = cur && cur.spans.length &&
+        cur.spans[cur.spans.length - 1].fontRef === sp.fontRef;
+      if (!onCur || (sameFont && w > 1.2 * sp.size)) {
         forceBreak = true;
+      } else if (!sameFont) {
+        // foreign-font whitespace: MuPDF's text device discards it entirely
       } else {
         // A narrow whitespace span is a real space op (writers like
         // LibreOffice emit trailing spaces as their own Tj). MuPDF counts its
@@ -364,7 +409,13 @@ export function extractVectors(page, opList) {
     const f = fn[i];
     if (f === OPS.save) ctmStack.push(ctm.slice());
     else if (f === OPS.restore) ctm = ctmStack.length ? ctmStack.pop() : ctm;
-    else if (f === OPS.transform) ctm = matMul(ctm, args[i]);
+    else if (f === OPS.transform) { const m = asMat(args[i]); if (m) ctm = matMul(ctm, m); }
+    else if (f === OPS.paintFormXObjectBegin) {
+      ctmStack.push(ctm.slice());
+      const m = asMat(args[i]);
+      if (m) ctm = matMul(ctm, m);
+    }
+    else if (f === OPS.paintFormXObjectEnd) ctm = ctmStack.length ? ctmStack.pop() : ctm;
     else if (f === OPS.paintImageXObject || f === OPS.paintInlineImageXObject
              || f === OPS.paintImageMaskXObject) {
       // the image fills the unit square under the current CTM
