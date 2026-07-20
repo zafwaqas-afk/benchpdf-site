@@ -221,7 +221,9 @@ words. First-viewport word budget holds: eyebrow (3) plus headline (6) is 9
 words before the drop zone, under the 15-word ceiling.
 
 Below the tool grid, two sections returned that the earlier slimming pass
-removed. That reversal is deliberate and approved: the slimming removed
+removed, and on 2026-07-20 the steps row moved INTO the hero under the badge
+so the instructions are visible on landing. That reversal is deliberate and
+approved: the slimming removed
 selling copy, and what returned is literal orientation instead: a three-step
 How it works row and a three-item strip naming what the output preserves.
 
@@ -301,7 +303,7 @@ without agreement.
 | Tools group 2 heading | `In the desktop app` |
 | Tools group 2 items | `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
 | Tools group 2 CTA | `Download BenchPDF 1.0.2 for Windows` (links to the GitHub latest release) |
-| Steps | `Drop your file in the box above.` / `Choose the format you need.` / `Download the result.` |
+| Steps (in the hero, under the badge; hidden during conversion states) | `Drop your file.` / `Choose the format.` / `Download the result.` |
 | Keep strip | `Editable text` + `Words arrive as text you can click into and retype, not a picture of a page.` / `Tables stay tables` + `Ruled tables are rebuilt as real tables, with rows and columns you can edit.` / `Layout intact` + `Positions, sizes and backgrounds land where the original put them.` |
 | Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
 

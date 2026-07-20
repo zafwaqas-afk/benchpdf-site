@@ -481,6 +481,8 @@ img{max-width:100%; height:auto}
 /* How it works: three one-line steps, mono-numbered, no ornament. */
 .steps{list-style:none; margin:0; padding:0; display:grid;
   grid-template-columns:repeat(3,1fr); gap:clamp(18px,3vw,44px)}
+.steps-hero{margin-top:clamp(16px,2.5vh,26px)}
+.steps-hero li{font-size:13.5px}
 .steps li{font-size:15px; color:var(--ink-soft); display:flex; gap:12px; align-items:baseline}
 .step-n{font-family:var(--mono); font-size:12px; color:var(--ink-faint);
   border:1px solid var(--rule); border-radius:50%; width:22px; height:22px;
@@ -602,6 +604,9 @@ img{max-width:100%; height:auto}
 [data-state="done"] .hero>.hero-inner>.conv-badge,
 [data-state="error"] .hero>.hero-inner>.conv-badge,
 [data-state="desktop"] .hero>.hero-inner>.conv-badge{display:none}
+[data-state="actions"] .steps-hero,[data-state="working"] .steps-hero,
+[data-state="done"] .steps-hero,[data-state="error"] .steps-hero,
+[data-state="desktop"] .steps-hero{display:none}
 
 /* honest caveat block under the tools */
 .conv-caveat{

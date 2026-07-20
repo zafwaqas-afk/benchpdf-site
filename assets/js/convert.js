@@ -245,11 +245,13 @@ async function runPptx(file) {
     const eng = await import("/assets/js/engine/engine.js");
     workPhase.textContent = "Preparing…";
     const bytes = await file.arrayBuffer();
-    const { blob } = await eng.convertPdfToPptx(bytes, {
+    const { blob, report } = await eng.convertPdfToPptx(bytes, {
       pdfjs: pdfjsLib, PptxGenJS: window.PptxGenJS,
       PDFLib: window.PDFLib, JSZip: window.JSZip,
     }, (done, total, msg) => (workPhase.textContent = msg));
-    showDone(blob, baseName(file.name) + ".pptx");
+    const note = report && report.notes && report.notes.length
+      ? report.notes.join(". ") + "." : null;
+    showDone(blob, baseName(file.name) + ".pptx", note);
   } catch (e) {
     console.error(e);
     showError("Couldn't convert that PDF to PowerPoint. " + (e && e.message ? e.message : "Try a different file."));

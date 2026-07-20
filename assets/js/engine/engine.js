@@ -180,6 +180,40 @@ function nontableArtRatio(pageW, pageH, drawings, tableBboxes) {
   return area / pageArea;
 }
 
+/* ---- per-page confidence -------------------------------------------------
+ * The floor is "looks right, less editable": when extraction geometry is not
+ * trustworthy, the page ships as a full render instead of broken boxes. */
+function pageConfidence(lines, clusters) {
+  const spans = lines.flatMap((l) => l.spans.map((sp) => ({ ...sp, l })));
+  const n = Math.max(spans.length, 1);
+  let deg = 0, sub4 = 0, unmapped = 0;
+  const origins = new Map();
+  for (const l of lines) {
+    if (!(l.size > 0) || !isFinite(l.x0) || !isFinite(l.y0) || l.y1 <= l.y0) deg++;
+    if (l.size < 4) sub4++;
+    const k = Math.round(l.x0) + "," + Math.round(l.y0);
+    origins.set(k, (origins.get(k) || 0) + 1);
+    for (const sp of l.spans) if ((sp.font || "").startsWith("unmappable-")) unmapped++;
+  }
+  const piled = [...origins.values()].filter((v) => v > 2).reduce((a, v) => a + v - 2, 0);
+  let overlaps = 0;
+  const boxes = clusters.map((cl) => [
+    Math.min(...cl.map((c) => c.x0)), Math.min(...cl.map((c) => c.y0)),
+    Math.max(...cl.map((c) => c.x1)), Math.max(...cl.map((c) => c.y1))]);
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      const [a, b] = [boxes[i], boxes[j]];
+      const ix = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0]));
+      const iy = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+      const min = Math.max(1, Math.min((a[2]-a[0])*(a[3]-a[1]), (b[2]-b[0])*(b[3]-b[1])));
+      if (ix * iy > 0.10 * min) overlaps++;
+    }
+  }
+  const nl = Math.max(lines.length, 1);
+  const bad = (deg + piled) / nl + 0.5 * (unmapped / n) + 0.3 * (sub4 / nl);
+  return { ok: bad <= 0.15 && overlaps <= 5, bad, overlaps };
+}
+
 /* ---- main entry --------------------------------------------------------- */
 export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
   const { pdfjs, PptxGenJS, PDFLib } = deps;
@@ -292,9 +326,25 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
       }
     }
 
-    // ---- loose text as logical blocks ----
+    // ---- loose text as logical blocks, confidence permitting ----
     const attached = attachMarkers(looseLines);
-    for (const cluster of clusterLines(attached)) {
+    const clusters = clusterLines(attached);
+    const conf = pageConfidence(allLines, clusters);
+    if (!conf.ok) {
+      // untrustworthy geometry: replace everything placed so far with the
+      // one thing guaranteed to look right, the page itself
+      while (slide._slideObjects && slide._slideObjects.length) slide._slideObjects.pop();
+      const canvas = await renderFull(page, HYBRID_DPI);
+      slide.addImage({ data: canvas.toDataURL("image/png"),
+        x: offX / IN, y: offY / IN, w: pw * scale / IN, h: ph * scale / IN });
+      pr.mode = "image-fallback";
+      pr.tables = 0; pr.images = 0;
+      report.notes = report.notes || [];
+      report.notes.push(`page ${i}: preserved as image for accuracy`);
+      report.pages.push(pr);
+      continue;
+    }
+    for (const cluster of clusters) {
       addTextBlock(slide, cluster, scale, offX, offY, fonts);
       pr.textBoxes++;
     }
