@@ -43,6 +43,20 @@
     <section>
       <article class="entry">
         <div class="entry-head">
+          <span class="entry-version">1.0.2</span>
+          <time class="entry-date" datetime="2026-07-20">2026-07-20</time>
+        </div>
+        <ul>
+          <li>Text drawn twice for weight or shadow now converts once instead of doubling, in PDF to PowerPoint and the editor alike.</li>
+          <li>The browser converter reconstructs word gaps in headings that never draw a space glyph, and keeps tightly tracked numbering together.</li>
+          <li>The diagnostics suite gains a styled-proposal fixture and fails fast on degenerate geometry, so one broken check cannot hide another.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article class="entry">
+        <div class="entry-head">
           <span class="entry-version">1.0.1</span>
           <time class="entry-date" datetime="2026-07-20">2026-07-20</time>
         </div>
@@ -73,8 +87,8 @@
   </main>
 
   <footer class="foot">
-    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.1, 20 July 2026</a>. Dense tables no longer
-      overflow the slide, and the browser converter handles text inside Form XObjects.</span></p>
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.2, 20 July 2026</a>. Overprinted text converts once, word
+      gaps survive letter-spaced headings, and dense tables fit the slide.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">
