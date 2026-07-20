@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSerif-SemiBold.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/BodoniModa-Italic.woff2">
+  <script>(function(){var t="dark";try{var s=localStorage.getItem("benchpdf-theme");if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: light)").matches){t="light"}}catch(e){}document.documentElement.setAttribute("data-theme",t)})();</script>
   <link rel="stylesheet" href="/assets/css/style.css">
   <script type="application/ld+json">
 {
@@ -122,11 +122,19 @@
   <div class="grain" aria-hidden="true"></div>
   <header class="nav is-solid">
     <div class="nav-in">
-      <a class="wordmark" href="/">benchpdf</a>
+      <a class="wordmark" href="/">bench<span class="wm-pdf">pdf</span></a>
       <div class="nav-right">
         <a class="nav-link" href="/#tools">Tools</a>
-        <a class="nav-cta" href="/download">Download</a>
         <a class="nav-link" href="/privacy">Privacy</a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch between light and dark mode">
+          <span class="tt tt-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+          </span>
+          <span class="tt tt-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </span>
+        </button>
+        <a class="nav-cta" href="/download">Download</a>
       </div>
     </div>
   </header>
@@ -189,7 +197,7 @@
     <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.2, 20 July 2026</a>. Overprinted text converts once, word
       gaps survive letter-spaced headings, and dense tables fit the slide.</span></p>
     <div class="foot-in">
-      <span class="foot-mark">benchpdf</span>
+      <span class="foot-mark">bench<span class="wm-pdf">pdf</span></span>
       <nav class="foot-links" aria-label="Footer">
         <a href="/blog">Blog</a>
         <a href="/changelog">Changelog</a>
@@ -199,5 +207,6 @@
       <span class="foot-year">2026</span>
     </div>
   </footer>
+  <script src="/assets/js/theme.js" defer></script>
 </body>
 </html>

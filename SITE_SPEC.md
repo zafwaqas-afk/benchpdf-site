@@ -8,7 +8,43 @@ explicitly at the top of your summary to the user. If you believe a string or a
 nav item should change, say so and get agreement first, then update this file in
 the same commit as the change.
 
-Last verified against the shipped site: 2026-07-19.
+Last verified against the shipped site: 2026-07-20.
+
+**Identity: Machined Grid (YZY), applied 2026-07-20.** Dark-first machined
+steel over an engineering grid; light mode is concrete titanium. IBM Plex Sans
+and Plex Mono only; the serif is retired and no italic exists in the UI. No
+rounded corner exists anywhere; structural borders are 2px. Two accents only:
+the wordmark `pdf` span (tangerine `#F37021` dark, hot pink `#D6116A` light,
+crossfading on theme switch) and the Download block (near-black `#0E1012` with
+lime `#8AE000` mono text, identical in both themes). Lime, tangerine and pink
+appear nowhere else. Theme switch fades colours at 280ms; reduced motion gets
+an instant swap.
+
+## 0b. Design tokens
+
+| Token | Dark (default) | Light `[data-theme="light"]` |
+|---|---|---|
+| ground | `#131519` | `#CDD1D2` |
+| nav | `#16181D` | `#D4D8D9` |
+| tile | `#171A1F` | `#D2D5D6` |
+| panel | `#1B1E23` | `#D9DCDD` |
+| hairline | `#3E454C` | `#9AA1A5` |
+| border-strong | `#4A5158` | `#878E93` |
+| ink (text) | `#E6E9EC` | `#191C1E` |
+| muted | `#8A96A2` | `#4F565C` |
+| faint | `#5A6472` | `#6E767C` |
+| ghost (hero question) | `#4E565F` | `#A9AFB2` |
+| grid minor / major | `#1C2A22` / `#26402F` | `#C2CDC5` / `#AFC0B4` |
+| tick | `#2FBF6B` at 25% | same |
+| brand (wordmark pdf) | `#F37021` | `#D6116A` |
+| download block / text | `#0E1012` / `#8AE000` | same |
+| ok / err / warn | `#4CAF7D` / `#E06A56` / `#D09A3E` | `#226245` / `#963524` / `#6F4D14` |
+
+All pairs verified >= 4.5:1 (text) or >= 3:1 (logotype span) on 2026-07-20.
+The ghost question line is aria-hidden decoration and deliberately sits below
+the contrast floor; the real page h1 is visually hidden beside it. The grid is
+painted as static fixed background layers on `body`; the hero carries at most
+two crosshair ticks (`.grid-ticks`, aria-hidden).
 
 ---
 
@@ -179,16 +215,18 @@ no second nav system.** The same four items appear at every viewport width.
 
 | Position | Label | Destination |
 |---|---|---|
-| Left | `benchpdf` (wordmark) | `/` |
+| Left | `benchpdf` (wordmark, `pdf` in the brand span) | `/` |
 | Right | Tools | `/#tools` |
-| Right | Download | `/download` (compact primary pill, the navbar instance of the Download signature) |
 | Right | Privacy | `/privacy` |
+| Right | theme toggle | button `#theme-toggle`, aria-label `Switch between light and dark mode` |
+| Right | Download | `/download` (the navbar instance of the Download signature block) |
 
-Download is the only pill in the header; Tools and Privacy stay text links.
-The pill wears the Download signature (ink fill, white text, ember ring) at
-compact padding, on every page and at every width. The old mobile rule that
-hid the nav links under 720px is gone; the same three items now show at every
-viewport width.
+Download is the only filled element in the header; Tools and Privacy stay
+text links. The Download signature is a near-black rectangle with lime mono
+caps, identical in both themes, on every page and at every width. The toggle
+sits between Privacy and Download; sun and moon are inline SVGs and the active
+side is lit. Initial theme comes from localStorage then prefers-color-scheme
+(dark default), set by an inline head script before first paint on every page.
 
 `Tools` points at the tool index section on the home page. That section is the
 tool index, so the label is honest. There is no separate `/tools` page.
@@ -293,17 +331,23 @@ without agreement.
 | Title | `BenchPDF: documents that come out the way they went in` |
 | Meta description | `Convert a PDF to PowerPoint, images or text and keep the text editable, the layout intact and the file on your own computer. The Windows app adds Word, Excel and editing.` |
 | Title | `Online PDF converter \| BenchPDF` |
-| Hero eyebrow | `Online PDF converter` |
-| H1 | `Change the format. keep everything else.` |
-| Drop zone heading | `Drop a PDF here to convert it` |
-| Drop zone sub | `Or choose a file. You can also drop JPG or PNG images.` |
-| Under-CTA line | `Free during early access.` |
+| H1 (visually hidden) | `PDF converter. Would you like another format for your PDF?` |
+| Ghost question (visible, aria-hidden decoration) | `Would you like another format for your PDF?` |
+| Drop zone tags | `Input` / `Auto` (mono, aria-hidden) |
+| Drop zone heading | `Drop PDF / JPG / PNG` |
+| Drop zone sub | `or choose a file` |
+| Hero strip | `Drop → Select → Done` + `Free during early access.` |
+
+The visible eyebrow and headline are retired; the ghost question and the
+hidden h1 carry their jobs. The hero strip replaces the numbered steps row on
+the home page (the pricing string keeps its two-placement rule: this strip
+and `/download`). Arrows in mono strips are permitted separators.
 | Tools group 1 heading | `In your browser` |
 | Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` / `PDF to PowerPoint` |
 | Tools group 2 heading | `In the desktop app` |
 | Tools group 2 items | `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
 | Tools group 2 CTA | `Download BenchPDF 1.0.2 for Windows` (links to the GitHub latest release) |
-| Steps (in the hero, under the badge; hidden during conversion states) | `Drop your file.` / `Choose the format.` / `Download the result.` |
+| Steps | retired on the home page; the hero strip (above) carries the sequence. Tool pages may keep their own steps rows. |
 | Keep strip | `Editable text` + `Words arrive as text you can click into and retype, not a picture of a page.` / `Tables stay tables` + `Ruled tables are rebuilt as real tables, with rows and columns you can edit.` / `Layout intact` + `Positions, sizes and backgrounds land where the original put them.` |
 | Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
 

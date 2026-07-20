@@ -15,8 +15,9 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Bold.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/BodoniModa-Italic.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexMono-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexMono-Medium.woff2">
+  <script>(function(){var t="dark";try{var s=localStorage.getItem("benchpdf-theme");if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: light)").matches){t="light"}}catch(e){}document.documentElement.setAttribute("data-theme",t)})();</script>
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
@@ -25,11 +26,19 @@
 
   <header class="nav is-solid">
     <div class="nav-in">
-      <a class="wordmark" href="/">benchpdf</a>
+      <a class="wordmark" href="/">bench<span class="wm-pdf">pdf</span></a>
       <div class="nav-right">
         <a class="nav-link" href="/#tools">Tools</a>
-        <a class="nav-cta" href="/download">Download</a>
         <a class="nav-link" href="/privacy">Privacy</a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch between light and dark mode">
+          <span class="tt tt-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+          </span>
+          <span class="tt tt-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </span>
+        </button>
+        <a class="nav-cta" href="/download">Download</a>
       </div>
     </div>
   </header>
@@ -38,51 +47,32 @@
 
     <!-- ==================== The tool, straight away ==================== -->
     <section class="hero">
-      <div class="scene" aria-hidden="true">
-        <div class="scene-stage">
-          <div class="plane floor"></div>
-          <div class="plane arch arch-a"></div>
-          <div class="plane arch arch-b"></div>
-          <div class="plane arch arch-c"></div>
-          <div class="plane step step-1"></div>
-          <div class="plane step step-2"></div>
-          <div class="plane step step-3"></div>
-          <div class="plane step step-4"></div>
-          <div class="plane leaf leaf-a"></div>
-          <div class="plane leaf leaf-b"></div>
-          <div class="plane leaf leaf-c"></div>
-        </div>
-        <div class="floor-sheen"></div>
-        <div class="scene-haze"></div>
-        <div class="scene-light"></div>
-      </div>
+      <svg class="grid-ticks" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <g stroke="currentColor" vector-effect="non-scaling-stroke">
+          <line x1="8" y1="28" x2="12" y2="28" vector-effect="non-scaling-stroke"/>
+          <line x1="10" y1="26" x2="10" y2="30" vector-effect="non-scaling-stroke"/>
+          <line x1="88" y1="74" x2="92" y2="74" vector-effect="non-scaling-stroke"/>
+          <line x1="90" y1="72" x2="90" y2="76" vector-effect="non-scaling-stroke"/>
+        </g>
+      </svg>
 
       <div class="hero-inner">
-        <p class="hero-eyebrow">Online PDF converter</p>
-        <h1 class="hero-title">
-          <span class="serif">Change the format.</span> <span class="grot">keep everything else.</span>
-        </h1>
+        <h1 class="visually-hidden">PDF converter. Would you like another format for your PDF?</h1>
+        <p class="hero-question" aria-hidden="true">Would you like another format for your PDF?</p>
 
         <div class="dropzone" id="dropzone" role="button" tabindex="0">
+          <span class="dz-tag dz-tag-l" aria-hidden="true">Input</span>
+          <span class="dz-tag dz-tag-r" aria-hidden="true">Auto</span>
           <div class="dz-inner">
-            <svg class="dz-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true">
-              <path d="M12 15.5V4m0 0 4 4m-4-4-4 4" stroke="currentColor"
-                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <p class="dz-title">Drop a PDF here to convert it</p>
-            <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.
-              You can also drop JPG or PNG images.</p>
+            <p class="dz-title">Drop PDF / JPG / PNG</p>
+            <p class="dz-sub">or <button type="button" class="linkbtn" id="browse">choose a file</button></p>
           </div>
           <input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple hidden>
         </div>
-        <p class="conv-badge">Free during early access.</p>
-        <ol class="steps steps-hero" aria-label="How it works">
-          <li><span class="step-n">1</span> Drop your file.</li>
-          <li><span class="step-n">2</span> Choose the format.</li>
-          <li><span class="step-n">3</span> Download the result.</li>
-        </ol>
+        <div class="hero-strip" aria-label="How it works and pricing">
+          <span>Drop &#8594; Select &#8594; Done</span>
+          <span class="conv-badge">Free during early access.</span>
+        </div>
 
         <!-- what to do with the file, once one is chosen -->
         <section id="conv-actions" aria-labelledby="actions-h">
@@ -244,7 +234,7 @@
     <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.2, 20 July 2026</a>. Overprinted text converts once, word
       gaps survive letter-spaced headings, and dense tables fit the slide.</span></p>
     <div class="foot-in">
-      <span class="foot-mark">benchpdf</span>
+      <span class="foot-mark">bench<span class="wm-pdf">pdf</span></span>
       <nav class="foot-links" aria-label="Footer">
         <a href="/blog">Blog</a>
         <a href="/changelog">Changelog</a>
@@ -255,6 +245,7 @@
     </div>
   </footer>
 
+  <script src="/assets/js/theme.js" defer></script>
   <script type="module" src="/assets/js/convert.js"></script>
 </body>
 </html>
