@@ -43,6 +43,20 @@
     <section>
       <article class="entry">
         <div class="entry-head">
+          <span class="entry-version">1.0.1</span>
+          <time class="entry-date" datetime="2026-07-20">2026-07-20</time>
+        </div>
+        <ul>
+          <li>Dense tables no longer overflow the slide in PDF to PowerPoint: empty cells were quietly inflating every sparse row to PowerPoint's default line height.</li>
+          <li>The in-browser PDF to PowerPoint converter went live at full parity with the desktop engine, then received a fix for text inside Form XObjects, the construct many bank statements use for headers and small print.</li>
+          <li>The built-in diagnostics suite gained two fixtures, a dense synthetic bank statement and a form-XObject statement, and new checks for zero-height text, stacked elements and corrupted font sizes.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <article class="entry">
+        <div class="entry-head">
           <span class="entry-version">1.0.0</span>
           <time class="entry-date" datetime="2026-07-15">2026-07-15</time>
         </div>
@@ -59,9 +73,8 @@
   </main>
 
   <footer class="foot">
-    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.0, 15 July 2026</a>. First
-      public version: Office conversions through your own installed Word, Excel and PowerPoint, plus
-      PDF text editing.</span></p>
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.1, 20 July 2026</a>. Dense tables no longer
+      overflow the slide, and the browser converter handles text inside Form XObjects.</span></p>
     <div class="foot-in">
       <span class="foot-mark">benchpdf</span>
       <nav class="foot-links" aria-label="Footer">

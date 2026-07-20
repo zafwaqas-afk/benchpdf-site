@@ -64,7 +64,7 @@ and so on) with no pricing claim.
 
 ### Structural trust
 
-- The download button reads `Download BenchPDF 1.0.0 for Windows`. The version
+- The download button reads `Download BenchPDF 1.0.1 for Windows`. The version
   number is part of the string and is updated on each release.
 - Every page footer carries the dated latest-release line, linking to
   `/changelog`.
@@ -129,7 +129,7 @@ because a browser cannot run Office:
 |---|---|
 | Heading | `This conversion runs in the desktop app` |
 | Body | `Word, Excel and PowerPoint files convert through the copy of Office already on your PC, so the output is what Office itself would produce. A browser cannot run Office, so these conversions live in the desktop app.` |
-| Button | `Download BenchPDF 1.0.0 for Windows` |
+| Button | `Download BenchPDF 1.0.1 for Windows` |
 | Note | `Free during early access. Windows 10 and 11.` |
 | Back | `Choose a different file` |
 
@@ -290,7 +290,7 @@ without agreement.
 | Tools group 1 items | `PDF to Images` / `PDF to Text` / `Images to PDF` / `PDF to PowerPoint` |
 | Tools group 2 heading | `In the desktop app` |
 | Tools group 2 items | `PDF to Word` / `Word to PDF` / `Excel to PDF` / `PowerPoint to PDF` / `Web page to PDF` / `Edit PDF text` |
-| Tools group 2 CTA | `Download BenchPDF 1.0.0 for Windows` (links to the GitHub latest release) |
+| Tools group 2 CTA | `Download BenchPDF 1.0.1 for Windows` (links to the GitHub latest release) |
 | Footer release line | `Latest release: 1.0.0, 15 July 2026. First public version: Office conversions through your own installed Word, Excel and PowerPoint, plus PDF text editing.` |
 
 The hero eyebrow reads `in your browser`, not `for Windows`, because the hero
@@ -344,7 +344,7 @@ Desktop tools. Every lede begins `This one needs the Windows app.`:
 | `/tools/web-to-pdf` | `Web Page to PDF Converter` | `This one needs the Windows app. It renders the address with a real browser engine on your PC, so the page arrives laid out as a browser draws it.` |
 | `/tools/edit-pdf` | `Edit PDF Text` | `This one needs the Windows app. You click a line, retype it, and export. Pages you did not touch come out byte for byte identical.` |
 
-Desktop tool CTA button: `Download BenchPDF 1.0.0 for Windows`
+Desktop tool CTA button: `Download BenchPDF 1.0.1 for Windows`
 
 Requirement notes under that button, by page: `Needs Microsoft Word installed.`
 (pdf-to-word, word-to-pdf), `Needs Microsoft Excel installed.`,
@@ -380,7 +380,7 @@ Holds the desktop pitch copy that used to sit on the home page.
 | Eyebrow | `PDF tools for Windows` |
 | H1 | `Download BenchPDF` |
 | Lede | `For Word and Excel, the desktop app converts through the copy of Office already on your PC, so the output is what Word and Excel themselves would produce. It also edits PDF text in place.` |
-| Button | `Download BenchPDF 1.0.0 for Windows` |
+| Button | `Download BenchPDF 1.0.1 for Windows` |
 | CTA note | `Free during early access.` |
 | Requirements | `Windows 10 and 11. Office conversions need your own copy of Office.` |
 
