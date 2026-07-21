@@ -26,7 +26,7 @@
   --ink:#E6E9EC;
   --muted:#8A96A2;
   --faint:#5A6472;
-  --ghost:#4E565F;
+  --ghost:#5F6873;
 
   /* Laser-green grid, whisper volume. Green is always on, both themes. */
   --grid-minor:#1C2A22;
@@ -84,11 +84,10 @@
   --ink:#191C1E;
   --muted:#4F565C;
   --faint:#6E767C;
-  --ghost:#A9AFB2;
+  --ghost:#8A9298;
 
   --grid-minor:#B7CFBC;
   --grid-major:#9FC0A9;
-  --etch:rgba(31,138,74,.06);
 
   /* Hot pink, deepened until it holds on silver. The wordmark is a logotype
      (WCAG 1.4.3 exempt) but 2.5:1 looked washed out; 3.5:1 stays hot. */
@@ -119,9 +118,6 @@ body{
 .gridlayer{
   position:fixed; inset:0; z-index:-1; pointer-events:none;
   background-image:
-    linear-gradient(to bottom, transparent 0 18%, var(--etch) 18% 26%, transparent 26% 100%),
-    linear-gradient(to bottom, transparent 0 64%, var(--etch) 64% 68%, transparent 68% 100%),
-    linear-gradient(to right, transparent 0 76%, var(--etch) 76% 84%, transparent 84% 100%),
     repeating-linear-gradient(to right, var(--grid-major) 0 1px, transparent 1px 288px),
     repeating-linear-gradient(to bottom, var(--grid-major) 0 1px, transparent 1px 288px),
     repeating-linear-gradient(to right, var(--grid-minor) 0 1px, transparent 1px 72px),
@@ -289,6 +285,25 @@ a.conv-badge:hover{
   border-color:var(--muted); color:var(--ink);
   box-shadow:0 0 0 2px var(--ground), 0 0 0 3px var(--rule);
 }
+/* standalone placement: its own quiet line under the strip */
+.hero-inner > a.conv-badge{display:inline-flex; margin-top:clamp(20px,3.4vh,32px)}
+
+/* typewriter cursor on the ghost question */
+.hero-question .cursor{display:inline-block; width:.6em}
+@media (prefers-reduced-motion:no-preference){
+  .hero-question .cursor{animation:blink 1s steps(1) infinite}
+}
+@keyframes blink{50%{opacity:0}}
+
+/* Sign up, when it lands: a small etched control inline with the nav text.
+   Never a filled block; the Download signature stays the only one. */
+.nav-signup{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none; border:1px solid var(--rule);
+  padding:6px 10px; line-height:1; white-space:nowrap;
+  transition:color .28s ease, border-color .28s ease;
+}
+.nav-signup:hover{color:var(--ink); border-color:var(--hairline)}
 
 @media (prefers-reduced-motion:no-preference){
   .hero-question{animation:fadeIn .45s ease .1s both}

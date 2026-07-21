@@ -33,10 +33,9 @@ an instant swap.
 | ink (text) | `#E6E9EC` | `#191C1E` |
 | muted | `#8A96A2` | `#4F565C` |
 | faint | `#5A6472` | `#6E767C` |
-| ghost (hero question) | `#4E565F` | `#A9AFB2` |
+| ghost (hero question) | `#5F6873` | `#8A9298` |
 | grid minor / major | `#1C2A22` / `#26402F` | `#B7CFBC` / `#9FC0A9` (green stays on in light) |
 | tick | `#2FBF6B` at 25% | same |
-| etch (filled grid bands) | `rgba(47,191,107,.05)` | `rgba(31,138,74,.06)` |
 | brand (wordmark pdf) | `#F37021` | `#D6116A` |
 | download block / text | `#0E1012` / `#8AE000` | same |
 | ok / err / warn | `#4CAF7D` / `#E06A56` / `#D09A3E` | `#226245` / `#963524` / `#6F4D14` |
@@ -182,7 +181,8 @@ via Cloudflare Pages. Static HTML and CSS, no build step, no framework.
 
 | URL | File | Purpose |
 |---|---|---|
-| `/` | `index.html` | The working browser converter and the tool index |
+| `/` | `index.html` | The working browser converter, nothing else |
+| `/tools` | `tools.html` | The tool index and the "What it does" strip |
 | `/download` | `download.html` | The desktop app: what it adds, and the download |
 | `/privacy` | `privacy.html` | What happens to your files, in plain English |
 | `/changelog` | `changelog.html` | Released versions |
@@ -217,7 +217,7 @@ no second nav system.** The same four items appear at every viewport width.
 | Position | Label | Destination |
 |---|---|---|
 | Left | `benchpdf` (wordmark, `pdf` in the brand span) | `/` |
-| Right | Tools | `/#tools` |
+| Right | Tools | `/tools` |
 | Right | Privacy | `/privacy` |
 | Right | theme toggle | button `#theme-toggle`, aria-label `Switch between light and dark mode` |
 | Right | Download | `/download` (the navbar instance of the Download signature block) |
@@ -229,8 +229,9 @@ sits between Privacy and Download; sun and moon are inline SVGs and the active
 side is lit. Initial theme comes from localStorage then prefers-color-scheme
 (dark default), set by an inline head script before first paint on every page.
 
-`Tools` points at the tool index section on the home page. That section is the
-tool index, so the label is honest. There is no separate `/tools` page.
+`Tools` points at `/tools`, the tool index page (moved off the home page on
+2026-07-20; the home page is the converter and nothing else). The old `/#tools`
+anchor is gone.
 
 **Footer, every page**, in this order: Blog, Changelog, Privacy, Source.
 Blog and Changelog appear in the footer only, never in the top bar.
@@ -337,13 +338,14 @@ without agreement.
 | Drop zone tags | `Input` / `Auto` (mono, aria-hidden) |
 | Drop zone heading | `Drop PDF / JPG / PNG` |
 | Drop zone sub | `or choose a file` |
-| Hero strip | `Drop → Select → Done` + `Free during early access.` (the pricing line is a quiet ringed chip linking to `/download`) |
+| Hero strip | `Drop → Select → Done` |
+| Early-access chip | `Free during early access.` on its own line under the strip, a quiet ringed chip linking to `/download` |
 
 The grid is painted on a fixed `.gridlayer` element behind the content on
 every page, never as a `background-attachment:fixed` body background (that
 hit a Chrome/Windows stale-paint bug that blanked sections below the fold).
-The layer carries three faintly filled "etched" bands in the green etch
-token, both themes.
+The etched fill bands were removed on 2026-07-20 (looked wrong in light
+mode); the layer is lines only, green in both themes.
 
 The visible eyebrow and headline are retired; the ghost question and the
 hidden h1 carry their jobs. The hero strip replaces the numbered steps row on
@@ -565,3 +567,15 @@ Every change to this site must still pass:
   unnoticed for weeks), that no visible styled box in the done panel is
   empty, and that a genuine warning still renders when set
 - The browser/desktop expectation rule holds on all ten tool pages
+
+### Ghost question animation
+
+The hero question types itself out on load (26ms a character, mono cursor
+that blinks then leaves). Reduced motion gets the full line instantly. The
+visually hidden h1 is untouched by the animation.
+
+### Sign up (pending feature)
+
+When the sign-up journey lands, its nav entry uses `.nav-signup`: a small
+etched mono control inline with the nav text, never a filled block. The
+Download signature stays the only filled element in the header.
