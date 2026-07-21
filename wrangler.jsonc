@@ -1,8 +1,12 @@
 {
   "name": "benchpdf",
   "compatibility_date": "2025-01-01",
-  "assets": {
-    "directory": "./",
-    "not_found_handling": "404-page"
-  }
+  "pages_build_output_dir": "./",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "benchpdf",
+      "database_id": "c0da37b9-be80-44f3-b611-ab819be34dfc"
+    }
+  ]
 }

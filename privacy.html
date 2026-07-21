@@ -29,6 +29,7 @@
       <div class="nav-right">
         <a class="nav-link" href="/tools">Tools</a>
         <a class="nav-link" href="/privacy">Privacy</a>
+        <a class="nav-signup" href="/signup">Sign up</a>
         <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch between light and dark mode">
           <span class="tt tt-sun" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
@@ -107,6 +108,17 @@
         basic request information (such as IP address and timestamp) as part of normal web hosting;
         that logging is standard infrastructure behaviour, not something BenchPDF adds, and we don't
         layer any analytics on top of it.</p>
+
+      <h2>Sign-up details</h2>
+      <p>If you use the <a href="/signup">sign-up page</a>, BenchPDF stores what you enter there:
+        your name, your email address, your answers to the optional questions, and the time you
+        gave consent. That is the complete list. The data lives in a Cloudflare D1 database, is
+        used for two things only, sending early-access updates and deciding what to build next,
+        and is not shared or sold. Nothing is sent to you today; your address is stored so updates
+        can be sent when sending exists. Signing up changes nothing about conversions: your files
+        still never reach a server. To have your details deleted, open an issue at the
+        <a href="https://github.com/zafwaqas-afk/benchpdf-site/issues">BenchPDF GitHub issues page</a>
+        and they will be removed; that page is the current contact channel for this site.</p>
 
       <h2>Office automation reliability</h2>
       <p>Occasionally Word, Excel, or PowerPoint can show a dialog during automation, such as a password

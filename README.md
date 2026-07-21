@@ -87,3 +87,18 @@ in case of a redeploy elsewhere:
   is a clean 100).
 - No fabricated testimonials, ratings, "trusted by" logos, or download
   counters anywhere on the site.
+
+## Reading sign-ups
+
+Sign-ups from `/signup` land in the `benchpdf` D1 database (binding `DB`,
+schema in `schema.sql`). To read them:
+
+```
+npx wrangler d1 execute benchpdf --remote --command "SELECT id, created_at, name, email, role, industry, converts, tools, breaks FROM signups ORDER BY id DESC" --json
+```
+
+Drop `--json` for a table. To delete a row on request (privacy page promise):
+
+```
+npx wrangler d1 execute benchpdf --remote --command "DELETE FROM signups WHERE email = 'person@example.com'"
+```

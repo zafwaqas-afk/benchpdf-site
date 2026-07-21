@@ -43,7 +43,8 @@ an instant swap.
 All pairs verified >= 4.5:1 (text) or >= 3:1 (logotype span) on 2026-07-20.
 The ghost question line is aria-hidden decoration and deliberately sits below
 the contrast floor; the real page h1 is visually hidden beside it. The grid is
-painted as static fixed background layers on `body`; the hero carries at most
+painted on the fixed `.gridlayer` element behind the content on every page,
+never as a body background (Chrome/Windows stale-paint bug); the hero carries at most
 two crosshair ticks (`.grid-ticks`, aria-hidden).
 
 ---
@@ -184,6 +185,7 @@ via Cloudflare Pages. Static HTML and CSS, no build step, no framework.
 | `/` | `index.html` | The working browser converter, nothing else |
 | `/tools` | `tools.html` | The tool index and the "What it does" strip |
 | `/download` | `download.html` | The desktop app: what it adds, and the download |
+| `/signup` | `signup.html` + `functions/api/signup.js` | Three-step early-access sign-up; POST stores to Cloudflare D1 (`benchpdf` db, binding `DB`, schema in `schema.sql`) |
 | `/privacy` | `privacy.html` | What happens to your files, in plain English |
 | `/changelog` | `changelog.html` | Released versions |
 | `/blog` | `blog/index.html` | Guides index |
@@ -219,6 +221,7 @@ no second nav system.** The same four items appear at every viewport width.
 | Left | `benchpdf` (wordmark, `pdf` in the brand span) | `/` |
 | Right | Tools | `/tools` |
 | Right | Privacy | `/privacy` |
+| Right | Sign up | `/signup` (`.nav-signup`, small etched mono control, inline with nav text) |
 | Right | theme toggle | button `#theme-toggle`, aria-label `Switch between light and dark mode` |
 | Right | Download | `/download` (the navbar instance of the Download signature block) |
 
@@ -579,3 +582,25 @@ visually hidden h1 is untouched by the animation.
 When the sign-up journey lands, its nav entry uses `.nav-signup`: a small
 etched mono control inline with the nav text, never a filled block. The
 Download signature stays the only filled element in the header.
+
+---
+
+## 9. Sign-up (added 2026-07-21)
+
+Three steps on `/signup`: essentials (name, email), optional calibration
+questions (skippable as a group), explicit consent. Honeypot field `company`
+plus a minimum-elapsed-time check server-side; duplicate emails return
+success. No third-party scripts. Success stays on the page with `Back to
+converting`. Second entry point: the converter done-state line
+`Want early-access updates? Sign up.`
+
+Copy deck additions (verbatim): lede `Leave your details to hear about early
+access as it changes. The optional questions steer what gets built next.`;
+consent copy as on the page; consent checkbox `Store my details for
+early-access updates.`; success `You are on the early-access list.`
+
+Data readout is a documented wrangler query in the README; there is no export
+endpoint. The privacy page's deletion contact is the GitHub issues link,
+**temporary** until a custom domain and real address exist, then it must be
+replaced here and on `/privacy`. No emails are sent today and the consent
+copy says so; do not add newsletter language until sending exists.

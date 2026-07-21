@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up | BenchPDF</title>
+  <meta name="description" content="Join the BenchPDF early-access list. Your details are stored for early-access updates, and four optional questions steer what gets built next.">
+  <link rel="canonical" href="https://benchpdf.pages.dev/signup">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Sign up | BenchPDF">
+  <meta property="og:description" content="Join the BenchPDF early-access list.">
+  <meta property="og:url" content="https://benchpdf.pages.dev/signup">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexMono-Regular.woff2">
+  <script>(function(){var t="dark";try{var s=localStorage.getItem("benchpdf-theme");if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: light)").matches){t="light"}}catch(e){}document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="gridlayer" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="nav is-solid">
+    <div class="nav-in">
+      <a class="wordmark" href="/">bench<span class="wm-pdf">pdf</span></a>
+      <div class="nav-right">
+        <a class="nav-link" href="/tools">Tools</a>
+        <a class="nav-link" href="/privacy">Privacy</a>
+        <a class="nav-signup" href="/signup" aria-current="page">Sign up</a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch between light and dark mode">
+          <span class="tt tt-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+          </span>
+          <span class="tt tt-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </span>
+        </button>
+        <a class="nav-cta" href="/download">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <span>Sign up</span></nav>
+  </div>
+
+  <main class="main narrow" id="main">
+    <section class="tool-hero">
+      <div class="signup-head">
+        <h1>Sign up</h1>
+        <span class="signup-progress" id="sf-progress" aria-live="polite">01 / 03</span>
+      </div>
+      <p class="lede">Leave your details to hear about early access as it changes. The optional
+        questions steer what gets built next.</p>
+    </section>
+
+    <form id="signup-form" class="signup" novalidate>
+      <section class="sf-step is-on" data-step="1" aria-label="Step 1 of 3, essentials">
+        <p class="sq-label">01 / Essentials</p>
+        <div class="field">
+          <label for="sf-name">Name</label>
+          <input id="sf-name" name="name" type="text" autocomplete="name" maxlength="120" required>
+        </div>
+        <div class="field">
+          <label for="sf-email">Email</label>
+          <input id="sf-email" name="email" type="email" autocomplete="email" maxlength="120" required>
+        </div>
+        <div class="visually-hidden" aria-hidden="true">
+          <label for="sf-company">Company</label>
+          <input id="sf-company" name="company" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <p class="sf-error" id="sf-error-1" hidden></p>
+        <div class="sf-actions">
+          <button type="button" class="btn btn-primary" data-next="2">Continue</button>
+        </div>
+      </section>
+
+      <section class="sf-step" data-step="2" aria-label="Step 2 of 3, optional questions">
+        <p class="sq-label">02 / Calibration</p>
+        <p class="sf-note">All of this is optional.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="sf-role">Q.01 / What do you do</label>
+            <select id="sf-role" name="role">
+              <option value="">Choose a role</option>
+              <option>Operations</option><option>Finance</option><option>Legal</option>
+              <option>Design</option><option>Engineering</option><option>Sales</option>
+              <option>Student</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sf-industry">Industry</label>
+            <select id="sf-industry" name="industry">
+              <option value="">Choose an industry</option>
+              <option>Banking</option><option>Legal</option><option>Public sector</option>
+              <option>Retail</option><option>Manufacturing</option><option>Education</option>
+              <option>Technology</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="chips-label" id="lbl-converts">Q.02 / What do you convert most</span>
+          <div class="chips" role="group" aria-labelledby="lbl-converts" data-name="converts">
+            <button type="button" class="chip" aria-pressed="false">PDF to PowerPoint</button>
+            <button type="button" class="chip" aria-pressed="false">PDF to Word</button>
+            <button type="button" class="chip" aria-pressed="false">PDF to images</button>
+            <button type="button" class="chip" aria-pressed="false">Scans</button>
+            <button type="button" class="chip" aria-pressed="false">Statements</button>
+            <button type="button" class="chip" aria-pressed="false">Other</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="chips-label" id="lbl-tools">Q.03 / What do you use today</span>
+          <div class="chips" role="group" aria-labelledby="lbl-tools" data-name="tools">
+            <button type="button" class="chip" aria-pressed="false">Smallpdf</button>
+            <button type="button" class="chip" aria-pressed="false">iLovePDF</button>
+            <button type="button" class="chip" aria-pressed="false">Adobe</button>
+            <button type="button" class="chip" aria-pressed="false">Nothing regular</button>
+            <button type="button" class="chip" aria-pressed="false">Other</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="chips-label" id="lbl-breaks">Q.04 / What breaks most</span>
+          <div class="chips" role="group" aria-labelledby="lbl-breaks" data-name="breaks">
+            <button type="button" class="chip" aria-pressed="false">Tables</button>
+            <button type="button" class="chip" aria-pressed="false">Fonts</button>
+            <button type="button" class="chip" aria-pressed="false">Layout</button>
+            <button type="button" class="chip" aria-pressed="false">File size</button>
+            <button type="button" class="chip" aria-pressed="false">Nothing</button>
+          </div>
+        </div>
+
+        <div class="sf-actions">
+          <button type="button" class="btn btn-primary" data-next="3">Continue</button>
+          <button type="button" class="linkbtn" id="sf-skip">Skip</button>
+        </div>
+      </section>
+
+      <section class="sf-step" data-step="3" aria-label="Step 3 of 3, consent">
+        <p class="sq-label">03 / Consent</p>
+        <p class="sf-consent-copy">BenchPDF stores your name, your email address and your answers so
+          it can send early-access updates and decide what to build next. Nothing is sent today;
+          your address waits until sending exists. You can ask for deletion at any time through the
+          <a href="https://github.com/zafwaqas-afk/benchpdf-site/issues">GitHub issues page</a>.
+          The <a href="/privacy">privacy page</a> has the full picture.</p>
+        <label class="consent-row">
+          <input type="checkbox" id="sf-consent">
+          <span>Store my details for early-access updates.</span>
+        </label>
+        <p class="sf-error" id="sf-error-3" hidden></p>
+        <div class="sf-actions">
+          <button type="submit" class="btn btn-primary" id="sf-submit">Sign up</button>
+          <button type="button" class="linkbtn" data-back="2">Back</button>
+        </div>
+      </section>
+    </form>
+
+    <section class="sf-success" id="sf-success" hidden>
+      <p class="sq-label">Done</p>
+      <h2>You are on the early-access list.</h2>
+      <p><a href="/">Back to converting</a></p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.2, 20 July 2026</a>. Overprinted text converts once, word
+      gaps survive letter-spaced headings, and dense tables fit the slide.</span></p>
+    <div class="foot-in">
+      <span class="foot-mark">bench<span class="wm-pdf">pdf</span></span>
+      <nav class="foot-links" aria-label="Footer">
+        <a href="/blog">Blog</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/privacy">Privacy</a>
+        <a href="https://github.com/zafwaqas-afk/benchpdf">Source</a>
+      </nav>
+      <span class="foot-year">2026</span>
+    </div>
+  </footer>
+  <script src="/assets/js/theme.js" defer></script>
+  <script src="/assets/js/signup.js" defer></script>
+</body>
+</html>
