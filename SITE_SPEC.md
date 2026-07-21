@@ -187,6 +187,42 @@ lose whole pages to the fallback: pdf.js reports NaN metrics for Type3 fonts
 and the NaN poisoned every span bbox on the page
 (tests/js_engine/region_fallback_verify.py holds the class to 90%+ editable
 characters).
+On 2026-07-21 an owner-verified render comparison of a real bank statement
+found five faults the suite had never asserted on: text painted as glyph-
+outline paths with an invisible Type3 text layer ghost-doubled between the
+background raster and the editable layer; an unruled transaction ledger
+shipped as loose text boxes; a decorative 8-square mark became an empty 1x8
+native table; short header blocks wrapped mid-word; and every run colour
+flattened to #000000. All five are fixed in both engines and the statement
+fixture plus five new suite invariants now make each of them a red build.
+
+### The corpus gate
+
+The suite's fixtures are synthetic, and synthetic fixtures only contain the
+failures someone already imagined. `tests/corpus/` therefore holds TWO scored
+corpora, run with the same render-diff metric (PowerPoint render of the
+output vs render of the source PDF, SSIM per page):
+
+* `docs/` - 90 deterministic synthetic documents across six classes;
+* `real/docs/` - ~46 PUBLIC real-world PDFs across nine generator classes
+  (LaTeX, government form pipelines, InDesign report streams, troff, Word),
+  rebuilt from the URLs in `real/manifest.json`. No downloaded binary is
+  ever committed.
+
+```
+python tests/corpus/corpus_run.py            # both corpora + triage
+```
+
+**Gate rule: a release may not reduce the synthetic median, the real-corpus
+median, or the worst-page floor (the lowest single page score across both
+corpora) recorded in `tests/corpus/corpus_baseline.json`.** The run exits
+non-zero on any regression beyond 0.01. Baselines only move forward, via
+`--rebless`, and the commit that reblesses must say why.
+
+Every run also writes `tests/corpus/triage/`: side-by-side PNGs (source page
+vs converted render) for the ten lowest-scoring pages, with the dominant
+differing regions named per page. That directory is the standing fidelity
+backlog - the data the next engine iteration attacks first.
 
 ### The interstitial
 
