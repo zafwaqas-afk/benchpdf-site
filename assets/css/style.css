@@ -698,7 +698,9 @@ a.conv-badge:hover{
    ============================================================ */
 body{display:flex; flex-direction:column; min-height:100svh}
 .foot{margin-top:auto}
-main#main[data-state]{display:flex; flex-direction:column; flex:1}
+/* The hero fills the first viewport (nav is ~64px); the footer sits
+   immediately after it, one small scroll away. No dead ground between. */
+main#main[data-state]{display:flex; flex-direction:column; min-height:calc(100svh - 64px)}
 main#main[data-state] .hero{flex:1; display:flex; flex-direction:column}
 main#main[data-state] .hero-inner{display:flex; flex-direction:column; flex:1; width:100%}
 main#main[data-state] .dropzone{flex:1; display:flex; flex-direction:column; justify-content:center}

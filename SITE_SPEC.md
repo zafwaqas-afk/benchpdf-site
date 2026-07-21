@@ -23,9 +23,11 @@ an instant swap.
 **Uniform voice (2026-07-21):** every page speaks the home page's instrument
 language. Page titles and prose section headings are mono caps labels (titles
 ~15-20px at .16em tracking, section headings 12px at .26em, muted), never
-display type. The footer pins to the viewport bottom on every page; on the
-home page the drop zone absorbs all spare height, so the landing is exactly
-one screen with no bare ground below the footer at any viewport size.
+display type. On the home page the hero fills
+the first viewport (the drop zone absorbs spare height) and the footer sits
+immediately after it, revealed by one small scroll; there is no bare ground
+between hero and footer or after the footer. Short inner pages pin the
+footer to the viewport bottom.
 
 ## 0b. Design tokens
 
