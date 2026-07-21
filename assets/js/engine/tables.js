@@ -13,6 +13,152 @@ const JOIN_TOL = 3;
 const INTERSECT_TOL = 3;
 const EDGE_MIN_LENGTH = 3;
 
+/* ---- column-alignment inference for UNRULED tables ----------------------
+ * Statement ledgers frequently ship with no ruling lines at all, so the
+ * lines-strategy detector never sees them and every transaction lands as a
+ * loose text box. The signal that remains is alignment: N consecutive
+ * baseline rows whose spans cluster at shared x-rails (left OR right edge,
+ * so right-aligned money columns count), usually with a header row on top.
+ *
+ * Deliberately conservative so prose can never tabulate:
+ *   - a run can only START at a row with >= MIN_COLS spans;
+ *   - >= MIN_DATA_ROWS + header, >= MIN_COLS supported columns;
+ *   - every span of every row must sit on a shared rail (a single stray
+ *     span breaks the run);
+ *   - column x-extents must not overlap.
+ */
+const COL_TOL = 3.5;          // rail alignment tolerance, pt
+const MIN_DATA_ROWS = 3;
+const MIN_COLS = 3;
+const ROW_PITCH_FACTOR = 2.6; // max baseline pitch between member rows
+
+function groupRows(lines) {
+  const sorted = [...lines].sort((a, b) => (a.y0 - b.y0) || (a.x0 - b.x0));
+  const rows = [];
+  for (const ln of sorted) {
+    const cy = (ln.y0 + ln.y1) / 2;
+    const r = rows.length ? rows[rows.length - 1] : null;
+    if (r && Math.abs(cy - r.cy) <= 0.5 * Math.max(ln.size || 8, r.size || 8)) {
+      r.segs.push(ln);
+      r.cy = (r.cy * (r.segs.length - 1) + cy) / r.segs.length;
+      r.size = Math.max(r.size, ln.size || 0);
+    } else {
+      rows.push({ cy, size: ln.size || 8, segs: [ln] });
+    }
+  }
+  for (const r of rows) {
+    r.segs.sort((a, b) => a.x0 - b.x0);
+    r.y0 = Math.min(...r.segs.map((s) => s.y0));
+    r.y1 = Math.max(...r.segs.map((s) => s.y1));
+  }
+  return rows;
+}
+
+function matchCluster(clusters, seg) {
+  for (const c of clusters) {
+    if (Math.abs(seg.x0 - c.x0m) <= COL_TOL || Math.abs(seg.x1 - c.x1m) <= COL_TOL) return c;
+  }
+  return null;
+}
+
+function overlapsAnyCluster(clusters, seg) {
+  return clusters.some((c) => Math.min(seg.x1, c.maxX1) - Math.max(seg.x0, c.minX0) > 1);
+}
+
+function addToCluster(c, seg) {
+  c.x0m = (c.x0m * c.n + seg.x0) / (c.n + 1);
+  c.x1m = (c.x1m * c.n + seg.x1) / (c.n + 1);
+  c.minX0 = Math.min(c.minX0, seg.x0);
+  c.maxX1 = Math.max(c.maxX1, seg.x1);
+  c.n++;
+}
+
+function newCluster(seg) {
+  return { x0m: seg.x0, x1m: seg.x1, minX0: seg.x0, maxX1: seg.x1, n: 1 };
+}
+
+export function inferAlignedTables(lines, existingBboxes = []) {
+  const inBox = (b, x, y) => (b[0] - 2) <= x && x <= (b[2] + 2) && (b[1] - 2) <= y && y <= (b[3] + 2);
+  const loose = lines.filter((ln) => {
+    const cx = (ln.x0 + ln.x1) / 2, cy = (ln.y0 + ln.y1) / 2;
+    return ln.spans.some((s) => s.text.trim() !== "")
+        && !existingBboxes.some((b) => inBox(b, cx, cy));
+  });
+  const rows = groupRows(loose);
+  const tables = [];
+  let i = 0;
+  while (i < rows.length) {
+    const start = rows[i];
+    if (start.segs.length < MIN_COLS) { i++; continue; }
+    const clusters = start.segs.map(newCluster);
+    const run = [start];
+    let j = i + 1;
+    while (j < rows.length) {
+      const row = rows[j];
+      const prev = run[run.length - 1];
+      const pitch = row.cy - prev.cy;
+      if (pitch > ROW_PITCH_FACTOR * Math.max(prev.size, row.size, 8)) break;
+      if (row.segs.length < 2) break;
+      // every span must land on a shared rail or open a clean new column
+      let matched = 0;
+      const plan = [];
+      let ok = true;
+      for (const seg of row.segs) {
+        const c = matchCluster(clusters, seg);
+        if (c) { matched++; plan.push([c, seg]); }
+        else if (!overlapsAnyCluster(clusters, seg)) plan.push([null, seg]);
+        else { ok = false; break; }
+      }
+      if (!ok || matched < 2) break;
+      for (const [c, seg] of plan) {
+        if (c) addToCluster(c, seg);
+        else clusters.push(newCluster(seg));
+      }
+      run.push(row);
+      j++;
+    }
+    const supported = clusters.filter((c) => c.n >= Math.max(3, Math.ceil(0.5 * run.length)));
+    const denseRows = run.filter((r) => r.segs.length >= MIN_COLS).length;
+    if (run.length >= MIN_DATA_ROWS + 1 && supported.length >= MIN_COLS
+        && denseRows >= MIN_DATA_ROWS) {
+      tables.push(buildInferredTable(run, supported));
+      i = j;
+    } else {
+      i++;
+    }
+  }
+  return tables;
+}
+
+function buildInferredTable(run, cols) {
+  cols = [...cols].sort((a, b) => a.minX0 - b.minX0);
+  const colBounds = [cols[0].minX0 - 2];
+  for (let k = 0; k < cols.length - 1; k++) {
+    colBounds.push((cols[k].maxX1 + cols[k + 1].minX0) / 2);
+  }
+  colBounds.push(cols[cols.length - 1].maxX1 + 2);
+  const rowBounds = [run[0].y0 - 2];
+  for (let k = 0; k < run.length - 1; k++) {
+    rowBounds.push((run[k].y1 + run[k + 1].y0) / 2);
+  }
+  rowBounds.push(run[run.length - 1].y1 + 2);
+  const rows = [];
+  for (let ri = 0; ri < run.length; ri++) {
+    const cells = [];
+    for (let ci = 0; ci < cols.length; ci++) {
+      cells.push([colBounds[ci], rowBounds[ri], colBounds[ci + 1], rowBounds[ri + 1]]);
+    }
+    rows.push({ cells });
+  }
+  return {
+    bbox: [colBounds[0], rowBounds[0], colBounds[colBounds.length - 1], rowBounds[rowBounds.length - 1]],
+    row_count: run.length,
+    col_count: cols.length,
+    rows,
+    inferred: true,   // no ruling lines in the source: draw no borders
+  };
+}
+
 function orient(segments) {
   const h = [], v = [];
   for (const s of segments) {

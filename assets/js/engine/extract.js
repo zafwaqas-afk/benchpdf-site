@@ -89,6 +89,19 @@ async function fontInfo(page, styles, fontName, embeddedMetrics) {
   };
 }
 
+/* pdf.js normalises every colour-setting op (rg, g, k, sc/scn in any
+ * colourspace) to setFillRGBColor; the args arrive as [r,g,b] numbers or a
+ * single "#rrggbb" CSS string depending on build. */
+function parseFillColor(a, prev) {
+  if (!a || !a.length) return prev;
+  if (a.length >= 3 && typeof a[0] === "number") {
+    return ((a[0] & 255) << 16) | ((a[1] & 255) << 8) | (a[2] & 255);
+  }
+  if (typeof a[0] === "number") return a[0] & 0xffffff;
+  if (typeof a[0] === "string") return parseInt(a[0].replace("#", ""), 16) || 0;
+  return prev;
+}
+
 /* ------------------------------------------------------------------------- */
 /* Text ops walked with a cursor simulation: each show op knows its start    */
 /* position in user space, its fill colour, and how much trailing-space      */
@@ -129,11 +142,7 @@ export function textOps(opList) {
       ctm = ctmStack.length ? ctmStack.pop() : ctm;
     }
     else if (fn === OPS.setTextRise) textRise = a[0];
-    else if (fn === OPS.setFillRGBColor) {
-      if (a.length >= 3) fill = ((a[0] & 255) << 16) | ((a[1] & 255) << 8) | (a[2] & 255);
-      else if (typeof a[0] === "number") fill = a[0] & 0xffffff;
-      else if (typeof a[0] === "string") fill = parseInt(a[0].replace("#", ""), 16) || 0;
-    }
+    else if (fn === OPS.setFillRGBColor) fill = parseFillColor(a, fill);
     else if (fn === OPS.beginText) { lineMat = MAT_ID.slice(); cursor = 0; }
     else if (fn === OPS.setTextMatrix) {
       const m = asMat(a);
@@ -413,9 +422,11 @@ export function extractVectors(page, opList) {
   const segments = [];   // {x0,y0,x1,y1, kind:'stroke'|'rectedge'|'fill'}
   const drawings = [];   // {x0,y0,x1,y1} painted vector paths (page space, top-down)
   const images = [];     // {x0,y0,x1,y1, objId}
-  const fills = [];      // filled rects, for cell shading knowledge
+  const fills = [];      // filled paths {x0,y0,x1,y1,color,hasCurve,nPts}
 
   const ctmStack = [];
+  const fillColorStack = [];
+  let fillColor = 0x000000;
   let ctm = MAT_ID.slice();
   const paintOps = new Set([
     OPS.stroke, OPS.closeStroke, OPS.fill, OPS.eoFill, OPS.fillStroke,
@@ -429,15 +440,23 @@ export function extractVectors(page, opList) {
   const fn = opList.fnArray, args = opList.argsArray;
   for (let i = 0; i < fn.length; i++) {
     const f = fn[i];
-    if (f === OPS.save) ctmStack.push(ctm.slice());
-    else if (f === OPS.restore) ctm = ctmStack.length ? ctmStack.pop() : ctm;
+    if (f === OPS.save) { ctmStack.push(ctm.slice()); fillColorStack.push(fillColor); }
+    else if (f === OPS.restore) {
+      ctm = ctmStack.length ? ctmStack.pop() : ctm;
+      fillColor = fillColorStack.length ? fillColorStack.pop() : fillColor;
+    }
     else if (f === OPS.transform) { const m = asMat(args[i]); if (m) ctm = matMul(ctm, m); }
+    else if (f === OPS.setFillRGBColor) fillColor = parseFillColor(args[i], fillColor);
     else if (f === OPS.paintFormXObjectBegin) {
       ctmStack.push(ctm.slice());
+      fillColorStack.push(fillColor);
       const m = asMat(args[i]);
       if (m) ctm = matMul(ctm, m);
     }
-    else if (f === OPS.paintFormXObjectEnd) ctm = ctmStack.length ? ctmStack.pop() : ctm;
+    else if (f === OPS.paintFormXObjectEnd) {
+      ctm = ctmStack.length ? ctmStack.pop() : ctm;
+      fillColor = fillColorStack.length ? fillColorStack.pop() : fillColor;
+    }
     else if (f === OPS.paintImageXObject || f === OPS.paintInlineImageXObject
              || f === OPS.paintImageMaskXObject) {
       // the image fills the unit square under the current CTM
@@ -457,6 +476,7 @@ export function extractVectors(page, opList) {
       // decode: 0=moveTo(x,y) 1=lineTo(x,y) 2=curveTo(6) 3=curve variant(4) 4=closePath
       const pts = [];       // current subpath (page space, y-up)
       let startPt = null;
+      let hasCurve = false;
       const localSegs = [];
       let k = 0;
       const push = (x, y) => matApply(ctm, x, y);
@@ -467,8 +487,8 @@ export function extractVectors(page, opList) {
           const p = push(buf[k], buf[k + 1]); k += 2;
           if (pts.length) localSegs.push([pts[pts.length - 1], p]);
           pts.push(p);
-        } else if (cmd === 2) { const p = push(buf[k + 4], buf[k + 5]); k += 6; pts.push(p); }
-        else if (cmd === 3) { const p = push(buf[k + 2], buf[k + 3]); k += 4; pts.push(p); }
+        } else if (cmd === 2) { const p = push(buf[k + 4], buf[k + 5]); k += 6; pts.push(p); hasCurve = true; }
+        else if (cmd === 3) { const p = push(buf[k + 2], buf[k + 3]); k += 4; pts.push(p); hasCurve = true; }
         else if (cmd === 4) {
           if (pts.length > 1 && startPt) localSegs.push([pts[pts.length - 1], startPt]);
         } else { break; /* unknown encoding: bail on this path */ }
@@ -493,7 +513,7 @@ export function extractVectors(page, opList) {
           // Filled path: a rectangle contributes its four edges (pdfplumber's
           // rect_edges); a hairline fill IS a ruling line.
           const w = rect.x1 - rect.x0, h = rect.y1 - rect.y0;
-          fills.push(rect);
+          fills.push({ ...rect, color: fillColor, hasCurve, nPts: allPts.length });
           if (w > 2 && h > 2) {
             segments.push({ x0: rect.x0, y0: rect.y0, x1: rect.x1, y1: rect.y0, kind: "rectedge" });
             segments.push({ x0: rect.x0, y0: rect.y1, x1: rect.x1, y1: rect.y1, kind: "rectedge" });
@@ -508,18 +528,163 @@ export function extractVectors(page, opList) {
       }
     }
   }
-  return { segments, drawings, images, pageW: vp.viewBox[2] - vp.viewBox[0], pageH };
+  return { segments, drawings, images, fills,
+           pageW: vp.viewBox[2] - vp.viewBox[0], pageH };
+}
+
+/* ------------------------------------------------------------------------- */
+/* Glyph-outline paths: text drawn as filled vector curves.                  */
+/*                                                                           */
+/* Statement generators (the Starling class) paint every visible word as     */
+/* filled glyph OUTLINES and overlay an invisible Type3 text layer (all its  */
+/* charprocs are bare d1 metrics) purely for selectability. Two consequences */
+/* if the outlines are treated as ordinary vector art:                       */
+/*   1. the background render keeps the painted word while the invisible    */
+/*      text is re-emitted editable on top -> ghost-doubled text;            */
+/*   2. the run colour comes from the invisible layer (usually black) while  */
+/*      the actual colour lives on the outline fill -> colours flatten.      */
+/* A fill is a glyph outline for line L iff it contains curves (real glyphs  */
+/* always do; rules/underlines/cell fills never do) and its bbox sits inside */
+/* L's bbox: outlines live within the text box, while highlight pills and    */
+/* shading extend beyond it.                                                 */
+/* ------------------------------------------------------------------------- */
+function glyphPad(line) {
+  return Math.max(2.0, 0.3 * (line.size || (line.y1 - line.y0) || 10));
+}
+
+/* One outline path may cover a whole block of lines (the real statement paints
+ * a paragraph per path), so the test is coverage of the fill's bbox by the
+ * UNION of text-line bboxes, not containment in a single line. Big fills are
+ * never glyph blobs (a watermark curve under dense body text would otherwise
+ * qualify), and neither is anything without curves. */
+export function isGlyphOutline(fill, lines, pageArea) {
+  if (!fill.hasCurve) return false;
+  const fw = fill.x1 - fill.x0, fh = fill.y1 - fill.y0;
+  const fa = fw * fh;
+  if (fa <= 0 || (pageArea && fa > 0.25 * pageArea)) return false;
+  let covered = 0;
+  for (const ln of lines) {
+    const pad = glyphPad(ln);
+    const ix = Math.min(fill.x1, ln.x1 + pad) - Math.max(fill.x0, ln.x0 - pad);
+    const iy = Math.min(fill.y1, ln.y1 + pad) - Math.max(fill.y0, ln.y0 - pad);
+    if (ix > 0 && iy > 0) covered += ix * iy;
+    if (covered >= 0.70 * fa) return true;
+  }
+  return false;
+}
+
+/* Fault-5 repair: spans re-emitted from an invisible text layer inherit the
+ * colour of the glyph-outline fills actually painted over them. Mutates the
+ * spans in place; a span keeps its own colour when no outline matches. */
+export function inheritGlyphColors(lines, fills, pageW, pageH) {
+  if (!fills || !fills.length) return;
+  const pageArea = (pageW || 0) * (pageH || 0);
+  const glyphFills = fills.filter((f) => isGlyphOutline(f, lines, pageArea));
+  if (!glyphFills.length) return;
+  for (const ln of lines) {
+    const pad = glyphPad(ln);
+    const over = glyphFills.filter((f) =>
+      Math.min(f.x1, ln.x1 + pad) > Math.max(f.x0, ln.x0 - pad) &&
+      Math.min(f.y1, ln.y1 + pad) > Math.max(f.y0, ln.y0 - pad));
+    if (!over.length) continue;
+    let x = ln.x0;
+    const totalChars = Math.max(1, ln.spans.reduce((a, s) => a + s.text.length, 0));
+    for (const sp of ln.spans) {
+      const w = Math.max(1, ln.x1 - ln.x0) * (sp.text.length / totalChars);
+      const sx0 = x, sx1 = x + w;
+      x = sx1;
+      // the fill overlapping most of this span's x-range votes with its colour
+      let best = null, bestCover = 0;
+      for (const f of over) {
+        const ov = Math.min(f.x1, sx1) - Math.max(f.x0, sx0);
+        if (ov > bestCover) { bestCover = ov; best = f; }
+      }
+      if (best !== null && bestCover >= 0.35 * (sx1 - sx0)) sp.color = best.color;
+    }
+  }
 }
 
 /* ------------------------------------------------------------------------- */
 /* Background render with the text operators filtered out                    */
 /* ------------------------------------------------------------------------- */
-export async function renderBackground(page, opList, dpi, whiteRects = []) {
+function decodePathBBox(buf, ctm) {
+  let k = 0, hasCurve = false, any = false;
+  let x0 = Infinity, yMin = Infinity, x1 = -Infinity, yMax = -Infinity;
+  const upd = (x, y) => {
+    const [px, py] = matApply(ctm, x, y);
+    if (px < x0) x0 = px;
+    if (px > x1) x1 = px;
+    if (py < yMin) yMin = py;
+    if (py > yMax) yMax = py;
+    any = true;
+  };
+  while (k < buf.length) {
+    const cmd = buf[k++];
+    if (cmd === 0 || cmd === 1) { upd(buf[k], buf[k + 1]); k += 2; }
+    else if (cmd === 2) {
+      upd(buf[k], buf[k + 1]); upd(buf[k + 2], buf[k + 3]); upd(buf[k + 4], buf[k + 5]);
+      k += 6; hasCurve = true;
+    } else if (cmd === 3) {
+      upd(buf[k], buf[k + 1]); upd(buf[k + 2], buf[k + 3]);
+      k += 4; hasCurve = true;
+    } else if (cmd === 4) { /* closePath */ }
+    else break;
+  }
+  return any ? { x0, x1, yMin, yMax, hasCurve } : null;
+}
+
+/* Indices of constructPath ops that paint glyph outlines duplicating an
+ * extracted text line (see isGlyphOutline). Walked over the raw operator
+ * list with the full transform stack composed, forms included. */
+const FILL_PAINT_OPS = () => new Set([
+  OPS.fill, OPS.eoFill, OPS.fillStroke, OPS.eoFillStroke,
+  OPS.closeFillStroke, OPS.closeEOFillStroke,
+].filter((v) => v !== undefined));
+
+function glyphOutlineOpIndices(opList, textLines, pageH, pageArea) {
+  const fillOps = FILL_PAINT_OPS();
+  const kill = new Set();
+  let ctm = MAT_ID.slice();
+  const ctmStack = [];
+  const fn = opList.fnArray, args = opList.argsArray;
+  for (let i = 0; i < fn.length; i++) {
+    const f = fn[i];
+    if (f === OPS.save || f === OPS.paintFormXObjectBegin) {
+      ctmStack.push(ctm.slice());
+      if (f === OPS.paintFormXObjectBegin) {
+        const m = asMat(args[i]);
+        if (m) ctm = matMul(ctm, m);
+      }
+    } else if (f === OPS.restore || f === OPS.paintFormXObjectEnd) {
+      ctm = ctmStack.length ? ctmStack.pop() : ctm;
+    } else if (f === OPS.transform) {
+      const m = asMat(args[i]);
+      if (m) ctm = matMul(ctm, m);
+    } else if (f === OPS.constructPath) {
+      const a = args[i];
+      const paintOp = a && a[0];
+      const buf = a && a[1] && a[1][0];
+      if (!fillOps.has(paintOp) || !buf || !buf.length) continue;
+      const info = decodePathBBox(buf, ctm);
+      if (!info) continue;
+      const fill = { x0: info.x0, x1: info.x1,
+                     y0: pageH - info.yMax, y1: pageH - info.yMin,
+                     hasCurve: info.hasCurve };
+      if (isGlyphOutline(fill, textLines, pageArea)) kill.add(i);
+    }
+  }
+  return kill;
+}
+
+export async function renderBackground(page, opList, dpi, whiteRects = [], textLines = []) {
   // render() replays the operator list cached under the DISPLAY intent, which
   // is a different cache entry from the one getOperatorList() returns. Warm
   // that cache with a 1px render, then neutralise the text-showing operators
   // in it: the real render below replays the filtered list and simply never
-  // paints text. Ops are restored afterwards.
+  // paints text. Text painted as filled glyph-outline PATHS (the invisible-
+  // text-layer statement class) is neutralised the same way, or the word
+  // would survive as pixels while its invisible twin ships editable on top.
+  // Ops are restored afterwards.
   {
     const warmVp = page.getViewport({ scale: 1 / Math.max(page.view[2] - page.view[0], 1) });
     const wc = document.createElement("canvas");
@@ -527,17 +692,31 @@ export async function renderBackground(page, opList, dpi, whiteRects = []) {
     wc.height = Math.max(Math.round(warmVp.height), 1);
     await page.render({ canvasContext: wc.getContext("2d"), viewport: warmVp }).promise;
   }
+  const vp1 = page.getViewport({ scale: 1 });
+  const pageH1 = vp1.viewBox[3] - vp1.viewBox[1];
+  const pageArea = (vp1.viewBox[2] - vp1.viewBox[0]) * pageH1;
   const shows = TEXT_SHOW_OPS();
+  // Glyph-outline analysis runs over the PASSED opList, whose constructPath
+  // args are still raw path data. The display-intent copies of the same list
+  // hold cached path objects once the warm render has replayed them, so they
+  // cannot be re-decoded - but the two lists are op-for-op identical, so the
+  // indices found here apply to every intent list of the same length.
+  const killIdx = textLines.length
+    ? glyphOutlineOpIndices(opList, textLines, pageH1, pageArea)
+    : new Set();
   const saved = [];
   const lists = [];
   for (const [, st] of page._intentStates || []) {
     if (st && st.operatorList && st.operatorList.fnArray) lists.push(st.operatorList);
   }
   for (const list of lists) {
+    const sameShape = list.fnArray.length === opList.fnArray.length;
     for (let i = 0; i < list.fnArray.length; i++) {
-      if (shows.includes(list.fnArray[i])) {
-        saved.push([list, i, list.fnArray[i], list.argsArray[i]]);
-        list.fnArray[i] = OPS.setCharSpacing;   // harmless inside BT/ET
+      const f = list.fnArray[i];
+      if (shows.includes(f)
+          || (sameShape && f === OPS.constructPath && killIdx.has(i))) {
+        saved.push([list, i, f, list.argsArray[i]]);
+        list.fnArray[i] = OPS.setCharSpacing;   // harmless anywhere
         list.argsArray[i] = [0];
       }
     }

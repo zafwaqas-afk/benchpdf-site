@@ -18,12 +18,13 @@
  * invariants as the desktop engine's.
  */
 
-import { initOps, extractLines, extractVectors, renderBackground, renderFull, sampleFill }
+import { initOps, extractLines, extractVectors, renderBackground, renderFull, sampleFill,
+         inheritGlyphColors }
   from "./extract.js";
 import { embeddedFontMetrics } from "./fontmetrics.js";
 import { FontMapper, FLAG_ITALIC, FLAG_BOLD } from "./fonts.js";
 import { attachMarkers, clusterLines, splitParagraphs, lineAlignment } from "./cluster.js";
-import { detectTables } from "./tables.js";
+import { detectTables, inferAlignedTables } from "./tables.js";
 
 const HYBRID_DPI = 200;
 const SAMPLE_DPI = 150;
@@ -77,25 +78,71 @@ function paragraphRuns(paraLines, fonts, align) {
 }
 
 /* ---- text blocks -------------------------------------------------------- */
-function addTextBlock(slide, cluster, scale, offX, offY, fonts) {
+const NOWRAP_MAX_WORDS = 5;    // blocks this short keep their source line breaks
+const WORD_FIT_SAFETY = 1.1;   // substituted fonts can run a little wider
+
+function longestWordWidth(cluster) {
+  // chars-proportional estimate from source geometry: enough to guarantee the
+  // box can hold its longest word, which is what stops mid-word wrapping
+  let maxW = 0;
+  for (const ln of cluster) {
+    const text = ln.spans.map((s) => s.text).join("");
+    const charW = (ln.x1 - ln.x0) / Math.max(text.length, 1);
+    for (const wd of text.trim().split(/\s+/)) {
+      maxW = Math.max(maxW, wd.length * charW);
+    }
+  }
+  return maxW;
+}
+
+function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW) {
   const x0 = Math.min(...cluster.map((c) => c.x0));
   const y0 = Math.min(...cluster.map((c) => c.y0));
   const x1 = Math.max(...cluster.map((c) => c.x1));
   const y1 = Math.max(...cluster.map((c) => c.y1));
 
   const align = lineAlignment(cluster, x0, x1);
+  const words = cluster
+    .flatMap((l) => l.spans.map((s) => s.text).join("").trim().split(/\s+/))
+    .filter(Boolean).length;
+  // Short header blocks ("END OF DAY / ACCOUNT BALANCE") must never re-wrap:
+  // keep the source's own line breaks and switch wrapping off entirely.
+  const noWrapShort = cluster.length > 1 && words <= NOWRAP_MAX_WORDS;
+
   const runs = [];
-  const paras = splitParagraphs(cluster);
-  for (const para of paras) runs.push(...paragraphRuns(para, fonts, align));
+  if (noWrapShort) {
+    for (const ln of cluster) {
+      for (let si = 0; si < ln.spans.length; si++) {
+        const sp = ln.spans[si];
+        const opts = styleRun(sp, fonts);
+        opts.paraSpaceBefore = 0; opts.paraSpaceAfter = 0;
+        if (align) opts.align = align;
+        if (si === ln.spans.length - 1) opts.breakLine = true;
+        runs.push({ text: sp.text, options: opts });
+      }
+    }
+  } else {
+    const paras = splitParagraphs(cluster);
+    for (const para of paras) runs.push(...paragraphRuns(para, fonts, align));
+  }
+
+  const wrap = cluster.length > 1 && !noWrapShort;
+  // a wrapping box must at minimum fit its longest word, or PowerPoint breaks
+  // mid-word; cap at the page's right edge
+  let wPt = Math.max(x1 - x0, 1);
+  if (wrap) {
+    wPt = Math.max(wPt, WORD_FIT_SAFETY * longestWordWidth(cluster));
+    if (pageW) wPt = Math.min(wPt, Math.max(pageW - x0, x1 - x0));
+  }
 
   slide.addText(runs, {
     x: (offX + x0 * scale) / IN,
     y: (offY + y0 * scale) / IN,
-    w: Math.max((x1 - x0) * scale / IN, 1 / IN),
+    w: Math.max(wPt * scale / IN, 1 / IN),
     h: Math.max((y1 - y0) * scale / IN, 0.5 / IN),
     // single-line blocks never need to wrap; with substituted fonts running
     // wider than the source, wrap:true breaks headings into two lines
-    margin: 0, valign: "top", wrap: cluster.length > 1,
+    margin: 0, valign: "top", wrap,
     ...(align ? { align } : {}),
   });
 }
@@ -154,7 +201,10 @@ function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, of
           // explicit thin grid: the stamped tableStyleId names a style that
           // PptxGenJS's tableStyles.xml never defines, so PowerPoint draws
           // no borders from it. Corpus invoices exposed this.
-          border: { type: "solid", pt: 0.5, color: "000000" },
+          // An INFERRED (unruled) table gets no borders at all: the source
+          // drew none, so drawing a grid would add ink the page never had.
+          border: table.inferred ? { type: "none" }
+                                 : { type: "solid", pt: 0.5, color: "000000" },
         },
       });
     }
@@ -320,10 +370,12 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
   pptx.defineLayout({ name: "PDFSIZE", width: slideWpt / IN, height: slideHpt / IN });
   pptx.layout = "PDFSIZE";
 
+  const tableKindsBySlide = [];   // per slide, "grid" | "plain" per native table
   for (let i = 1; i <= doc.numPages; i++) {
     onProgress(i - 1, doc.numPages, `Converting page ${i} of ${doc.numPages}`);
     const page = await doc.getPage(i);
     const slide = pptx.addSlide();
+    tableKindsBySlide[i - 1] = [];
     const opList = await page.getOperatorList();
     const vec = extractVectors(page, opList);
     const pw = vec.pageW, ph = vec.pageH;
@@ -346,9 +398,23 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
       continue;
     }
 
+    // ---- run colours: text painted as glyph-outline paths carries its real
+    // colour on the paths, not on the (often invisible) text layer ----
+    inheritGlyphColors(allLines, vec.fills, pw, ph);
+
     // ---- tables ----
-    const tables = detectTables(vec.segments)
+    // A detected grid must contain text to be promoted to a native table: a
+    // decorative squares mark is graphics, not an empty 1xN table.
+    const detected = detectTables(vec.segments)
       .filter((t) => t.row_count >= 1 && t.col_count >= 1);
+    const hasCellText = (t) => allLines.some((ln) =>
+      centerIn(t.bbox, (ln.bbox[0] + ln.bbox[2]) / 2, (ln.bbox[1] + ln.bbox[3]) / 2));
+    const ruled = detected.filter(hasCellText);
+    const demotedGrids = detected.length - ruled.length;
+    // Unruled tables (statement ledgers without ruling lines) are recovered
+    // from column alignment and emitted native like any other table.
+    const inferred = inferAlignedTables(allLines, ruled.map((t) => t.bbox));
+    const tables = ruled.concat(inferred);
     const tableBboxes = tables.map((t) => t.bbox);
 
     const looseLines = allLines.filter((ln) =>
@@ -356,12 +422,19 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
         centerIn(tb, (ln.bbox[0] + ln.bbox[2]) / 2, (ln.bbox[1] + ln.bbox[3]) / 2)));
 
     // ---- hybrid decision (non-table vector art only) ----
+    // A demoted text-less grid forces the hybrid background so the decoration
+    // still ships, as pixels in the background layer.
     const artRatio = nontableArtRatio(pw, ph, vec.drawings, tableBboxes);
-    const useHybrid = artRatio > NONTABLE_ART_COVERAGE;
+    const useHybrid = artRatio > NONTABLE_ART_COVERAGE || demotedGrids > 0;
+    if (demotedGrids > 0) {
+      report.notes = report.notes || [];
+      report.notes.push(`page ${i}: ${demotedGrids} decorative grid${demotedGrids === 1 ? "" : "s"} ` +
+                        `kept as graphics (no cell text)`);
+    }
 
     if (useHybrid) {
       pr.mode = "hybrid";
-      const canvas = await renderBackground(page, opList, HYBRID_DPI, tableBboxes);
+      const canvas = await renderBackground(page, opList, HYBRID_DPI, tableBboxes, allLines);
       slide.addImage({ data: canvas.toDataURL("image/png"),
         x: offX / IN, y: offY / IN, w: pw * scale / IN, h: ph * scale / IN });
     } else {
@@ -409,6 +482,8 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
         if (addTable(slide, t, allLines, sampleCtx, z, sc.width, sc.height,
                      scale, offX, offY, fonts)) {
           pr.tables++;
+          if (t.inferred) pr.unruledTables = (pr.unruledTables || 0) + 1;
+          tableKindsBySlide[i - 1].push(t.inferred ? "plain" : "grid");
         }
       }
     }
@@ -465,6 +540,7 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
           x: offX / IN, y: offY / IN, w: pw * scale / IN, h: ph * scale / IN });
         pr.mode = "image-fallback";
         pr.tables = 0; pr.images = 0;
+        tableKindsBySlide[i - 1] = [];
         report.notes = report.notes || [];
         report.notes.push(`page ${i}: preserved as image for accuracy`);
         report.pages.push(pr);
@@ -500,7 +576,7 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
       }
     }
     for (const cluster of textClusters) {
-      addTextBlock(slide, cluster, scale, offX, offY, fonts);
+      addTextBlock(slide, cluster, scale, offX, offY, fonts, pw);
       pr.textBoxes++;
     }
     report.pages.push(pr);
@@ -508,31 +584,40 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
 
   onProgress(doc.numPages, doc.numPages, "Saving presentation");
   let blob = await pptx.write({ outputType: "blob" });
-  if (deps.JSZip) blob = await applyTableGridStyle(blob, deps.JSZip);
+  if (deps.JSZip) blob = await applyTableGridStyle(blob, deps.JSZip, tableKindsBySlide);
   report.substitutions = [...fonts.substitutions.entries()].map(([a, b]) => `${a} -> ${b}`);
   return { blob, report };
 }
 
 /* PptxGenJS cannot express a:tableStyleId, so stamp it into the OOXML the
- * same way app/converter.py does through python-pptx: "No Style, Table Grid",
- * thin borders drawn by the style, fills stay per-cell. */
+ * same way app/converter.py does through python-pptx. Ruled tables get
+ * "No Style, Table Grid" (thin borders drawn by the style, fills per cell);
+ * INFERRED unruled tables get "No Style, No Grid", because the source drew
+ * no ruling lines and the output must not invent them. Tables appear in the
+ * slide XML in insertion order, which is the order tableKinds records. */
 const TABLE_GRID_STYLE = "{5940675A-B579-460E-94D1-54222C63F5DA}";
+const TABLE_NO_GRID_STYLE = "{2D5ABB26-0587-4C30-8999-92F81FD0307C}";
 
-async function applyTableGridStyle(blob, JSZip) {
+async function applyTableGridStyle(blob, JSZip, tableKindsBySlide = []) {
   const zip = await JSZip.loadAsync(blob);
   const names = Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n));
   for (const n of names) {
     let xml = await zip.file(n).async("string");
     if (!xml.includes("<a:tbl>") && !xml.includes("<a:tblPr")) continue;
+    const slideIdx = parseInt(n.match(/slide(\d+)\.xml$/)[1], 10) - 1;
+    const kinds = tableKindsBySlide[slideIdx] || [];
+    let ti = 0;
+    const styleFor = () => {
+      const kind = kinds[ti] || "grid";
+      ti++;
+      return kind === "plain" ? TABLE_NO_GRID_STYLE : TABLE_GRID_STYLE;
+    };
     xml = xml.replace(/<a:tblPr([^>]*)\/>/g,
-      `<a:tblPr$1><a:tableStyleId>${TABLE_GRID_STYLE}</a:tableStyleId></a:tblPr>`);
-    xml = xml.replace(/<a:tblPr([^>]*[^\/])>(?![\s\S]{0,80}tableStyleId)/g,
-      `<a:tblPr$1>`);
-    // open-tag form: insert as the LAST child of tblPr (schema order)
-    xml = xml.replace(/<\/a:tblPr>/g, (m, off) => m);
-    if (!xml.includes("tableStyleId")) {
+      (m, attrs) => `<a:tblPr${attrs}><a:tableStyleId>${styleFor()}</a:tableStyleId></a:tblPr>`);
+    if (xml.includes("<a:tblPr") && !xml.includes("tableStyleId")) {
+      // open-tag form: insert as the LAST child of tblPr (schema order)
       xml = xml.replace(/<\/a:tblPr>/g,
-        `<a:tableStyleId>${TABLE_GRID_STYLE}</a:tableStyleId></a:tblPr>`);
+        () => `<a:tableStyleId>${styleFor()}</a:tableStyleId></a:tblPr>`);
     }
     zip.file(n, xml);
   }
