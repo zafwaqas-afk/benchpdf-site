@@ -703,6 +703,10 @@ body{display:flex; flex-direction:column; min-height:100svh}
    immediately after it, one small scroll away. No dead ground between. */
 main#main[data-state]{display:flex; flex-direction:column; min-height:calc(100svh - 64px)}
 main#main[data-state] .hero{flex:1; display:flex; flex-direction:column}
-main#main[data-state] .hero-inner{display:flex; flex-direction:column; flex:1; width:100%}
-main#main[data-state] .dropzone{flex:1; display:flex; flex-direction:column; justify-content:center}
+main#main[data-state] .hero-inner{display:flex; flex-direction:column; flex:1;
+  justify-content:center; width:100%}
+/* The INPUT module grows with the screen but stays an instrument, not a
+   barn door: spare height becomes grid breathing room around the module. */
+main#main[data-state] .dropzone{flex:1; max-height:min(46svh, 460px);
+  display:flex; flex-direction:column; justify-content:center}
 main#main[data-state] .hero .dz-inner{padding:32px 24px}
