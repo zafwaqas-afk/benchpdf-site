@@ -117,7 +117,9 @@ export function inferAlignedTables(lines, existingBboxes = []) {
       run.push(row);
       j++;
     }
-    const supported = clusters.filter((c) => c.n >= Math.max(3, Math.ceil(0.5 * run.length)));
+    // a column needs support in >=25% of rows (min 3): money-in columns are
+    // legitimately sparse, but a one-off stray is not a column
+    const supported = clusters.filter((c) => c.n >= Math.max(3, Math.ceil(0.25 * run.length)));
     const denseRows = run.filter((r) => r.segs.length >= MIN_COLS).length;
     if (run.length >= MIN_DATA_ROWS + 1 && supported.length >= MIN_COLS
         && denseRows >= MIN_DATA_ROWS) {
