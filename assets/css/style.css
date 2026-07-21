@@ -234,7 +234,7 @@ img{max-width:100%; height:auto}
    ============================================================ */
 .hero{
   position:relative; isolation:isolate;
-  padding:clamp(36px,6vh,64px) 0 clamp(48px,8vh,88px);
+  padding:clamp(26px,4vh,44px) 0 clamp(22px,3.5vh,36px);
 }
 .hero-inner{
   position:relative; z-index:2; width:100%; max-width:920px;
@@ -314,7 +314,7 @@ a.conv-badge:hover{
    Shared page shell
    ============================================================ */
 .wrap{max-width:var(--wrap); margin:0 auto; padding:0 var(--gutter)}
-.band{padding:clamp(64px,11vh,130px) 0}
+.band{padding:clamp(40px,6vh,72px) 0}
 .band-plaster{background:var(--panel)}
 .band-rule{border-top:1px solid var(--rule-soft)}
 .section-label{
@@ -333,13 +333,13 @@ a.conv-badge:hover{
 }
 
 /* ---- inner page header -------------------------------------- */
-.page-head{padding:clamp(44px,8vh,88px) 0 clamp(28px,5vh,52px)}
+.page-head{padding:clamp(24px,4vh,44px) 0 clamp(18px,3vh,32px)}
 .page-title{
-  font-family:var(--grotesk); font-weight:500; font-size:clamp(26px,4.2vw,48px);
-  line-height:1.04; letter-spacing:-.015em; margin:0; max-width:20ch; text-wrap:balance;
+  font-family:var(--mono); font-weight:500; font-size:clamp(15px,2vw,20px);
+  line-height:1.5; letter-spacing:.16em; text-transform:uppercase; margin:0; max-width:none;
 }
 .page-title em{font-family:inherit; font-style:normal; font-weight:500}
-.lede{margin:clamp(18px,3vh,28px) 0 0; font-size:16.5px; line-height:1.62; color:var(--muted); max-width:54ch}
+.lede{margin:14px 0 0; font-size:15px; line-height:1.65; color:var(--muted); max-width:54ch}
 .page-cta{margin-top:clamp(26px,4vh,40px); display:flex; gap:16px; align-items:center; flex-wrap:wrap}
 .crumb{
   font-family:var(--mono); font-size:10.5px; letter-spacing:.22em; text-transform:uppercase;
@@ -353,8 +353,9 @@ a.conv-badge:hover{
    ============================================================ */
 .prose{padding-bottom:clamp(60px,10vh,120px)}
 .prose h2{
-  font-family:var(--grotesk); font-weight:600; font-size:clamp(19px,2.2vw,24px);
-  letter-spacing:-.01em; line-height:1.24; margin:clamp(44px,7vh,72px) 0 18px; max-width:30ch;
+  font-family:var(--mono); font-weight:500; font-size:12px;
+  letter-spacing:.26em; text-transform:uppercase; color:var(--muted);
+  line-height:1.5; margin:clamp(36px,5vh,56px) 0 14px; max-width:none;
 }
 .prose h2:first-child{margin-top:0}
 .prose p{font-size:16px; line-height:1.78; margin:0 0 18px; max-width:66ch}
@@ -394,13 +395,13 @@ a.conv-badge:hover{
    Footer
    ============================================================ */
 .foot{border-top:2px solid var(--hairline); background:var(--nav);
-  padding:clamp(30px,5vh,50px) 0 clamp(36px,6vh,62px)}
+  padding:clamp(20px,3vh,30px) 0 clamp(20px,3vh,32px)}
 .foot-in{
   max-width:var(--wrap); margin:0 auto; padding:0 var(--gutter);
   display:flex; align-items:baseline; justify-content:space-between; gap:20px; flex-wrap:wrap;
 }
 .foot-latest{
-  max-width:var(--wrap); margin:0 auto clamp(22px,4vh,34px); padding:0 var(--gutter);
+  max-width:var(--wrap); margin:0 auto clamp(14px,2vh,20px); padding:0 var(--gutter);
   font-size:13px; line-height:1.65; color:var(--muted);
 }
 .foot-latest span{display:block; max-width:74ch}
@@ -575,10 +576,10 @@ a.conv-badge:hover{
 .main{max-width:var(--wrap); margin:0 auto; padding:0 var(--gutter)}
 .main.narrow{max-width:860px}
 
-.tool-hero,.conv-hero{padding:clamp(36px,6vh,72px) 0 clamp(26px,4vh,46px)}
+.tool-hero,.conv-hero{padding:clamp(24px,4vh,44px) 0 clamp(18px,3vh,32px)}
 .tool-hero h1,.conv-hero h1{
-  font-family:var(--grotesk); font-weight:500; font-size:clamp(26px,4vw,46px);
-  line-height:1.05; letter-spacing:-.015em; margin:0; max-width:20ch; text-wrap:balance;
+  font-family:var(--mono); font-weight:500; font-size:clamp(15px,2vw,20px);
+  line-height:1.5; letter-spacing:.16em; text-transform:uppercase; margin:0; max-width:none;
 }
 .tool-hero h1 em,.conv-hero h1 em{font-family:inherit; font-style:normal; font-weight:500}
 
@@ -688,3 +689,17 @@ a.conv-badge:hover{
   .nav-cta{padding:8px 9px; font-size:9.5px; letter-spacing:.1em}
   .theme-toggle{padding:2px}
 }
+
+/* ============================================================
+   Focused landing: the page is exactly one machine face.
+   The footer pins to the viewport bottom; on the home page the
+   INPUT module absorbs all spare height, so there is no dead
+   ground anywhere at any screen size.
+   ============================================================ */
+body{display:flex; flex-direction:column; min-height:100svh}
+.foot{margin-top:auto}
+main#main[data-state]{display:flex; flex-direction:column; flex:1}
+main#main[data-state] .hero{flex:1; display:flex; flex-direction:column}
+main#main[data-state] .hero-inner{display:flex; flex-direction:column; flex:1; width:100%}
+main#main[data-state] .dropzone{flex:1; display:flex; flex-direction:column; justify-content:center}
+main#main[data-state] .hero .dz-inner{padding:32px 24px}
