@@ -620,16 +620,24 @@ a.conv-badge:hover{
 .tool-group .group-note{
   margin:0 0 20px; font-size:13px; color:var(--faint); line-height:1.5;
 }
-.tool-list{display:flex; flex-direction:column; border-top:1px solid var(--rule)}
+/* Tools as machined tiles: indexed modules in the INPUT-panel language,
+   no ruled rows. */
+.tool-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:10px; counter-reset:tool}
 .group-cta{margin-top:clamp(24px,4vh,36px)}
 
 .tool-item{
-  display:flex; flex-direction:column; gap:3px; padding:15px 2px;
-  border-bottom:1px solid var(--rule); text-decoration:none; color:var(--ink);
-  transition:padding-left .28s cubic-bezier(.22,1,.36,1), background-color .28s ease;
+  display:flex; flex-direction:column; gap:4px; padding:14px 16px 12px;
+  border:1px solid var(--hairline); background:var(--panel);
+  text-decoration:none; color:var(--ink);
+  transition:border-color .28s ease, background-color .28s ease;
 }
-.tool-item:hover{padding-left:10px}
-.tool-item-name{font-size:15px; font-weight:500}
+.tool-item::before{
+  counter-increment:tool; content:"0" counter(tool);
+  font-family:var(--mono); font-size:10px; letter-spacing:.3em; color:var(--faint);
+}
+.tool-item:hover{border-color:var(--ink)}
+.tool-item-name{font-size:14.5px; font-weight:500}
 .tool-item-note{font-size:12.5px; color:var(--faint); line-height:1.45}
 
 .promise{max-width:26ch}
