@@ -230,6 +230,77 @@ function pageConfidence(lines, clusters) {
                overlaps } };
 }
 
+/* ---- region-level fallback ----------------------------------------------
+ * When the page's confidence trips, the floor used to be the whole page as
+ * one image. Now the suspect elements are bounded into minimal regions and
+ * only those regions ship as image; every clean span and table stays
+ * editable text. The full-page render survives as a last resort, for pages
+ * whose geometry cannot even be bounded or where the suspect regions cover
+ * more than SUSPECT_PAGE_LIMIT of the content area. */
+const SUSPECT_PAGE_LIMIT = 0.40;
+
+function lineFinite(l) {
+  return isFinite(l.x0) && isFinite(l.y0) && isFinite(l.x1) && isFinite(l.y1);
+}
+
+/* Suspect loose lines: the same signals the confidence scorer counts,
+ * attributed to the individual elements so they can be bounded. Overlapping
+ * cluster pairs are suspect on both sides: either box might be the corrupt
+ * one, and a region must cover whatever it is drawn over. */
+function collectSuspects(allLines, looseLines, clusters) {
+  const origins = new Map();
+  for (const l of allLines) {
+    const k = Math.round(l.x0) + "," + Math.round(l.y0);
+    origins.set(k, (origins.get(k) || 0) + 1);
+  }
+  const suspects = new Set();
+  let unplaceable = false;
+  for (const l of looseLines) {
+    if (!lineFinite(l)) { unplaceable = true; continue; }
+    const piled = origins.get(Math.round(l.x0) + "," + Math.round(l.y0)) > 2;
+    if (!(l.size > 0) || l.y1 <= l.y0 || l.size < 4 || piled) suspects.add(l);
+  }
+  const boxes = clusters.map((cl) => [
+    Math.min(...cl.map((c) => c.x0)), Math.min(...cl.map((c) => c.y0)),
+    Math.max(...cl.map((c) => c.x1)), Math.max(...cl.map((c) => c.y1))]);
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      const [a, b] = [boxes[i], boxes[j]];
+      if (a.some((v) => !isFinite(v)) || b.some((v) => !isFinite(v))) continue;
+      const ix = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0]));
+      const iy = Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+      const min = Math.max(1, Math.min((a[2]-a[0])*(a[3]-a[1]), (b[2]-b[0])*(b[3]-b[1])));
+      if (ix * iy > 0.10 * min) {
+        for (const l of clusters[i]) suspects.add(l);
+        for (const l of clusters[j]) suspects.add(l);
+      }
+    }
+  }
+  return { suspects, unplaceable };
+}
+
+/* Union overlapping/touching boxes until a fixed point: minimal regions. */
+function mergeRegions(boxes, pad = 2) {
+  const regs = boxes.map((b) => [b[0] - pad, b[1] - pad, b[2] + pad, b[3] + pad]);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (let i = 0; i < regs.length && !changed; i++) {
+      for (let j = i + 1; j < regs.length; j++) {
+        const [a, b] = [regs[i], regs[j]];
+        if (a[0] <= b[2] && b[0] <= a[2] && a[1] <= b[3] && b[1] <= a[3]) {
+          regs[i] = [Math.min(a[0], b[0]), Math.min(a[1], b[1]),
+                     Math.max(a[2], b[2]), Math.max(a[3], b[3])];
+          regs.splice(j, 1);
+          changed = true;
+          break;
+        }
+      }
+    }
+  }
+  return regs;
+}
+
 /* ---- main entry --------------------------------------------------------- */
 export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
   const { pdfjs, PptxGenJS, PDFLib } = deps;
@@ -348,21 +419,87 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
     const conf = pageConfidence(allLines, clusters);
     pr.confidence = { ok: conf.ok, score: Math.round(conf.bad * 1000) / 1000,
                       ...conf.signals };
+    let textClusters = clusters;
     if (!conf.ok) {
-      // untrustworthy geometry: replace everything placed so far with the
-      // one thing guaranteed to look right, the page itself
-      while (slide._slideObjects && slide._slideObjects.length) slide._slideObjects.pop();
-      const canvas = await renderFull(page, HYBRID_DPI);
-      slide.addImage({ data: canvas.toDataURL("image/png"),
-        x: offX / IN, y: offY / IN, w: pw * scale / IN, h: ph * scale / IN });
-      pr.mode = "image-fallback";
-      pr.tables = 0; pr.images = 0;
-      report.notes = report.notes || [];
-      report.notes.push(`page ${i}: preserved as image for accuracy`);
-      report.pages.push(pr);
-      continue;
+      const { suspects, unplaceable } = collectSuspects(allLines, looseLines, clusters);
+      let regions = mergeRegions([...suspects].map((l) => [l.x0, l.y0, l.x1, l.y1]));
+      // Absorb any clean line a region already covers, growing the region to
+      // hold its whole bbox: nothing may be drawn twice, once as pixels and
+      // once as text. Growth can cover further lines, so iterate.
+      const absorbed = new Set(suspects);
+      for (let pass = 0; pass < 4; pass++) {
+        let grew = false;
+        for (const l of looseLines) {
+          if (absorbed.has(l) || !lineFinite(l)) continue;
+          const cx = (l.x0 + l.x1) / 2, cy = (l.y0 + l.y1) / 2;
+          const r = regions.find((rg) =>
+            rg[0] <= cx && cx <= rg[2] && rg[1] <= cy && cy <= rg[3]);
+          if (r) {
+            absorbed.add(l);
+            r[0] = Math.min(r[0], l.x0 - 2); r[1] = Math.min(r[1], l.y0 - 2);
+            r[2] = Math.max(r[2], l.x1 + 2); r[3] = Math.max(r[3], l.y1 + 2);
+            grew = true;
+          }
+        }
+        if (!grew) break;
+        regions = mergeRegions(regions, 0);
+      }
+
+      const contentBoxes = allLines.filter(lineFinite)
+        .map((l) => [l.x0, l.y0, l.x1, l.y1]).concat(tableBboxes);
+      const contentArea = contentBoxes.length
+        ? Math.max(1,
+            (Math.max(...contentBoxes.map((b) => b[2])) - Math.min(...contentBoxes.map((b) => b[0]))) *
+            (Math.max(...contentBoxes.map((b) => b[3])) - Math.min(...contentBoxes.map((b) => b[1]))))
+        : pw * ph;
+      const suspectArea = regions.reduce(
+        (a, r) => a + Math.max(0, r[2] - r[0]) * Math.max(0, r[3] - r[1]), 0);
+
+      if (unplaceable || suspectArea > SUSPECT_PAGE_LIMIT * contentArea) {
+        // last resort: geometry cannot even be bounded, or most of the page
+        // is suspect. Replace everything placed so far with the one thing
+        // guaranteed to look right, the page itself.
+        while (slide._slideObjects && slide._slideObjects.length) slide._slideObjects.pop();
+        const canvas = await renderFull(page, HYBRID_DPI);
+        slide.addImage({ data: canvas.toDataURL("image/png"),
+          x: offX / IN, y: offY / IN, w: pw * scale / IN, h: ph * scale / IN });
+        pr.mode = "image-fallback";
+        pr.tables = 0; pr.images = 0;
+        report.notes = report.notes || [];
+        report.notes.push(`page ${i}: preserved as image for accuracy`);
+        report.pages.push(pr);
+        continue;
+      }
+      if (regions.length) {
+        // render only the suspect regions into the image layer; every clean
+        // span and table stays editable text
+        const full = await renderFull(page, HYBRID_DPI);
+        const z = HYBRID_DPI / 72;
+        for (const rg of regions) {
+          const rx0 = Math.max(0, Math.floor(rg[0] * z));
+          const ry0 = Math.max(0, Math.floor(rg[1] * z));
+          const rx1 = Math.min(full.width, Math.ceil(rg[2] * z));
+          const ry1 = Math.min(full.height, Math.ceil(rg[3] * z));
+          if (rx1 - rx0 < 1 || ry1 - ry0 < 1) continue;
+          const c = document.createElement("canvas");
+          c.width = rx1 - rx0; c.height = ry1 - ry0;
+          c.getContext("2d").drawImage(full, rx0, ry0, c.width, c.height,
+                                       0, 0, c.width, c.height);
+          slide.addImage({ data: c.toDataURL("image/png"),
+            x: (offX + (rx0 / z) * scale) / IN, y: (offY + (ry0 / z) * scale) / IN,
+            w: (c.width / z) * scale / IN, h: (c.height / z) * scale / IN });
+        }
+        pr.mode = "region-fallback";
+        pr.imageRegions = regions.length;
+        report.notes = report.notes || [];
+        report.notes.push(`${regions.length} region${regions.length === 1 ? "" : "s"} ` +
+                          `on page ${i} preserved as image`);
+        textClusters = clusters
+          .map((cl) => cl.filter((l) => !absorbed.has(l)))
+          .filter((cl) => cl.length);
+      }
     }
-    for (const cluster of clusters) {
+    for (const cluster of textClusters) {
       addTextBlock(slide, cluster, scale, offX, offY, fonts);
       pr.textBoxes++;
     }
