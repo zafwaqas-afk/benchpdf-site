@@ -159,6 +159,8 @@ img{max-width:100%; height:auto}
   font-family:var(--mono); font-weight:500; font-size:13px; letter-spacing:.35em;
   text-transform:uppercase; text-decoration:none; color:var(--ink); white-space:nowrap;
 }
+/* The bench glyph: legs sit on the type baseline, ink in both themes. */
+.wm-glyph{display:inline-block; vertical-align:baseline; margin-right:8px; margin-bottom:-1px}
 /* The one moving part of the theme switch: orange in the dark,
    hot pink in the light, crossfading through the toggle. */
 .wordmark .wm-pdf{color:var(--brand); transition:color .28s ease}

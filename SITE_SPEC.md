@@ -20,6 +20,18 @@ lime `#8AE000` mono text, identical in both themes). Lime, tangerine and pink
 appear nowhere else. Theme switch fades colours at 280ms; reduced motion gets
 an instant swap.
 
+**The bench glyph (added 2026-07-21).** The wordmark carries a small workbench
+with a bench vice, drawn as technical line art in the manner of a parts-catalog
+illustration: benchtop, two legs, one stretcher, vice block with handle stub at
+the top right. It is an inline 19x14 SVG (`.wm-glyph`, `stroke="currentColor"`,
+1.3px strokes, square caps, `aria-hidden`) sitting baseline-aligned to the left
+of `benchpdf` in every header and footer wordmark. It inherits ink in both
+themes and never takes an accent colour or a container. The favicon set
+(`favicon.ico` 16+32, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png`)
+derives from the same geometry as solid ink bars on the dark ground `#131519`;
+the 16px sizes drop the stretcher. Regeneration script: the glyph geometry is
+the source of truth in the header SVG markup.
+
 **Uniform voice (2026-07-21):** every page speaks the home page's instrument
 language. Page titles and prose section headings are mono caps labels (titles
 ~15-20px at .16em tracking, section headings 12px at .26em, muted), never
