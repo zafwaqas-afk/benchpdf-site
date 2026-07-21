@@ -121,7 +121,11 @@ export function resolveMetrics(fontName, embedded, styleAscent, styleDescent) {
   if (BASE14[clean]) return BASE14[clean];
   const compact = clean.replace(/[^a-z-]/g, "");
   if (BASE14[compact]) return BASE14[compact];
-  const a = typeof styleAscent === "number" && styleAscent !== 0 ? styleAscent : 0.8;
-  const d = typeof styleDescent === "number" ? styleDescent : -0.2;
+  // pdf.js reports NaN ascent/descent for fonts it has no metrics for
+  // (Type3 fonts always). NaN passes a typeof check and then poisons every
+  // span bbox on the page, which read as degenerate geometry and forced
+  // whole statement pages into image fallback. Finite or fallback, never NaN.
+  const a = Number.isFinite(styleAscent) && styleAscent !== 0 ? styleAscent : 0.8;
+  const d = Number.isFinite(styleDescent) ? styleDescent : -0.2;
   return [a, d];
 }

@@ -70,7 +70,10 @@ async function fontInfo(page, styles, fontName, embeddedMetrics) {
   // classification so the mapper lands on the right family instead of a
   // silent Arial, and say so in the console.
   let name = info.name;
-  if (!name || /^g_d\d+_f\d+$/.test(name)) {
+  // "Type3" is pdf.js's placeholder for Type3 fonts (statement generators'
+  // favourite): no family information at all, so classify like any other
+  // unrecoverable name instead of letting it land on the sans fallback.
+  if (!name || /^g_d\d+_f\d+$/.test(name) || /^type3/i.test(name)) {
     const fam = st.fontFamily || "";
     name = fam.includes("mono") ? "unmappable-mono"
          : fam.includes("serif") && !fam.includes("sans") ? "unmappable-serif"

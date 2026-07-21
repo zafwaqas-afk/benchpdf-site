@@ -216,8 +216,18 @@ function pageConfidence(lines, clusters) {
     }
   }
   const nl = Math.max(lines.length, 1);
-  const bad = (deg + piled) / nl + 0.5 * (unmapped / n) + 0.3 * (sub4 / nl);
-  return { ok: bad <= 0.15 && overlaps <= 5, bad, overlaps };
+  // Font-mapping misses do NOT count toward fallback: an unrecoverable name
+  // maps to a metric-compatible substitute (the engine's one documented
+  // parity gap) and that text is still fully editable. Editability must
+  // never be the price of a substituted font. The count stays in the
+  // breakdown so the report can say what happened.
+  const bad = (deg + piled) / nl + 0.3 * (sub4 / nl);
+  return { ok: bad <= 0.15 && overlaps <= 5, bad, overlaps,
+    // per-signal breakdown: what actually drove the score, for the report
+    // and for the diagnostics harness. Counts, not weights.
+    signals: { lines: lines.length, spans: spans.length, degenerate: deg,
+               piledAtOrigin: piled, sub4pt: sub4, unmappedFonts: unmapped,
+               overlaps } };
 }
 
 /* ---- main entry --------------------------------------------------------- */
@@ -336,6 +346,8 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
     const attached = attachMarkers(looseLines);
     const clusters = clusterLines(attached);
     const conf = pageConfidence(allLines, clusters);
+    pr.confidence = { ok: conf.ok, score: Math.round(conf.bad * 1000) / 1000,
+                      ...conf.signals };
     if (!conf.ok) {
       // untrustworthy geometry: replace everything placed so far with the
       // one thing guaranteed to look right, the page itself
