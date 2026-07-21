@@ -153,6 +153,26 @@ function linesIn(bbox, lines) {
     centerIn(bbox, (ln.bbox[0] + ln.bbox[2]) / 2, (ln.bbox[1] + ln.bbox[3]) / 2));
 }
 
+// Every shape must land inside the slide with a real size. Values outside
+// this are the signature of unresolved geometry, and PowerPoint refuses to
+// open a file containing them.
+// Cell sizes are consistent when each is real and positive and together they
+// stay near the frame they are meant to fill.
+function sizesFit(sizes, extent) {
+  if (!sizes.length) return false;
+  if (sizes.some((v) => !Number.isFinite(v) || v <= 0)) return false;
+  const total = sizes.reduce((a, b) => a + b, 0);
+  return total <= extent * 1.5 + 0.5;
+}
+
+function onSlide(x, y, w, h, slideW, slideH) {
+  const vals = [x, y, w, h];
+  if (vals.some((v) => !Number.isFinite(v))) return false;
+  if (w <= 0.01 || h <= 0.01) return false;
+  if (w > slideW * 4 || h > slideH * 4) return false;
+  return x > -slideW && y > -slideH && x < slideW * 2 && y < slideH * 2;
+}
+
 function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, offY, fonts) {
   const nrows = table.row_count, ncols = table.col_count;
   if (nrows < 1 || ncols < 1) return false;
@@ -211,13 +231,27 @@ function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, of
     rows.push(row);
   }
 
-  slide.addTable(rows, {
-    x: (offX + bx0 * scale) / IN,
-    y: (offY + by0 * scale) / IN,
-    w: (bx1 - bx0) * scale / IN,
-    h: (by1 - by0) * scale / IN,
-    colW, rowH,
-  });
+  // A degenerate bbox (a table inferred from spans whose geometry did not
+  // resolve) once produced an offset of -209,031,840,000 inches, and
+  // PowerPoint calls the whole deck corrupt rather than ignoring the shape.
+  // Anything that cannot sit on the slide does not ship as a table.
+  const tx = (offX + bx0 * scale) / IN;
+  const ty = (offY + by0 * scale) / IN;
+  const tw = (bx1 - bx0) * scale / IN;
+  const th = (by1 - by0) * scale / IN;
+  // cw/ch arrive as sample-canvas pixels, so derive the real slide box
+  // from the page geometry the caller already scaled.
+  const slideW = (offX * 2 + (bx1 - bx0) * scale) / IN + 12;
+  const slideH = slideW * 2;
+  if (!onSlide(tx, ty, tw, th, slideW, slideH)) return false;
+  // Row heights and column widths must add up to the frame the caller
+  // computed. When they do not, the cell geometry never resolved: a page-wide
+  // grid whose rows total 30in inside an 11in frame is the signature, and
+  // pptxgenjs lays it out at an offset PowerPoint calls corrupt rather than
+  // ignoring. Two SEC filings in the corpus failed exactly this way.
+  if (!sizesFit(colW, tw) || !sizesFit(rowH, th)) return false;
+
+  slide.addTable(rows, { x: tx, y: ty, w: tw, h: th, colW, rowH });
   return true;
 }
 
