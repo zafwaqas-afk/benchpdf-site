@@ -281,7 +281,11 @@ export async function extractLines(page, opList, embeddedMetrics) {
     // from both str and width. MuPDF keeps them: in the text AND as advance in
     // the span bbox. Restore both from the op-list glyph data.
     let x1 = x + it.width;
-    let text = it.str;
+    // Strip what XML forbids outright: C0 controls apart from tab, newline
+    // and carriage return, the non-characters, and the lone surrogates a bad
+    // ToUnicode map can yield. PowerPoint refuses to open a deck containing
+    // them, and three real-world corpus PDFs produced exactly that.
+    let text = stripUnxmlable(it.str);
     if (it._trail > 0 && !/\s$/.test(text)) {
       x1 += it._trail * size;
       text += " ";
@@ -771,4 +775,10 @@ export function sampleFill(ctx, bbox, z, canvasW, canvasH) {
   }
   const med = (idx) => samples.map((s) => s[idx]).sort((a, b) => a - b)[Math.floor(samples.length / 2)];
   return [med(0), med(1), med(2)];
+}
+
+// XML 1.0 rejects these outright; a PPTX carrying one will not open.
+const UNXMLABLE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
+export function stripUnxmlable(str) {
+  return typeof str === "string" ? str.replace(UNXMLABLE, "") : str;
 }
