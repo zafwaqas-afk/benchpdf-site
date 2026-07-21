@@ -474,7 +474,7 @@ a.conv-badge:hover{
 .file-name{font-family:var(--mono); font-size:13px; overflow:hidden; text-overflow:ellipsis;
   white-space:nowrap; max-width:42ch}
 .file-size{font-family:var(--mono); font-size:11px; color:var(--muted)}
-.action-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:8px; margin-top:20px}
+.action-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; margin-top:22px}
 .action{
   display:flex; flex-direction:column; align-items:flex-start; gap:5px; text-align:left;
   background:var(--tile); border:2px solid var(--hairline);
@@ -484,7 +484,7 @@ a.conv-badge:hover{
 .action:hover{border-color:var(--ink)}
 .action-label{font-family:var(--grotesk); font-weight:500; font-size:14.5px; letter-spacing:-.005em}
 .action-desc{font-size:12px; color:var(--muted); line-height:1.5}
-.action-extra{display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--muted)}
+.action-extra{display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-size:13px; color:var(--muted); margin-top:16px}
 .action-extra select{
   font-family:var(--mono); font-size:12px; color:var(--ink); background:transparent;
   border:1px solid var(--hairline); padding:8px 12px; cursor:pointer;
