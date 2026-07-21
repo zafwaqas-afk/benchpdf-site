@@ -176,6 +176,17 @@ through PowerPoint itself. The engine lazy-loads on first conversion (2.6 MB,
 mostly the pdf.js worker); page load fetches none of it. The one documented
 parity gap: the browser maps fonts to metric-compatible equivalents from a
 fixed table, because it cannot see the fonts installed on the visitor's PC.
+On 2026-07-21 the per-page image fallback became region-level: when extraction
+geometry is untrustworthy the engine bounds the suspect elements and preserves
+only those regions as image, keeping every clean span and table editable; a
+whole page ships as image only when the suspect regions cover more than 40% of
+its content area (report note: "1 region on page 1 preserved as image"). Font
+substitution never triggers fallback, because a metric-compatible substitute is
+still editable text. The same change fixed the statement class that used to
+lose whole pages to the fallback: pdf.js reports NaN metrics for Type3 fonts
+and the NaN poisoned every span bbox on the page
+(tests/js_engine/region_fallback_verify.py holds the class to 90%+ editable
+characters).
 
 ### The interstitial
 
