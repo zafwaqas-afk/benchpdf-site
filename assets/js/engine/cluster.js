@@ -46,9 +46,25 @@ export function isMarker(line) {
   return true;
 }
 
+// A list whose markers were never separate glyph runs. Bank of England
+// reports draw each item as one line already reading " Andrew Bailey,
+// Chair": there is no marker line for attachMarkers to find, so nothing
+// flagged the item as a list item, and nine evenly-leaded bullets clustered
+// into ONE paragraph and reflowed onto two lines. A line that opens with a
+// bullet glyph and a space is a list item however the marker got there.
+export function startsWithMarker(line) {
+  const txt = line.spans.map((s) => s.text || "").join("");
+  const m = /^\s*(\S)\s/.exec(txt);
+  if (!m) return false;
+  const c = m[1];
+  const code = c.codePointAt(0);
+  return BULLET_LIKE.has(c) || (code >= 0xF000 && code <= 0xF0FF);
+}
+
 export function attachMarkers(lines) {
   const markers = lines.filter(isMarker);
   const texts = lines.filter((l) => !isMarker(l));
+  for (const t of texts) if (startsWithMarker(t)) t.bullet = true;
   for (const m of markers) {
     const mcy = (m.y0 + m.y1) / 2;
     let best = null, bestD = 1e9;
