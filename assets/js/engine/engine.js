@@ -35,6 +35,9 @@ const ART_JOIN_PT = 8;         // art this close belongs to one picture
 const ART_MAX_REGIONS = 24;    // a page of scattered paths is a hybrid, not this
 const PAGE_FURNITURE_COVERAGE = 0.85;  // a grid this big is the page itself
 const PAGE_FURNITURE_MIN_CELLS = 12;   // unless it has the cells of a real table
+const PROSE_CELL_CHARS = 300;      // a cell holding this much text holds a paragraph
+const MIN_TABULAR_CELLS = 2;       // one populated cell states no relationship
+const PROSE_MAX_TEXT_CELLS = 3;    // ... and neither does a paragraph plus a label
 
 const IN = 72;   // points per inch; PptxGenJS speaks inches
 
@@ -219,6 +222,33 @@ export function tablePlaceable(table, scale, offX, offY, pageW, pageH) {
   const slideW = (offX * 2 + (bx1 - bx0) * scale) / IN + 12;
   return onSlide(tx, ty, tw, th, slideW, slideW * 2)
       && sizesFit(colW, tw) && sizesFit(rowH, th);
+}
+
+// A bordered callout is not a table. Judged on cell CONTENT, so it applies to
+// every table however it was detected: a govuk guidance page shipped a ruled
+// 2x2 holding one 1,600-character paragraph in one cell, two cells empty and
+// the page number in the last. It is a box drawn around prose, and inside a
+// native table that prose reflows into a column the width of one cell.
+// A table earns its cells by using them: two of them must carry text, and a
+// cell-sized paragraph is only tabular when enough other cells answer it.
+export function tableCellsTabular(table, lines) {
+  const cells = [];
+  for (const row of table.rows || []) {
+    for (const cb of row.cells || []) if (cb) cells.push(cb);
+  }
+  if (!cells.length) return false;
+  const lens = cells.map((cb) => {
+    let n = 0;
+    for (const ln of lines) {
+      if (!centerIn(cb, (ln.bbox[0] + ln.bbox[2]) / 2, (ln.bbox[1] + ln.bbox[3]) / 2)) continue;
+      for (const s of ln.spans) n += s.text.trim().length;
+    }
+    return n;
+  });
+  const textCells = lens.filter((n) => n > 0).length;
+  if (textCells < MIN_TABULAR_CELLS) return false;
+  if (textCells <= PROSE_MAX_TEXT_CELLS && Math.max(...lens) >= PROSE_CELL_CHARS) return false;
+  return true;
 }
 
 function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, offY, fonts) {
@@ -548,12 +578,16 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
     // beside it: one shipped as a table over a two-column guidance page.
     let tables = ruled.concat(
       inferred.filter((t) => t.row_count >= 3 && t.col_count >= 2));
-    // A table that cannot be placed is not a table for any purpose: its
-    // region must keep flowing through the text and background paths, or the
-    // page ships blank. Two SEC covers did exactly that once.
-    const rejected = tables.filter((t) => !tablePlaceable(t, scale, offX, offY, pw, ph));
+    // A table that cannot be placed (two SEC covers shipped blank pages once),
+    // or whose cells hold prose rather than
+    // tabular content, is not a table for any purpose: its region must keep
+    // flowing through the text and background paths (the border ships as
+    // background pixels, the prose as ordinary text boxes).
+    const keep = (t) => tablePlaceable(t, scale, offX, offY, pw, ph)
+                     && tableCellsTabular(t, allLines);
+    const rejected = tables.filter((t) => !keep(t));
     if (rejected.length) {
-      tables = tables.filter((t) => tablePlaceable(t, scale, offX, offY, pw, ph));
+      tables = tables.filter(keep);
       pr.tablesRejected = rejected.length;
     }
     const tableBboxes = tables.map((t) => t.bbox);
