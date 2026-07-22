@@ -147,9 +147,14 @@ function paragraphRuns(paraLines, fonts, align, spaceBefore = 0) {
       // join wrapped lines with a single space - never a separator character
       runs.push({ text: " ", options: styleRun({ ...ln.spans[0] }, fonts) });
     }
-    // each source line keeps its own width, so PowerPoint re-breaks the
-    // paragraph where the source broke it
-    const track = lineTracking(ln, fonts, ln.x1 - ln.x0);
+    // Only lines that actually WRAPPED are tracked, which is every line of
+    // the paragraph but its last. A line that ended because the paragraph
+    // ended - a list item, a closing line - never broke, gains nothing from
+    // being restored to its width, and only picks up distorted letter
+    // spacing. Tracking every line cost boe_mpr_2025_08 p3 0.108 and
+    // w3c_svg10_2001 0.021 of mean while helping the prose pages.
+    const wrapped = li < paraLines.length - 1;
+    const track = wrapped ? lineTracking(ln, fonts, ln.x1 - ln.x0) : 0;
     for (const sp of ln.spans) {
       const opts = styleRun(sp, fonts);
       if (track) opts.charSpacing = track;
