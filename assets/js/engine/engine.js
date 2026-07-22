@@ -173,6 +173,35 @@ function onSlide(x, y, w, h, slideW, slideH) {
   return x > -slideW && y > -slideH && x < slideW * 2 && y < slideH * 2;
 }
 
+// Can this table be placed as a native table at all? Judged before the page
+// treats its region as one, because a region that is not going to ship as a
+// table must fall back to text and pixels rather than vanish.
+export function tablePlaceable(table, scale, offX, offY) {
+  const nrows = table.row_count, ncols = table.col_count;
+  if (nrows < 1 || ncols < 1) return false;
+  const [bx0, by0, bx1, by1] = table.bbox;
+  const row0 = (table.rows[0] || {}).cells || [];
+  const colW = [];
+  for (let ci = 0; ci < ncols; ci++) {
+    const cb = row0[ci];
+    colW.push(cb ? Math.max((cb[2] - cb[0]) * scale / IN, 0.01)
+                 : ((bx1 - bx0) / ncols) * scale / IN);
+  }
+  const rowH = [];
+  for (let ri = 0; ri < nrows; ri++) {
+    const rcells = ((table.rows[ri] || {}).cells || []).filter(Boolean);
+    const rh = rcells.length
+      ? Math.max(...rcells.map((c) => c[3])) - Math.min(...rcells.map((c) => c[1]))
+      : (by1 - by0) / nrows;
+    rowH.push(Math.max(rh * scale / IN, 0.02));
+  }
+  const tx = (offX + bx0 * scale) / IN, ty = (offY + by0 * scale) / IN;
+  const tw = (bx1 - bx0) * scale / IN, th = (by1 - by0) * scale / IN;
+  const slideW = (offX * 2 + (bx1 - bx0) * scale) / IN + 12;
+  return onSlide(tx, ty, tw, th, slideW, slideW * 2)
+      && sizesFit(colW, tw) && sizesFit(rowH, th);
+}
+
 function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, offY, fonts) {
   const nrows = table.row_count, ncols = table.col_count;
   if (nrows < 1 || ncols < 1) return false;
@@ -448,7 +477,15 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
     // Unruled tables (statement ledgers without ruling lines) are recovered
     // from column alignment and emitted native like any other table.
     const inferred = inferAlignedTables(allLines, ruled.map((t) => t.bbox));
-    const tables = ruled.concat(inferred);
+    let tables = ruled.concat(inferred);
+    // A table that cannot be placed is not a table for any purpose: its
+    // region must keep flowing through the text and background paths, or the
+    // page ships blank. Two SEC covers did exactly that once.
+    const rejected = tables.filter((t) => !tablePlaceable(t, scale, offX, offY));
+    if (rejected.length) {
+      tables = tables.filter((t) => tablePlaceable(t, scale, offX, offY));
+      pr.tablesRejected = rejected.length;
+    }
     const tableBboxes = tables.map((t) => t.bbox);
 
     const looseLines = allLines.filter((ln) =>
