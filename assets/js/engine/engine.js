@@ -63,7 +63,7 @@ function styleRun(span, fonts) {
   };
 }
 
-function paragraphRuns(paraLines, fonts, align) {
+function paragraphRuns(paraLines, fonts, align, spaceBefore = 0) {
   const runs = [];
   let prevText = "";
   for (let li = 0; li < paraLines.length; li++) {
@@ -83,7 +83,9 @@ function paragraphRuns(paraLines, fonts, align) {
       options: { ...last, breakLine: true } };
   }
   if (align) for (const r of runs) r.options.align = align;
-  for (const r of runs) { r.options.paraSpaceBefore = 0; r.options.paraSpaceAfter = 0; }
+  // every run carries it: PptxGenJS emits an a:pPr per run, not per
+  // paragraph, so the value must be the same on all of them
+  for (const r of runs) { r.options.paraSpaceBefore = spaceBefore; r.options.paraSpaceAfter = 0; }
   return runs;
 }
 
@@ -126,6 +128,26 @@ function sourceLeading(cluster) {
   const size = Math.max(...cluster.map((l) => l.size || 0), 1);
   if (med < size * 0.9 || med > size * 2.5) return 0;
   return med;
+}
+
+/* The air the source leaves above each paragraph, in points.
+ *
+ * A block used to emit its paragraphs hard against each other, because
+ * paraSpaceBefore was pinned to zero. Documents separate paragraphs with a
+ * blank line: the SEC chairman's letter (the corpus's worst page) leaves
+ * about half a line above each one, and without it the whole column runs
+ * together and ends short. What the source leaves is whatever exceeds the
+ * block's own leading, so it is only readable once that leading is known.
+ */
+function paragraphGaps(paras, lead) {
+  const gaps = paras.map(() => 0);
+  if (!lead) return gaps;
+  for (let i = 1; i < paras.length; i++) {
+    const prev = paras[i - 1][paras[i - 1].length - 1];
+    const extra = paras[i][0].y0 - prev.y0 - lead;
+    gaps[i] = extra > 0.5 ? extra : 0;
+  }
+  return gaps;
 }
 
 /* Where each paragraph sits inside its block, in points from the block's left
@@ -181,7 +203,10 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode, ind
     }
   } else {
     const paras = splitParagraphs(cluster);
-    for (const para of paras) runs.push(...paragraphRuns(para, fonts, align));
+    const gaps = paragraphGaps(paras, sourceLeading(cluster));
+    for (let pi = 0; pi < paras.length; pi++) {
+      runs.push(...paragraphRuns(paras[pi], fonts, align, gaps[pi] * scale));
+    }
     indents = paragraphIndents(paras, x0);
   }
 
