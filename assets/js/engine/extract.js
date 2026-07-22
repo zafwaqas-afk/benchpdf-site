@@ -680,6 +680,9 @@ function glyphOutlineOpIndices(opList, textLines, pageH, pageArea) {
   return kill;
 }
 
+// A blanking rectangle bigger than this is covering the page, not a table.
+const WHITE_RECT_MAX_COVERAGE = 0.6;
+
 export async function renderBackground(page, opList, dpi, whiteRects = [], textLines = []) {
   // render() replays the operator list cached under the DISPLAY intent, which
   // is a different cache entry from the one getOperatorList() returns. Warm
@@ -735,9 +738,18 @@ export async function renderBackground(page, opList, dpi, whiteRects = [], textL
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    // These rectangles blank the regions that ship as native tables, so a
+    // table is not painted twice. A rectangle that covers the page is not a
+    // table region in any useful sense: honouring one erased an entire
+    // background, taking the page's colour and the HMRC crest with it and
+    // leaving 2.3 million white pixels. Skip anything that large.
     ctx.fillStyle = "#FFFFFF";
+    const pageArea = canvas.width * canvas.height;
     for (const r of whiteRects) {
-      ctx.fillRect(r[0] * scale, r[1] * scale, (r[2] - r[0]) * scale, (r[3] - r[1]) * scale);
+      const x = r[0] * scale, y = r[1] * scale;
+      const w = (r[2] - r[0]) * scale, h = (r[3] - r[1]) * scale;
+      if (w * h > WHITE_RECT_MAX_COVERAGE * pageArea) continue;
+      ctx.fillRect(x, y, w, h);
     }
     return canvas;
   } finally {
