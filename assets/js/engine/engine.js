@@ -23,7 +23,8 @@ import { initOps, extractLines, extractVectors, renderBackground, renderFull, sa
   from "./extract.js";
 import { embeddedFontMetrics } from "./fontmetrics.js";
 import { FontMapper, FLAG_ITALIC, FLAG_BOLD } from "./fonts.js";
-import { attachMarkers, clusterLines, splitParagraphs, lineAlignment } from "./cluster.js";
+import { attachMarkers, clusterLines, clusterLinesByColumn, splitParagraphs,
+         lineAlignment } from "./cluster.js";
 import { detectTables, inferAlignedTables } from "./tables.js";
 
 const HYBRID_DPI = 200;
@@ -542,7 +543,11 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
     // Unruled tables (statement ledgers without ruling lines) are recovered
     // from column alignment and emitted native like any other table.
     const inferred = inferAlignedTables(allLines, ruled.map((t) => t.bbox));
-    let tables = ruled.concat(inferred);
+    // An inferred grid needs the shape of a real table. Two rows by two
+    // columns, half of it empty, is a column of prose with a page number
+    // beside it: one shipped as a table over a two-column guidance page.
+    let tables = ruled.concat(
+      inferred.filter((t) => t.row_count >= 3 && t.col_count >= 2));
     // A table that cannot be placed is not a table for any purpose: its
     // region must keep flowing through the text and background paths, or the
     // page ships blank. Two SEC covers did exactly that once.
@@ -645,7 +650,7 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
 
     // ---- loose text as logical blocks, confidence permitting ----
     const attached = attachMarkers(looseLines);
-    const clusters = clusterLines(attached);
+    const clusters = clusterLinesByColumn(attached, pw);
     const conf = pageConfidence(allLines, clusters);
     pr.confidence = { ok: conf.ok, score: Math.round(conf.bad * 1000) / 1000,
                       ...conf.signals };

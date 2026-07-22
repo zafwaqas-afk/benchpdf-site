@@ -12,6 +12,10 @@ export const LEFT_TOLERANCE = 0.16;
 // block or a table column, not a paragraph start.
 export const INDENT_MIN_EM = 0.35;
 export const INDENT_MAX_EM = 4.0;
+// A strip this wide that no line crosses is a column gutter.
+export const GUTTER_MIN_PT = 18;
+export const COLUMN_MIN_LINES = 12;
+export const COLUMN_MIN_LINES_PER_BAND = 4;
 
 const FLAG_BOLD = 1 << 4;
 
@@ -67,6 +71,68 @@ export function attachMarkers(lines) {
     }
   }
   return texts;
+}
+
+/* Column bands.
+ *
+ * A two-column page clustered as one column produces blocks whose box spans
+ * both columns, so the left column re-wraps at full width and overprints the
+ * right. Find the gutters, the vertical strips no line crosses, and cluster
+ * inside each band instead.
+ *
+ * Returns null when the page is a single column, when a candidate band holds
+ * too little text to be a column, or when there is too little text on the
+ * page to judge: a centred heading over a short paragraph must not read as
+ * two columns.
+ */
+export function columnBands(lines, pageW) {
+  if (!pageW || lines.length < COLUMN_MIN_LINES) return null;
+  const BIN = 4;
+  const bins = new Array(Math.max(1, Math.ceil(pageW / BIN))).fill(0);
+  for (const ln of lines) {
+    const a = Math.max(0, Math.floor(ln.x0 / BIN));
+    const b = Math.min(bins.length - 1, Math.ceil(ln.x1 / BIN));
+    for (let i = a; i <= b; i++) bins[i]++;
+  }
+  const cuts = [];
+  let run = 0;
+  for (let i = 0; i <= bins.length; i++) {
+    const empty = i < bins.length && bins[i] === 0;
+    if (empty) { run++; continue; }
+    if (run * BIN >= GUTTER_MIN_PT) {
+      const x0 = (i - run) * BIN, x1 = i * BIN;
+      // a gutter at the page edge is a margin, not a column break
+      if (x0 > pageW * 0.15 && x1 < pageW * 0.85) cuts.push((x0 + x1) / 2);
+    }
+    run = 0;
+  }
+  if (!cuts.length) return null;
+  const edges = [0, ...cuts, pageW];
+  const bands = [];
+  for (let i = 0; i < edges.length - 1; i++) bands.push([edges[i], edges[i + 1]]);
+  for (const b of bands) {
+    const n = lines.filter((l) => {
+      const c = (l.x0 + l.x1) / 2;
+      return c >= b[0] && c < b[1];
+    }).length;
+    if (n < COLUMN_MIN_LINES_PER_BAND) return null;
+  }
+  return bands;
+}
+
+/* Cluster within columns when the page has them, across the page when not. */
+export function clusterLinesByColumn(lines, pageW) {
+  const bands = columnBands(lines, pageW);
+  if (!bands) return clusterLines(lines);
+  const out = [];
+  for (const b of bands) {
+    const inBand = lines.filter((l) => {
+      const c = (l.x0 + l.x1) / 2;
+      return c >= b[0] && c < b[1];
+    });
+    if (inBand.length) out.push(...clusterLines(inBand));
+  }
+  return out;
 }
 
 export function clusterLines(lines) {
