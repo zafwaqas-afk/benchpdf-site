@@ -441,6 +441,8 @@ page markup):
 | Element | String |
 |---|---|
 | Actions heading | `What would you like to do?` |
+| Slide text label | `Slide text:` |
+| Slide text options | `Reflowing paragraphs` (default) / `Same line breaks as the PDF` |
 | Change file | `Choose a different file` |
 | Working | `Getting ready` |
 | Done heading | `Your file is ready` |

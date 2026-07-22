@@ -95,7 +95,7 @@ function longestWordWidth(cluster) {
   return maxW;
 }
 
-function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW) {
+function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode) {
   const x0 = Math.min(...cluster.map((c) => c.x0));
   const y0 = Math.min(...cluster.map((c) => c.y0));
   const x1 = Math.max(...cluster.map((c) => c.x1));
@@ -107,10 +107,13 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW) {
     .filter(Boolean).length;
   // Short header blocks ("END OF DAY / ACCOUNT BALANCE") must never re-wrap:
   // keep the source's own line breaks and switch wrapping off entirely.
-  const noWrapShort = cluster.length > 1 && words <= NOWRAP_MAX_WORDS;
+  // Layout mode extends that promise to every block: a substituted font sets
+  // its own line breaks otherwise, and the page stops matching the original.
+  const keepBreaks = cluster.length > 1
+    && (mode === "layout" || words <= NOWRAP_MAX_WORDS);
 
   const runs = [];
-  if (noWrapShort) {
+  if (keepBreaks) {
     for (const ln of cluster) {
       for (let si = 0; si < ln.spans.length; si++) {
         const sp = ln.spans[si];
@@ -126,7 +129,7 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW) {
     for (const para of paras) runs.push(...paragraphRuns(para, fonts, align));
   }
 
-  const wrap = cluster.length > 1 && !noWrapShort;
+  const wrap = cluster.length > 1 && !keepBreaks;
   // a wrapping box must at minimum fit its longest word, or PowerPoint breaks
   // mid-word; cap at the page's right edge
   let wPt = Math.max(x1 - x0, 1);
@@ -415,14 +418,18 @@ function mergeRegions(boxes, pad = 2) {
 }
 
 /* ---- main entry --------------------------------------------------------- */
-export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
+export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
+                                       opts = {}) {
+  // "flow" keeps paragraphs reflowing for editing; "layout" keeps the
+  // source's line breaks so the page matches the original.
+  const mode = opts.mode === "layout" ? "layout" : "flow";
   const { pdfjs, PptxGenJS, PDFLib } = deps;
   initOps(pdfjs);
 
   const metrics = await embeddedFontMetrics(bytes.slice(0), PDFLib);
   const doc = await pdfjs.getDocument({ data: bytes.slice(0) }).promise;
   const fonts = new FontMapper();
-  const report = { pageCount: doc.numPages, pages: [], scannedWarning: false };
+  const report = { pageCount: doc.numPages, pages: [], scannedWarning: false, textMode: mode };
 
   const first = await doc.getPage(1);
   const vp1 = first.getViewport({ scale: 1 });
@@ -647,7 +654,7 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {}) {
       }
     }
     for (const cluster of textClusters) {
-      addTextBlock(slide, cluster, scale, offX, offY, fonts, pw);
+      addTextBlock(slide, cluster, scale, offX, offY, fonts, pw, mode);
       pr.textBoxes++;
     }
     report.pages.push(pr);

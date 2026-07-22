@@ -53,6 +53,10 @@ const actSize = document.getElementById("act-size");
 const actCancel = document.getElementById("act-cancel");
 const actionList = document.getElementById("action-list");
 const actionExtra = document.getElementById("action-extra");
+// How PowerPoint text is laid out: "flow" lets paragraphs re-wrap so they
+// are comfortable to edit, "layout" keeps the source's own line breaks so
+// the slide matches the page it came from.
+let textMode = "flow";
 const workPhase = document.getElementById("work-phase");
 const doneNotice = document.getElementById("done-notice");
 const doneNoticeText = document.getElementById("done-notice-text");
@@ -189,6 +193,14 @@ function renderActions(kind, files) {
 
     actionExtra.hidden = false;
     actionExtra.innerHTML = "";
+    const txtLabel = document.createElement("span");
+    txtLabel.textContent = "Slide text:";
+    const txtSel = document.createElement("select");
+    txtSel.setAttribute("aria-label", "How slide text is laid out");
+    txtSel.innerHTML = '<option value="flow">Reflowing paragraphs</option>'
+                     + '<option value="layout">Same line breaks as the PDF</option>';
+    txtSel.addEventListener("change", () => (textMode = txtSel.value));
+
     const label = document.createElement("span");
     label.textContent = "Image settings:";
     const fmtSel = document.createElement("select");
@@ -197,7 +209,7 @@ function renderActions(kind, files) {
     const dpiSel = document.createElement("select");
     dpiSel.innerHTML = '<option value="96">96 DPI</option><option value="150" selected>150 DPI</option><option value="300">300 DPI</option>';
     dpiSel.addEventListener("change", () => (imageDpi = parseInt(dpiSel.value, 10)));
-    actionExtra.append(label, fmtSel, dpiSel);
+    actionExtra.append(txtLabel, txtSel, label, fmtSel, dpiSel);
   } else if (kind === "images") {
     actType.textContent = "Images";
     actName.textContent = files.length === 1 ? files[0].name : `${files.length} images`;
@@ -248,7 +260,7 @@ async function runPptx(file) {
     const { blob, report } = await eng.convertPdfToPptx(bytes, {
       pdfjs: pdfjsLib, PptxGenJS: window.PptxGenJS,
       PDFLib: window.PDFLib, JSZip: window.JSZip,
-    }, (done, total, msg) => (workPhase.textContent = msg));
+    }, (done, total, msg) => (workPhase.textContent = msg), { mode: textMode });
     const note = report && report.notes && report.notes.length
       ? report.notes.join(". ") + "." : null;
     showDone(blob, baseName(file.name) + ".pptx", note);
