@@ -136,7 +136,21 @@ export function columnBands(lines, pageW) {
   return bands;
 }
 
-/* Cluster within columns when the page has them, across the page when not. */
+/* Cluster within columns when the page has them, across the page when not.
+ *
+ * PARKED on 2026-07-22: correct in principle, and engine.js does not call it.
+ * Measured on a clean corpus cache it cost 0.056 of synthetic median
+ * (0.7131 -> 0.6567) and bought nothing: it fires on 1 of 134 real pages, and
+ * every real score is identical to four decimals with it off.
+ *
+ * The cost is not in this function. Clustering a column correctly produces one
+ * multi-line block, and a multi-line block REFLOWS; the substituted font runs
+ * wider than the source, so it wraps at different points and the column
+ * drifts. Interleaved single-line clusters used to preserve the source's line
+ * breaks by accident. Re-wire this once a reflowed block reproduces the
+ * source's line breaks - size the box to its longest SOURCE LINE in the
+ * substituted font, not just its longest word.
+ */
 export function clusterLinesByColumn(lines, pageW) {
   const bands = columnBands(lines, pageW);
   if (!bands) return clusterLines(lines);

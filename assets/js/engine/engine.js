@@ -23,7 +23,7 @@ import { initOps, extractLines, extractVectors, renderBackground, renderFull, sa
   from "./extract.js";
 import { embeddedFontMetrics } from "./fontmetrics.js";
 import { FontMapper, FLAG_ITALIC, FLAG_BOLD } from "./fonts.js";
-import { attachMarkers, clusterLines, clusterLinesByColumn, splitParagraphs,
+import { attachMarkers, clusterLines, splitParagraphs,
          lineAlignment } from "./cluster.js";
 import { detectTables, inferAlignedTables } from "./tables.js";
 
@@ -684,7 +684,11 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
 
     // ---- loose text as logical blocks, confidence permitting ----
     const attached = attachMarkers(looseLines);
-    const clusters = clusterLinesByColumn(attached, pw);
+    // Column-aware clustering is parked, not deleted: see clusterLinesByColumn.
+    // It is correct in principle and costs 0.056 of synthetic median today,
+    // because a correctly clustered column REFLOWS and a reflowed column does
+    // not reproduce the source's line breaks. Re-wire it once it does.
+    const clusters = clusterLines(attached);
     const conf = pageConfidence(allLines, clusters);
     pr.confidence = { ok: conf.ok, score: Math.round(conf.bad * 1000) / 1000,
                       ...conf.signals };
