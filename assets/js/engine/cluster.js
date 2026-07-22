@@ -35,15 +35,56 @@ export function lineAlignment(lines, regionX0, regionX1) {
 const BULLET_LIKE = new Set(["•", "◦", "‣", "·", "∙",
                              "▪", "▫", "◾", "-", "‐", "*"]);
 
+// A lone glyph from a dingbat font counts whatever its code point: the whole
+// font is ornaments, and a detached ZapfDingbats "H" is a hollow circle.
 export function isMarker(line) {
   const txt = line.spans.map((s) => s.text || "").join("").trim();
   if (!txt || txt.length > 2) return false;
   if ((line.x1 - line.x0) > 14) return false;
+  const inked = line.spans.filter((s) => (s.text || "").trim());
+  if (inked.length && inked.every((s) => fontIsDingbat(s.font))) return true;
   for (const c of txt) {
     const code = c.codePointAt(0);
     if (!(BULLET_LIKE.has(c) || (code >= 0xF000 && code <= 0xF0FF))) return false;
   }
   return true;
+}
+
+/* A bullet is not a character, it is a character in a dingbat font.
+ *
+ * The W3C WCAG working draft sets every list marker as a 7pt ZapfDingbats
+ * "H", which draws a hollow circle; the outer level uses "G". Nothing about
+ * the code point says "bullet" - it is an ASCII letter - so every code-point
+ * test missed it, the table of contents clustered into ONE paragraph, and 25
+ * entries reflowed into a block of prose. It was the corpus's worst page.
+ *
+ * A whole dingbat font is ornaments, so any lone glyph from one leads a list
+ * item. Symbol fonts are NOT: they carry Greek and maths, and arXiv papers
+ * open lines with them, so a Symbol glyph must still look like a bullet
+ * (Bank of England's markers are U+F0B7 in SymbolMT).
+ */
+const DINGBAT_FONTS = ["zapfdingbats", "dingbat", "wingding", "webding"];
+
+function fontIsDingbat(name) {
+  const n = (name || "").toLowerCase();
+  return DINGBAT_FONTS.some((d) => n.includes(d));
+}
+
+function bulletShaped(glyph) {
+  const code = glyph.codePointAt(0);
+  return BULLET_LIKE.has(glyph) || (code >= 0xF000 && code <= 0xF0FF);
+}
+
+// Index of a leading marker span, or -1. The marker must be a lone glyph with
+// real text after it, or it is a drop cap or a maths run, not a list item.
+export function leadingMarkerSpan(line) {
+  const spans = line.spans || [];
+  if (spans.length < 2) return -1;
+  const glyph = (spans[0].text || "").trim();
+  if ([...glyph].length !== 1) return -1;
+  if (!spans.slice(1).some((s) => (s.text || "").trim())) return -1;
+  if (fontIsDingbat(spans[0].font)) return 0;
+  return bulletShaped(glyph) ? 0 : -1;
 }
 
 // A list whose markers were never separate glyph runs. Bank of England
@@ -64,7 +105,23 @@ export function startsWithMarker(line) {
 export function attachMarkers(lines) {
   const markers = lines.filter(isMarker);
   const texts = lines.filter((l) => !isMarker(l));
-  for (const t of texts) if (startsWithMarker(t)) t.bullet = true;
+  for (const t of texts) {
+    const mi = leadingMarkerSpan(t);
+    if (mi >= 0) {
+      // Normalise the marker to a real bullet at the text's own size. Left
+      // alone, a 7pt ZapfDingbats "H" maps to a substituted font and ships as
+      // a tiny letter H beside every list item.
+      const after = t.spans.slice(mi + 1);
+      const body = after.find((s) => (s.text || "").trim()) || after[0];
+      t.spans = [{
+        text: "• ", font: body.font || "", size: t.size,
+        flags: (body.flags | 0) & ~FLAG_BOLD, color: body.color || 0,
+      }, ...after];
+      t.bullet = true;
+    } else if (startsWithMarker(t)) {
+      t.bullet = true;
+    }
+  }
   for (const m of markers) {
     const mcy = (m.y0 + m.y1) / 2;
     let best = null, bestD = 1e9;
