@@ -32,6 +32,8 @@ const NONTABLE_ART_COVERAGE = 0.03;
 const ART_MIN_PT = 3;          // smaller than this is a hairline artefact
 const ART_JOIN_PT = 8;         // art this close belongs to one picture
 const ART_MAX_REGIONS = 24;    // a page of scattered paths is a hybrid, not this
+const PAGE_FURNITURE_COVERAGE = 0.85;  // a grid this big is the page itself
+const PAGE_FURNITURE_MIN_CELLS = 12;   // unless it has the cells of a real table
 
 const IN = 72;   // points per inch; PptxGenJS speaks inches
 
@@ -182,7 +184,17 @@ function onSlide(x, y, w, h, slideW, slideH) {
 // Can this table be placed as a native table at all? Judged before the page
 // treats its region as one, because a region that is not going to ship as a
 // table must fall back to text and pixels rather than vanish.
-export function tablePlaceable(table, scale, offX, offY) {
+export function tablePlaceable(table, scale, offX, offY, pageW, pageH) {
+  // A grid that covers the page with barely any cells is the page's own
+  // background rectangles, not a table. One shipped as a 2x1 table with a
+  // solid fill across the whole slide, painting over the background picture
+  // and hiding the HMRC crest underneath it.
+  if (pageW && pageH) {
+    const [ax0, ay0, ax1, ay1] = table.bbox;
+    const coverage = Math.abs((ax1 - ax0) * (ay1 - ay0)) / Math.abs(pageW * pageH);
+    const cells = (table.row_count || 0) * (table.col_count || 0);
+    if (coverage > PAGE_FURNITURE_COVERAGE && cells < PAGE_FURNITURE_MIN_CELLS) return false;
+  }
   const nrows = table.row_count, ncols = table.col_count;
   if (nrows < 1 || ncols < 1) return false;
   const [bx0, by0, bx1, by1] = table.bbox;
@@ -534,9 +546,9 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
     // A table that cannot be placed is not a table for any purpose: its
     // region must keep flowing through the text and background paths, or the
     // page ships blank. Two SEC covers did exactly that once.
-    const rejected = tables.filter((t) => !tablePlaceable(t, scale, offX, offY));
+    const rejected = tables.filter((t) => !tablePlaceable(t, scale, offX, offY, pw, ph));
     if (rejected.length) {
-      tables = tables.filter((t) => tablePlaceable(t, scale, offX, offY));
+      tables = tables.filter((t) => tablePlaceable(t, scale, offX, offY, pw, ph));
       pr.tablesRejected = rejected.length;
     }
     const tableBboxes = tables.map((t) => t.bbox);
