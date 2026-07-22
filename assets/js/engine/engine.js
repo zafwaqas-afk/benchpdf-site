@@ -40,6 +40,7 @@ const MIN_TABULAR_CELLS = 2;       // one populated cell states no relationship
 const PROSE_MAX_TEXT_CELLS = 3;    // ... and neither does a paragraph plus a label
 
 const IN = 72;   // points per inch; PptxGenJS speaks inches
+const EMU_PER_PT = 12700;
 
 function centerIn(bbox, x, y, tol = 2.0) {
   return (bbox[0] - tol) <= x && x <= (bbox[2] + tol)
@@ -104,7 +105,51 @@ function longestWordWidth(cluster) {
   return maxW;
 }
 
-function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode) {
+/* The source's own line pitch, in points, or 0 when there isn't one to read.
+ *
+ * PowerPoint otherwise sets its own leading from the font, which is tighter
+ * than most documents': the W3C working draft leads 14pt text at 18.7pt, so a
+ * 25-item list ended 130pt above where it should and the whole page read as
+ * vertically compressed. Bounded, because a block whose lines are not evenly
+ * pitched (a heading over a paragraph) has no single leading to impose.
+ */
+function sourceLeading(cluster) {
+  if (cluster.length < 2) return 0;
+  const deltas = [];
+  for (let i = 1; i < cluster.length; i++) {
+    const d = cluster[i].y0 - cluster[i - 1].y0;
+    if (d > 0) deltas.push(d);
+  }
+  if (deltas.length < 2) return 0;
+  deltas.sort((a, b) => a - b);
+  const med = deltas[Math.floor(deltas.length / 2)];
+  const size = Math.max(...cluster.map((l) => l.size || 0), 1);
+  if (med < size * 0.9 || med > size * 2.5) return 0;
+  return med;
+}
+
+/* Where each paragraph sits inside its block, in points from the block's left
+ * edge: [marginLeft, firstLineOffset].
+ *
+ * A list is one text box of paragraphs, and every paragraph used to start at
+ * the box's left edge. On the W3C working draft that flattened two nesting
+ * levels onto one margin and threw away the hanging indent that puts a
+ * wrapped line clear of its own bullet. Both are in the source geometry: the
+ * first line's x0 gives the outdent, the continuation lines' give the margin.
+ */
+function paragraphIndents(paras, blockX0) {
+  return paras.map((para) => {
+    const firstX = para[0].x0 - blockX0;
+    const rest = para.slice(1);
+    // marL applies to every line; indent shifts only the first, and is
+    // negative for a hanging indent and positive for a first-line one.
+    const contX = rest.length ? Math.min(...rest.map((l) => l.x0)) - blockX0 : firstX;
+    const marL = Math.max(contX, 0);
+    return [marL, firstX - marL];
+  });
+}
+
+function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode, indentSink) {
   const x0 = Math.min(...cluster.map((c) => c.x0));
   const y0 = Math.min(...cluster.map((c) => c.y0));
   const x1 = Math.max(...cluster.map((c) => c.x1));
@@ -122,6 +167,7 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode) {
     && (mode === "layout" || words <= NOWRAP_MAX_WORDS);
 
   const runs = [];
+  let indents = null;
   if (keepBreaks) {
     for (const ln of cluster) {
       for (let si = 0; si < ln.spans.length; si++) {
@@ -136,8 +182,10 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode) {
   } else {
     const paras = splitParagraphs(cluster);
     for (const para of paras) runs.push(...paragraphRuns(para, fonts, align));
+    indents = paragraphIndents(paras, x0);
   }
 
+  const lead = sourceLeading(cluster);
   const wrap = cluster.length > 1 && !keepBreaks;
   // a wrapping box must at minimum fit its longest word, or PowerPoint breaks
   // mid-word; cap at the page's right edge
@@ -145,6 +193,17 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode) {
   if (wrap) {
     wPt = Math.max(wPt, WORD_FIT_SAFETY * longestWordWidth(cluster));
     if (pageW) wPt = Math.min(wPt, Math.max(pageW - x0, x1 - x0));
+  }
+
+  // PptxGenJS cannot express a:pPr/@marL, so a block that needs per-paragraph
+  // indents is named here and stamped into the OOXML afterwards, the same way
+  // a:tableStyleId already is.
+  const needsIndent = indentSink && indents
+    && indents.some(([m, i]) => Math.abs(m) > 0.5 || Math.abs(i) > 0.5);
+  const objectName = needsIndent ? `bpIndent${indentSink.length}` : undefined;
+  if (needsIndent) {
+    indentSink.push({ name: objectName,
+      indents: indents.map(([m, i]) => [m * scale, i * scale]) });
   }
 
   slide.addText(runs, {
@@ -156,6 +215,8 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode) {
     // wider than the source, wrap:true breaks headings into two lines
     margin: 0, valign: "top", wrap,
     ...(align ? { align } : {}),
+    ...(lead ? { lineSpacing: lead * scale } : {}),
+    ...(objectName ? { objectName } : {}),
   });
 }
 
@@ -530,6 +591,7 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
   pptx.layout = "PDFSIZE";
 
   const tableKindsBySlide = [];   // per slide, "grid" | "plain" per native table
+  const indentedBlocks = [];      // text boxes needing a:pPr/@marL, by objectName
   for (let i = 1; i <= doc.numPages; i++) {
     onProgress(i - 1, doc.numPages, `Converting page ${i} of ${doc.numPages}`);
     const page = await doc.getPage(i);
@@ -774,7 +836,7 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
       }
     }
     for (const cluster of textClusters) {
-      addTextBlock(slide, cluster, scale, offX, offY, fonts, pw, mode);
+      addTextBlock(slide, cluster, scale, offX, offY, fonts, pw, mode, indentedBlocks);
       pr.textBoxes++;
     }
     report.pages.push(pr);
@@ -782,7 +844,10 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
 
   onProgress(doc.numPages, doc.numPages, "Saving presentation");
   let blob = await pptx.write({ outputType: "blob" });
-  if (deps.JSZip) blob = await applyTableGridStyle(blob, deps.JSZip, tableKindsBySlide);
+  if (deps.JSZip) {
+    blob = await applyTableGridStyle(blob, deps.JSZip, tableKindsBySlide);
+    blob = await applyParagraphIndents(blob, deps.JSZip, indentedBlocks);
+  }
   report.substitutions = [...fonts.substitutions.entries()].map(([a, b]) => `${a} -> ${b}`);
   return { blob, report };
 }
@@ -795,6 +860,48 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
  * slide XML in insertion order, which is the order tableKinds records. */
 const TABLE_GRID_STYLE = "{5940675A-B579-460E-94D1-54222C63F5DA}";
 const TABLE_NO_GRID_STYLE = "{2D5ABB26-0587-4C30-8999-92F81FD0307C}";
+
+/* Stamp a:pPr/@marL and @indent onto the paragraphs of the named text boxes.
+ *
+ * Located by the shape's own name rather than by position, so a slide that
+ * also carries pictures, tables or untagged boxes cannot shift the mapping.
+ * Values are EMU. PptxGenJS always writes an <a:pPr .../> per paragraph, so
+ * the attributes go onto the existing tag.
+ */
+async function applyParagraphIndents(blob, JSZip, blocks = []) {
+  if (!blocks.length) return blob;
+  const byName = new Map(blocks.map((b) => [b.name, b.indents]));
+  const zip = await JSZip.loadAsync(blob);
+  const names = Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n));
+  for (const n of names) {
+    let xml = await zip.file(n).async("string");
+    if (!xml.includes("bpIndent")) continue;
+    xml = xml.replace(/<p:sp>[\s\S]*?<\/p:sp>/g, (sp) => {
+      const m = /<p:cNvPr[^>]*name="(bpIndent\d+)"/.exec(sp);
+      if (!m) return sp;
+      const indents = byName.get(m[1]);
+      if (!indents) return sp;
+      // Walk PARAGRAPHS, not a:pPr tags: PptxGenJS emits one a:pPr per run
+      // (57 of them for 22 paragraphs on the WCAG page), so counting tags
+      // consumed the indents out of order and ran off the end. Every a:pPr
+      // inside one a:p gets the same value, so it does not matter which one
+      // PowerPoint honours.
+      let pi = 0;
+      return sp.replace(/<a:p>[\s\S]*?<\/a:p>/g, (para) => {
+        const pair = indents[pi++];
+        if (!pair) return para;
+        const [marL, indent] = pair;
+        const attr = ` marL="${Math.round(marL * EMU_PER_PT)}"`
+                   + ` indent="${Math.round(indent * EMU_PER_PT)}"`;
+        return para.replace(/<a:pPr([^>]*?)(\/?)>/g, (tag, attrs, selfClose) =>
+          `<a:pPr${attrs.replace(/\s*marL="[^"]*"/, "").replace(/\s*indent="[^"]*"/, "")}${attr}${selfClose}>`);
+      });
+    });
+    zip.file(n, xml);
+  }
+  return await zip.generateAsync({ type: "blob",
+    mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
+}
 
 async function applyTableGridStyle(blob, JSZip, tableKindsBySlide = []) {
   const zip = await JSZip.loadAsync(blob);
