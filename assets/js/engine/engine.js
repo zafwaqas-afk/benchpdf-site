@@ -29,6 +29,9 @@ import { detectTables, inferAlignedTables } from "./tables.js";
 const HYBRID_DPI = 200;
 const SAMPLE_DPI = 150;
 const NONTABLE_ART_COVERAGE = 0.03;
+const ART_MIN_PT = 3;          // smaller than this is a hairline artefact
+const ART_JOIN_PT = 8;         // art this close belongs to one picture
+const ART_MAX_REGIONS = 24;    // a page of scattered paths is a hybrid, not this
 
 const IN = 72;   // points per inch; PptxGenJS speaks inches
 
@@ -287,6 +290,49 @@ function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, of
   return true;
 }
 
+/* Vector art on a page that stays native.
+ *
+ * The hybrid render only fires when art covers a real share of the page, so
+ * anything smaller, a crest, a rule, a chart's axes, used to ship nowhere at
+ * all: the HMRC crown was simply missing from our worst-scoring page. These
+ * regions let that art ride along as pixels while the text stays editable.
+ *
+ * Boxes that overlap or nearly touch merge, so a logo built from thirty paths
+ * arrives as one picture rather than thirty.
+ */
+export function artRegions(drawings, tableBboxes, pageW, pageH) {
+  const keep = [];
+  for (const d of drawings) {
+    const w = d.x1 - d.x0, h = d.y1 - d.y0;
+    if (w <= ART_MIN_PT || h <= ART_MIN_PT) continue;
+    if (w > 0.92 * pageW && h > 0.92 * pageH) continue;
+    const cx = (d.x0 + d.x1) / 2, cy = (d.y0 + d.y1) / 2;
+    if (tableBboxes.some((tb) => centerIn(tb, cx, cy))) continue;
+    keep.push([d.x0, d.y0, d.x1, d.y1]);
+  }
+  const merged = [];
+  for (const box of keep) {
+    let cur = box.slice();
+    let joined = true;
+    while (joined) {
+      joined = false;
+      for (let i = merged.length - 1; i >= 0; i--) {
+        const m = merged[i];
+        const near = cur[0] <= m[2] + ART_JOIN_PT && m[0] <= cur[2] + ART_JOIN_PT
+                  && cur[1] <= m[3] + ART_JOIN_PT && m[1] <= cur[3] + ART_JOIN_PT;
+        if (near) {
+          cur = [Math.min(cur[0], m[0]), Math.min(cur[1], m[1]),
+                 Math.max(cur[2], m[2]), Math.max(cur[3], m[3])];
+          merged.splice(i, 1);
+          joined = true;
+        }
+      }
+    }
+    merged.push(cur);
+  }
+  return merged.slice(0, ART_MAX_REGIONS);
+}
+
 /* ---- hybrid decision ---------------------------------------------------- */
 function nontableArtRatio(pageW, pageH, drawings, tableBboxes) {
   const pageArea = Math.abs(pageW * pageH) || 1.0;
@@ -518,6 +564,25 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
     } else {
       // pdf.js decodes image XObjects during rendering, so a page that was
       // never rendered has nothing in page.objs yet. Warm it cheaply first.
+      const regions = artRegions(vec.drawings, tableBboxes, pw, ph);
+      if (regions.length) {
+        // one text-stripped render, cropped per region, so art ships without
+        // costing the page its editable text
+        const bg = await renderBackground(page, opList, HYBRID_DPI, tableBboxes, allLines);
+        const k = HYBRID_DPI / 72.0;
+        for (const [rx0, ry0, rx1, ry1] of regions) {
+          const cw2 = Math.round((rx1 - rx0) * k), ch2 = Math.round((ry1 - ry0) * k);
+          if (cw2 < 4 || ch2 < 4) continue;
+          const c = document.createElement("canvas");
+          c.width = cw2; c.height = ch2;
+          c.getContext("2d").drawImage(bg, Math.round(rx0 * k), Math.round(ry0 * k),
+                                       cw2, ch2, 0, 0, cw2, ch2);
+          slide.addImage({ data: c.toDataURL("image/png"),
+            x: (offX + rx0 * scale) / IN, y: (offY + ry0 * scale) / IN,
+            w: (rx1 - rx0) * scale / IN, h: (ry1 - ry0) * scale / IN });
+          pr.artRegions = (pr.artRegions || 0) + 1;
+        }
+      }
       if (vec.images.length) await renderFull(page, 24);
       for (const im of vec.images) {
         const cx = (im.x0 + im.x1) / 2, cy = (im.y0 + im.y1) / 2;
