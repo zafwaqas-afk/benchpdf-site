@@ -63,6 +63,81 @@ function styleRun(span, fonts) {
   };
 }
 
+/* Reflow fidelity: make the substituted text occupy the SOURCE's width.
+ *
+ * A wrapping paragraph is re-broken by PowerPoint, and the metric-compatible
+ * substitute is never exactly the source font, so it wraps at different words
+ * and the column drifts. Measured against the corpus, the PDF's own line
+ * breaks (layout mode) are worth about 0.025 of real median over reflowed
+ * ones, and the drift is what compounds into blocks overflowing their box.
+ *
+ * Rather than give up reflow - which is what keeps the text editable, a
+ * paragraph the reader can retype and have re-wrap - each source line gets
+ * the tracking that restores its original width. PowerPoint's greedy wrap
+ * then breaks it where the source broke it. Clamped hard, because a bad
+ * measurement must degrade to slightly-wrong spacing, never to unreadable
+ * text; unmeasurable text gets no tracking at all.
+ */
+const TRACK_MAX_EM = 0.08;     // never squeeze or open more than this per char
+let _measureCtx = null;
+
+/* Is this family actually installed here?
+ *
+ * The conversion runs in the visitor's browser but the output is opened in
+ * PowerPoint elsewhere. A visitor without Georgia measures Georgia as the
+ * default serif, and tracking computed from that is worse than none. The
+ * standard probe: a family that does not resolve measures identically to a
+ * nonsense one. */
+const _fontOK = new Map();
+const _PROBE = "mmmmmmmmmmlliWWWWWWWWWW0123456789";
+
+function fontAvailable(family) {
+  if (!family) return false;
+  if (_fontOK.has(family)) return _fontOK.get(family);
+  _measureCtx.font = `40px "____nofont____"`;
+  const base = _measureCtx.measureText(_PROBE).width;
+  _measureCtx.font = `40px "${family}", "____nofont____"`;
+  const ok = Math.abs(_measureCtx.measureText(_PROBE).width - base) > 0.01;
+  _fontOK.set(family, ok);
+  return ok;
+}
+
+function textWidthPt(text, fontFace, sizePt, bold, italic) {
+  if (!text || !(sizePt > 0)) return 0;
+  if (_measureCtx === null) {
+    try {
+      _measureCtx = document.createElement("canvas").getContext("2d");
+    } catch (e) { _measureCtx = false; }
+  }
+  if (!_measureCtx) return 0;
+  if (!fontAvailable(fontFace)) return 0;
+  // px set to the point value: the ratio is what matters, and it keeps the
+  // returned width in the same units as the source geometry
+  _measureCtx.font = `${italic ? "italic " : ""}${bold ? "bold " : ""}`
+                   + `${sizePt}px "${fontFace}"`;
+  return _measureCtx.measureText(text).width;
+}
+
+// Points per character to add (or remove) so this line occupies srcWidth.
+function lineTracking(ln, fonts, srcWidth) {
+  if (!(srcWidth > 0)) return 0;
+  let measured = 0, chars = 0, maxSize = 0;
+  for (const sp of ln.spans) {
+    const text = sp.text || "";
+    if (!text) continue;
+    const flags = sp.flags | 0;
+    const size = sp.size > 0 ? sp.size : 10;
+    measured += textWidthPt(text, fonts.map(sp.font || "", flags), size,
+                            !!(flags & FLAG_BOLD), !!(flags & FLAG_ITALIC));
+    chars += text.length;
+    maxSize = Math.max(maxSize, size);
+  }
+  if (!measured || chars < 2) return 0;
+  const track = (srcWidth - measured) / chars;
+  const limit = TRACK_MAX_EM * (maxSize || 10);
+  return Math.max(-limit, Math.min(limit, track));
+}
+
 function paragraphRuns(paraLines, fonts, align, spaceBefore = 0) {
   const runs = [];
   let prevText = "";
@@ -72,8 +147,13 @@ function paragraphRuns(paraLines, fonts, align, spaceBefore = 0) {
       // join wrapped lines with a single space - never a separator character
       runs.push({ text: " ", options: styleRun({ ...ln.spans[0] }, fonts) });
     }
+    // each source line keeps its own width, so PowerPoint re-breaks the
+    // paragraph where the source broke it
+    const track = lineTracking(ln, fonts, ln.x1 - ln.x0);
     for (const sp of ln.spans) {
-      runs.push({ text: sp.text, options: styleRun(sp, fonts) });
+      const opts = styleRun(sp, fonts);
+      if (track) opts.charSpacing = track;
+      runs.push({ text: sp.text, options: opts });
       prevText = sp.text;
     }
   }
