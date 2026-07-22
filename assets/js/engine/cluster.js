@@ -8,6 +8,10 @@ export const PARA_GAP_FACTOR = 1.45;
 export const PARA_BREAK_FACTOR = 1.6;
 export const SIZE_TOLERANCE = 1.2;
 export const LEFT_TOLERANCE = 0.16;
+// A first-line indent runs about one em; wider than this is a quotation
+// block or a table column, not a paragraph start.
+export const INDENT_MIN_EM = 0.35;
+export const INDENT_MAX_EM = 4.0;
 
 const FLAG_BOLD = 1 << 4;
 
@@ -102,11 +106,12 @@ export function splitParagraphs(cluster) {
   for (let i = 0; i < cluster.length - 1; i++) deltas.push(cluster[i + 1].y0 - cluster[i].y0);
   const sortedD = [...deltas].sort((a, b) => a - b);
   const leading = deltas.length ? sortedD[Math.floor(deltas.length / 2)] : cluster[0].size;
+  const indentStart = firstLineIndents(cluster);
   const paras = [];
   let cur = [cluster[0]];
   for (let i = 1; i < cluster.length; i++) {
     const step = cluster[i].y0 - cluster[i - 1].y0;
-    if (cluster[i].bullet || step > PARA_BREAK_FACTOR * leading) {
+    if (cluster[i].bullet || step > PARA_BREAK_FACTOR * leading || indentStart.has(i)) {
       paras.push(cur);
       cur = [cluster[i]];
     } else {
@@ -115,4 +120,28 @@ export function splitParagraphs(cluster) {
   }
   paras.push(cur);
   return paras;
+}
+
+/* Which lines begin a paragraph purely because they are indented?
+ *
+ * Typeset prose, LaTeX papers above all, marks a new paragraph with a
+ * first-line indent and no extra leading at all. Splitting on vertical gaps
+ * alone therefore merged whole pages of an arXiv paper into single blocks.
+ *
+ * An indent only means "new paragraph" when the block otherwise sits flush:
+ * if most lines are already indented the block is a hanging indent or a
+ * centred run, and the signal means nothing.
+ */
+export function firstLineIndents(cluster) {
+  const starts = new Set();
+  if (cluster.length < 3) return starts;
+  const size = cluster[0].size || 10;
+  const bodyLeft = Math.min(...cluster.map((l) => l.x0));
+  const flush = cluster.filter((l) => l.x0 - bodyLeft <= 1.0).length;
+  if (flush < cluster.length * 0.6) return starts;
+  for (let i = 1; i < cluster.length; i++) {
+    const indent = cluster[i].x0 - bodyLeft;
+    if (indent > INDENT_MIN_EM * size && indent < INDENT_MAX_EM * size) starts.add(i);
+  }
+  return starts;
 }
