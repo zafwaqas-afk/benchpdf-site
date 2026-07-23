@@ -53,6 +53,20 @@
     <section>
       <article class="entry">
         <div class="entry-head">
+          <span class="entry-version">1.0.3</span>
+          <time class="entry-date" datetime="2026-07-23">2026-07-23</time>
+        </div>
+        <ul>
+          <li>A bordered or shaded box is no longer rebuilt as a table. Callout panels and summary boxes, like the balance panel on a bank statement, used to gain a hard border and lose their shading and alignment; they now keep their look while the text inside flows normally.</li>
+          <li>Bulleted lists hold their shape in more documents. Where the marker is a symbol-font glyph or a decorative letter rather than a real bullet character, each item now keeps its own line instead of running together into one paragraph.</li>
+          <li>Text blocks follow the spacing of the original: the blank lines between paragraphs, the line pitch, and the left and hanging indents all come through, instead of packing tight and flush to the margin.</li>
+          <li>Reflowed paragraphs break closer to where the source broke them, so a wrapped column drifts less and no longer runs into the heading beneath it.</li>
+          <li>The in-browser converter and the desktop engine now agree on more documents. A statement's summary panel, in particular, converts the same way in both.</li>
+          <li>The diagnostics suite grows to 354 checks across both engines, with new fixtures for bordered callouts, dingbat-marked lists and paragraph indents, and its table and list checks no longer grade the engine against its own output.</li>
+        </ul>
+      </article>
+      <article class="entry">
+        <div class="entry-head">
           <span class="entry-version">1.0.2</span>
           <time class="entry-date" datetime="2026-07-20">2026-07-20</time>
         </div>
@@ -97,8 +111,7 @@
   </main>
 
   <footer class="foot">
-    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.2, 20 July 2026</a>. Overprinted text converts once, word
-      gaps survive letter-spaced headings, and dense tables fit the slide.</span></p>
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.3, 23 July 2026</a>. Bordered callouts stay boxes instead of becoming tables, lists keep one item per line, and paragraph spacing and indents follow the original.</span></p>
     <div class="foot-in">
       <span class="foot-mark"><svg class="wm-glyph" viewBox="0 0 19 14" width="19" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"><rect x="0.65" y="5" width="17.7" height="2"/><line x1="2.6" y1="7" x2="2.6" y2="13.35"/><line x1="16.4" y1="7" x2="16.4" y2="13.35"/><line x1="2.6" y1="10.2" x2="16.4" y2="10.2"/><rect x="11.7" y="1.8" width="3.6" height="3.2"/><line x1="13.5" y1="0" x2="13.5" y2="1.8"/></svg>bench<span class="wm-pdf">pdf</span></span>
       <nav class="foot-links" aria-label="Footer">
