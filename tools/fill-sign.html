@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fill and Sign a PDF in your browser | BenchPDF</title>
+  <meta name="description" content="Add text and your signature to a PDF and download the finished file. Everything happens on your own device and nothing is uploaded.">
+  <link rel="canonical" href="https://benchpdf.pages.dev/tools/fill-sign">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Fill and Sign a PDF in your browser | BenchPDF">
+  <meta property="og:description" content="Add text and your signature to a PDF and download the finished file. Everything happens on your own device and nothing is uploaded.">
+  <meta property="og:url" content="https://benchpdf.pages.dev/tools/fill-sign">
+  <meta property="og:image" content="https://benchpdf.pages.dev/assets/img/screenshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSans-Regular.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/IBMPlexSerif-SemiBold.woff2">
+  <script>(function(){var t="dark";try{var s=localStorage.getItem("benchpdf-theme");if(s==="light"||s==="dark"){t=s}else if(window.matchMedia("(prefers-color-scheme: light)").matches){t="light"}}catch(e){}document.documentElement.setAttribute("data-theme",t)})();</script>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <style>
+    /* Fill & Sign editor - scoped here so the global sheet stays untouched
+       while the tool is unlinked and under review. Uses the shared tokens. */
+    .fs-hint{color:var(--muted); font-size:13px; margin:0 0 10px}
+    .fs-toolbar{position:sticky; top:0; z-index:30; display:flex; flex-wrap:wrap; gap:8px;
+      align-items:center; padding:12px; background:var(--panel);
+      border:2px solid var(--border-strong); margin-bottom:16px}
+    .fs-tool{font:600 12px/1 var(--sans); letter-spacing:.04em; padding:10px 12px;
+      background:var(--tile); color:var(--ink); border:2px solid var(--hairline);
+      cursor:pointer; display:inline-flex; align-items:center; gap:7px}
+    .fs-tool:hover{border-color:var(--ink)}
+    .fs-tool[aria-pressed="true"]{background:var(--ink); color:var(--ground); border-color:var(--ink)}
+    .fs-tool svg{width:15px; height:15px}
+    .fs-sep{width:2px; align-self:stretch; background:var(--hairline); margin:0 4px}
+    .fs-spacer{flex:1 1 auto}
+    .fs-size{font:600 12px/1 var(--mono); padding:10px; background:var(--tile);
+      color:var(--ink); border:2px solid var(--hairline)}
+    .fs-pages{display:flex; flex-direction:column; align-items:center; gap:20px;
+      padding-bottom:60px}
+    .fs-page{position:relative; box-shadow:0 0 0 1px var(--hairline);
+      background:#fff; touch-action:none}
+    .fs-page canvas{display:block}
+    .fs-anno{position:absolute; cursor:move; box-sizing:border-box;
+      border:1px dashed transparent; min-width:8px; min-height:8px}
+    .fs-anno:hover,.fs-anno.is-sel{border-color:var(--brand)}
+    .fs-anno-text{color:#111; white-space:pre; outline:none; padding:1px 2px;
+      min-width:22px; min-height:1em; font-family:Helvetica,Arial,sans-serif; line-height:1}
+    .fs-anno-text[contenteditable="true"]{background:rgba(243,112,33,.12)}
+    .fs-anno-text[contenteditable="true"]:empty::before{content:"Type here"; color:#8a8a8a}
+    .fs-anno-img img{display:block; width:100%; height:100%; pointer-events:none}
+    .fs-del{position:absolute; top:-11px; right:-11px; width:22px; height:22px;
+      border:none; border-radius:0; background:var(--err); color:#fff;
+      font:700 13px/1 var(--sans); cursor:pointer; display:none}
+    .fs-anno.is-sel .fs-del,.fs-anno:hover .fs-del{display:block}
+    .fs-grip{position:absolute; bottom:-7px; right:-7px; width:14px; height:14px;
+      background:var(--brand); cursor:nwse-resize; display:none}
+    .fs-anno-img.is-sel .fs-grip{display:block}
+    /* signature capture dialog */
+    .fs-modal{position:fixed; inset:0; z-index:80; display:none;
+      align-items:center; justify-content:center; background:rgba(0,0,0,.55); padding:16px}
+    .fs-modal.is-open{display:flex}
+    .fs-dialog{width:min(520px,100%); background:var(--panel);
+      border:2px solid var(--border-strong); padding:22px}
+    .fs-dialog h2{margin:0 0 4px; font:600 14px/1.2 var(--sans)}
+    .fs-tabs{display:flex; gap:8px; margin:16px 0 12px}
+    .fs-tabbtn{font:600 12px/1 var(--mono); padding:9px 12px; background:var(--tile);
+      color:var(--ink); border:2px solid var(--hairline); cursor:pointer}
+    .fs-tabbtn[aria-selected="true"]{background:var(--ink); color:var(--ground); border-color:var(--ink)}
+    .fs-pad{background:#fff; border:2px solid var(--hairline); touch-action:none; display:block; width:100%}
+    .fs-type-in{width:100%; box-sizing:border-box; padding:12px; font-size:26px;
+      font-family:"Segoe Script","Brush Script MT",cursive; color:#111;
+      background:#fff; border:2px solid var(--hairline)}
+    .fs-panebody[hidden]{display:none}
+    .fs-dialog-actions{display:flex; gap:10px; justify-content:flex-end; margin-top:18px}
+    .fs-mono-note{font:500 11px/1.5 var(--mono); color:var(--muted); letter-spacing:.02em}
+  </style>
+</head>
+<body data-tool="fill-sign">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="gridlayer" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="nav is-solid">
+    <div class="nav-in">
+      <a class="wordmark" href="/"><svg class="wm-glyph" viewBox="0 0 19 14" width="19" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"><rect x="0.65" y="5" width="17.7" height="2"/><line x1="2.6" y1="7" x2="2.6" y2="13.35"/><line x1="16.4" y1="7" x2="16.4" y2="13.35"/><line x1="2.6" y1="10.2" x2="16.4" y2="10.2"/><rect x="11.7" y="1.8" width="3.6" height="3.2"/><line x1="13.5" y1="0" x2="13.5" y2="1.8"/></svg>bench<span class="wm-pdf">pdf</span></a>
+      <div class="nav-right">
+        <a class="nav-link" href="/tools">Tools</a>
+        <a class="nav-link" href="/privacy">Privacy</a>
+        <a class="nav-signup" href="/signup">Sign up</a>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch between light and dark mode">
+          <span class="tt tt-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+          </span>
+          <span class="tt tt-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </span>
+        </button>
+        <a class="nav-cta" href="/download">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <nav class="crumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/tools">Tools</a> / <span>Fill and Sign PDF</span></nav>
+  </div>
+
+  <main class="main" id="main">
+    <section class="tool-hero">
+      <h1>Fill and Sign PDF</h1>
+      <p class="lede">Add text and your signature to a PDF, then download the finished file. Every step happens on your own device and nothing is uploaded.</p>
+    </section>
+
+    <section class="conv-panel">
+      <!-- STATE: idle drop zone -->
+      <div id="fs-drop-stage">
+        <div class="dropzone" id="dropzone" role="button" tabindex="0">
+          <div class="dz-inner">
+            <svg class="dz-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+              <path d="M12 15.5V4m0 0 4 4m-4-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4.5 15v3A2.5 2.5 0 0 0 7 20.5h10A2.5 2.5 0 0 0 19.5 18v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="dz-title">Drop a PDF here</p>
+            <p class="dz-sub">Or <button type="button" class="linkbtn" id="browse">choose a file</button>.</p>
+          </div>
+          <input id="file" type="file" accept=".pdf" hidden>
+        </div>
+        <p class="conv-badge">Files stay on your computer.</p>
+      </div>
+
+      <!-- STATE: editor -->
+      <div id="fs-editor" hidden>
+        <div class="notice notice-warn" id="fs-rotate-note" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M12 8.5v4.2m0 3.1h.01M12 3.4 2.7 19.6h18.6L12 3.4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>This file has rotated pages. Placement is measured as if the page were upright, so check anything you add on a page that displays sideways.</span>
+        </div>
+        <div class="fs-toolbar" role="toolbar" aria-label="Fill and sign tools">
+          <button type="button" class="fs-tool" data-fstool="text" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 6h14M12 6v13M9 19h6"/></svg>Text
+          </button>
+          <button type="button" class="fs-tool" data-fstool="date" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="5" width="16" height="16"/><path d="M4 9h16M8 3v4M16 3v4"/></svg>Date
+          </button>
+          <button type="button" class="fs-tool" data-fstool="check" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.3 4.3L19 7.2"/></svg>Check
+          </button>
+          <button type="button" class="fs-tool" data-fstool="signature" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 17c3-1 4-9 6-9s1 6 3 6 2-4 4-4"/><path d="M4 20h16"/></svg>Signature
+          </button>
+          <span class="fs-sep" aria-hidden="true"></span>
+          <label class="visually-hidden" for="fs-fontsize">Text size</label>
+          <select class="fs-size" id="fs-fontsize" title="Text size">
+            <option value="10">10 pt</option>
+            <option value="12" selected>12 pt</option>
+            <option value="14">14 pt</option>
+            <option value="18">18 pt</option>
+            <option value="24">24 pt</option>
+          </select>
+          <span class="fs-spacer" aria-hidden="true"></span>
+          <button type="button" class="fs-tool" id="fs-reset">Start over</button>
+          <a class="btn btn-sm btn-primary" id="fs-download" role="button">Download signed PDF</a>
+        </div>
+        <p class="fs-hint" id="fs-hint">Pick a tool, then click on the page where you want it. Drag to reposition, and use the red handle to remove.</p>
+        <div class="fs-pages" id="fs-pages"></div>
+      </div>
+
+      <section id="conv-error">
+        <div class="err-head">
+          <svg class="i-alert" viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5v5.2m0 3.3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <h2>That did not work</h2>
+        </div>
+        <p class="err-body" id="err-body"></p>
+        <button type="button" class="btn btn-sm" id="err-retry">Try another file</button>
+      </section>
+    </section>
+
+    <!-- signature capture dialog -->
+    <div class="fs-modal" id="fs-modal" role="dialog" aria-modal="true" aria-labelledby="fs-modal-title">
+      <div class="fs-dialog">
+        <h2 id="fs-modal-title">Add your signature</h2>
+        <p class="fs-mono-note">DRAWN OR TYPED HERE, ON YOUR DEVICE. NOTHING LEAVES THE BROWSER.</p>
+        <div class="fs-tabs" role="tablist">
+          <button type="button" class="fs-tabbtn" id="fs-tab-draw" role="tab" aria-selected="true">Draw</button>
+          <button type="button" class="fs-tabbtn" id="fs-tab-type" role="tab" aria-selected="false">Type</button>
+        </div>
+        <div class="fs-panebody" id="fs-pane-draw">
+          <canvas class="fs-pad" id="fs-pad" width="960" height="300"></canvas>
+        </div>
+        <div class="fs-panebody" id="fs-pane-type" hidden>
+          <label class="visually-hidden" for="fs-type-in">Type your name</label>
+          <input class="fs-type-in" id="fs-type-in" type="text" placeholder="Type your name" autocomplete="off">
+        </div>
+        <div class="fs-dialog-actions">
+          <button type="button" class="btn btn-sm" id="fs-sig-clear">Clear</button>
+          <button type="button" class="linkbtn" id="fs-sig-cancel">Cancel</button>
+          <button type="button" class="btn btn-sm btn-primary" id="fs-sig-apply">Use signature</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="prose">
+      <h2 id="what-it-does">What it does</h2>
+      <ul>
+        <li>Opens your PDF and draws it exactly as it is, so nothing in the original changes.</li>
+        <li>Lets you drop text, a date, a check mark, or your signature anywhere on any page.</li>
+        <li>Draws a signature you make with the mouse or trackpad, or one built from your typed name.</li>
+        <li>Writes everything back into a new PDF that opens anywhere a PDF opens.</li>
+      </ul>
+
+      <h2 id="the-limit">Where it stops</h2>
+      <p>This adds your marks on top of the PDF; it does not verify who you are or attach a certified audit trail, so it is not a witnessed or notarised e-signature. When a counterparty needs proof of signer identity, use a dedicated e-signature service. For signing a document yourself and sending it back, this does the job without an account and without the file ever leaving your device.</p>
+
+      <h2 id="how-to">How to fill and sign a PDF</h2>
+      <ul>
+        <li>Drop your PDF into the box, or choose a file.</li>
+        <li>Pick Text, Date, Check, or Signature, then click where you want it.</li>
+        <li>Drag anything to reposition it; the red handle removes it.</li>
+        <li>Click Download signed PDF to save the finished file.</li>
+      </ul>
+
+      <h2 id="uploaded">Does my file get uploaded?</h2>
+      <p>No. The PDF is opened, drawn, and rewritten inside your own browser, and the signature you draw or type never leaves the page either. Nothing about the document is transmitted, and you can confirm it by watching your browser's network activity while you work.</p>
+
+      <h2 id="mac">Does it work on a Mac?</h2>
+      <p>Yes. This page runs in the browser, so macOS, Windows, Linux and ChromeOS all work. The separate BenchPDF desktop app is Windows only, but this tool does not need it.</p>
+
+      <h2 id="related-tools">Related tools</h2>
+      <ul>
+        <li><a href="/tools/pdf-to-images">PDF to Image</a>, to save a page as a picture.</li>
+        <li><a href="/tools/images-to-pdf">Images to PDF</a>, to combine images into a PDF.</li>
+        <li><a href="/tools/pdf-to-text">PDF to Text</a>, to pull the words out of a PDF.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="foot-latest"><span>Latest release: <a href="/changelog">1.0.2, 20 July 2026</a>. Overprinted text converts once, word
+      gaps survive letter-spaced headings, and dense tables fit the slide.</span></p>
+    <div class="foot-in">
+      <span class="foot-mark"><svg class="wm-glyph" viewBox="0 0 19 14" width="19" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="square"><rect x="0.65" y="5" width="17.7" height="2"/><line x1="2.6" y1="7" x2="2.6" y2="13.35"/><line x1="16.4" y1="7" x2="16.4" y2="13.35"/><line x1="2.6" y1="10.2" x2="16.4" y2="10.2"/><rect x="11.7" y="1.8" width="3.6" height="3.2"/><line x1="13.5" y1="0" x2="13.5" y2="1.8"/></svg>bench<span class="wm-pdf">pdf</span></span>
+      <nav class="foot-links" aria-label="Footer">
+        <a href="/blog">Blog</a>
+        <a href="/changelog">Changelog</a>
+        <a href="/privacy">Privacy</a>
+        <a href="https://github.com/zafwaqas-afk/benchpdf">Source</a>
+      </nav>
+      <span class="foot-year">2026</span>
+    </div>
+  </footer>
+  <script type="module" src="/assets/js/sign.js"></script>
+  <script src="/assets/js/theme.js" defer></script>
+</body>
+</html>
