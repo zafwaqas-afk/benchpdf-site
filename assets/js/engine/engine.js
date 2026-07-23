@@ -224,14 +224,29 @@ function sourceLeading(cluster) {
  * about half a line above each one, and without it the whole column runs
  * together and ends short. What the source leaves is whatever exceeds the
  * block's own leading, so it is only readable once that leading is known.
+ *
+ * The gaps are clamped to the room the source actually left for them. The box
+ * is sized to the source line span, which already includes those gaps, but
+ * PowerPoint stacks the lines at the full leading AND then adds the gaps on
+ * top - so the raw gaps overshoot the box and push the last line out the
+ * bottom. On w3c_svg10_2001 p2 that dropped the final line onto the heading
+ * below: 35 lines * 15.2pt = 532pt of pitch left only 112pt for gaps in a
+ * 644pt box, but the raw gaps summed 127. Scale them to fit the 112.
  */
-function paragraphGaps(paras, lead) {
+function paragraphGaps(paras, lead, boxHeight) {
   const gaps = paras.map(() => 0);
   if (!lead) return gaps;
   for (let i = 1; i < paras.length; i++) {
     const prev = paras[i - 1][paras[i - 1].length - 1];
     const extra = paras[i][0].y0 - prev.y0 - lead;
     gaps[i] = extra > 0.5 ? extra : 0;
+  }
+  const nLines = paras.reduce((n, p) => n + p.length, 0);
+  const avail = boxHeight - nLines * lead;
+  const total = gaps.reduce((a, b) => a + b, 0);
+  if (total > avail && total > 0) {
+    const scale = Math.max(avail, 0) / total;
+    for (let i = 0; i < gaps.length; i++) gaps[i] *= scale;
   }
   return gaps;
 }
@@ -289,7 +304,7 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode, ind
     }
   } else {
     const paras = splitParagraphs(cluster);
-    const gaps = paragraphGaps(paras, sourceLeading(cluster));
+    const gaps = paragraphGaps(paras, sourceLeading(cluster), y1 - y0);
     for (let pi = 0; pi < paras.length; pi++) {
       runs.push(...paragraphRuns(paras[pi], fonts, align, gaps[pi] * scale));
     }
