@@ -177,6 +177,7 @@ function paragraphRuns(paraLines, fonts, align, spaceBefore = 0) {
 /* ---- text blocks -------------------------------------------------------- */
 const NOWRAP_MAX_WORDS = 5;    // blocks this short keep their source line breaks
 const WORD_FIT_SAFETY = 1.1;   // substituted fonts can run a little wider
+const WRAP_SLACK_PT = 2.0;     // breathing room at the box edge (source points)
 
 function longestWordWidth(cluster) {
   // chars-proportional estimate from source geometry: enough to guarantee the
@@ -302,6 +303,13 @@ function addTextBlock(slide, cluster, scale, offX, offY, fonts, pageW, mode, ind
   let wPt = Math.max(x1 - x0, 1);
   if (wrap) {
     wPt = Math.max(wPt, WORD_FIT_SAFETY * longestWordWidth(cluster));
+    // A hair of breathing room. The box is pinned to the widest source line's
+    // exact extent, so a full line whose substitute width lands within a
+    // tenth of a point of that extent tips over PowerPoint's own metrics -
+    // which are not PyMuPDF's or canvas's - and wraps one line early. Too
+    // small to drag a word across a line (words are wider than this); just
+    // enough to clear the metric divergence at the box edge.
+    wPt += WRAP_SLACK_PT;
     if (pageW) wPt = Math.min(wPt, Math.max(pageW - x0, x1 - x0));
   }
 
