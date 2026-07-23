@@ -217,7 +217,11 @@ python tests/corpus/corpus_run.py            # both corpora + triage
 median, or the worst-page floor (the lowest single page score across both
 corpora) recorded in `tests/corpus/corpus_baseline.json`.** The run exits
 non-zero on any regression beyond 0.01. Baselines only move forward, via
-`--rebless`, and the commit that reblesses must say why.
+`--rebless`, and the commit that reblesses must say why. Reblessing is
+forward-only per gate: `--rebless` advances only the gates that improved and
+leaves the rest, and `--rebless=real_median` (comma-separated) names specific
+gates. A change that lifts one gate can no longer drag the others down with
+it; to lower a baseline deliberately, delete it and re-run.
 
 Every run also writes `tests/corpus/triage/`: side-by-side PNGs (source page
 vs converted render) for the ten lowest-scoring pages, with the dominant
