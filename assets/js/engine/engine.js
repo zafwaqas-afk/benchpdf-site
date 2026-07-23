@@ -763,7 +763,14 @@ export async function convertPdfToPptx(bytes, deps, onProgress = () => {},
       .filter((t) => t.row_count >= 1 && t.col_count >= 1);
     const hasCellText = (t) => allLines.some((ln) =>
       centerIn(t.bbox, (ln.bbox[0] + ln.bbox[2]) / 2, (ln.bbox[1] + ln.bbox[3]) / 2));
-    const ruled = detected.filter(hasCellText);
+    // A single-column grid cannot express a tabular relationship: it is a
+    // bordered or shaded BOX, not data. A Starling statement's shaded Summary
+    // panel (heading over right-aligned balances) was promoted to a 2x1 table
+    // here, gaining a hard border and losing its shading and alignment, while
+    // the desktop engine (fitz, stroked lines only) never saw a table at all.
+    // Demoting it feeds the region to the hybrid background, which preserves
+    // the panel as pixels with editable text on top - matching desktop.
+    const ruled = detected.filter((t) => hasCellText(t) && t.col_count >= 2);
     const demotedGrids = detected.length - ruled.length;
     // Unruled tables (statement ledgers without ruling lines) are recovered
     // from column alignment and emitted native like any other table.
