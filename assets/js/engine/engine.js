@@ -478,10 +478,22 @@ function addTable(slide, table, pageLines, sampleCtx, z, cw, ch, scale, offX, of
       const fill = sampleFill(sampleCtx, cb, z, cw, ch);
       const cellLines = linesIn(cb, pageLines)
         .sort((a, b) => (Math.round(a.y0 * 10) - Math.round(b.y0 * 10)) || (a.x0 - b.x0));
+      // A numeric cell whose content hugs the RIGHT of its source cell (money,
+      // balances) must stay right-aligned, or left-aligning it in a wide
+      // reconstructed cell floats the value toward the neighbour column (an OUT
+      // amount drifting under IN). Only right-align when the source actually
+      // right-aligns it: a left-aligned number is left as-is.
+      const cellText = cellLines.map((l) => l.spans.map((s) => s.text).join("")).join(" ").trim();
+      let cellAlign = null;
+      if (cellLines.length && /^[£$€]?\s?-?[\d,]+(\.\d+)?%?$/.test(cellText)) {
+        const cX0 = Math.min(...cellLines.map((l) => l.x0));
+        const cX1 = Math.max(...cellLines.map((l) => l.x1));
+        if ((cb[2] - cX1) < (cX0 - cb[0]) - 2) cellAlign = "right";
+      }
       let runs = [];
       if (cellLines.length) {
         for (const para of splitParagraphs(cellLines)) {
-          runs.push(...paragraphRuns(para, fonts, null));
+          runs.push(...paragraphRuns(para, fonts, cellAlign));
         }
       }
       row.push({

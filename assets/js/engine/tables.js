@@ -65,16 +65,27 @@ function overlapsAnyCluster(clusters, seg) {
   return clusters.some((c) => Math.min(seg.x1, c.maxX1) - Math.max(seg.x0, c.minX0) > 1);
 }
 
+// A money value: a currency symbol on digits (a statement's IN/OUT/BALANCE).
+// Deliberately strict - a plain number is not enough - so this only ever
+// fires on financial columns, never on the aligned prose of an instruction
+// form (which has no currency symbols at all).
+const MONEY_RE = /^[£$€]\s?-?[\d,]+(\.\d{1,2})?$/;
+function segIsMoney(seg) {
+  return MONEY_RE.test(seg.spans.map((s) => s.text).join("").trim());
+}
+
 function addToCluster(c, seg) {
   c.x0m = (c.x0m * c.n + seg.x0) / (c.n + 1);
   c.x1m = (c.x1m * c.n + seg.x1) / (c.n + 1);
   c.minX0 = Math.min(c.minX0, seg.x0);
   c.maxX1 = Math.max(c.maxX1, seg.x1);
   c.n++;
+  if (segIsMoney(seg)) c.money++;
 }
 
 function newCluster(seg) {
-  return { x0m: seg.x0, x1m: seg.x1, minX0: seg.x0, maxX1: seg.x1, n: 1 };
+  return { x0m: seg.x0, x1m: seg.x1, minX0: seg.x0, maxX1: seg.x1,
+           n: 1, money: segIsMoney(seg) ? 1 : 0 };
 }
 
 export function inferAlignedTables(lines, existingBboxes = []) {
@@ -117,9 +128,15 @@ export function inferAlignedTables(lines, existingBboxes = []) {
       run.push(row);
       j++;
     }
-    // a column needs support in >=25% of rows (min 3): money-in columns are
-    // legitimately sparse, but a one-off stray is not a column
-    const supported = clusters.filter((c) => c.n >= Math.max(3, Math.ceil(0.25 * run.length)));
+    // A column needs support in >=25% of rows (min 3), so prose cannot
+    // tabulate. EXCEPT a pure-money column: when every value in it is a
+    // currency amount it is a real column even with a single entry - a
+    // statement period with one payment IN still has an IN column, and
+    // dropping it collapses IN into OUT. Currency-gated, so an instruction
+    // form (no currency anywhere) is unaffected and keeps the strict rule.
+    const thr = Math.max(3, Math.ceil(0.25 * run.length));
+    const supported = clusters.filter((c) =>
+      c.n >= thr || (c.money >= 1 && c.money === c.n));
     const denseRows = run.filter((r) => r.segs.length >= MIN_COLS).length;
     if (run.length >= MIN_DATA_ROWS + 1 && supported.length >= MIN_COLS
         && denseRows >= MIN_DATA_ROWS) {
